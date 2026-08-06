@@ -44,6 +44,7 @@ def generate_launch_description():
             "init_y": "1.0",
             "init_z": "0.4",
             "use_sim_time": "true",
+            "initial_path_topic": LaunchConfiguration("initial_path_topic"),
         }.items(),
     )
     spawn = Node(
@@ -106,6 +107,7 @@ def generate_launch_description():
         DeclareLaunchArgument("loop_position_tolerance", default_value="0.5"),
         DeclareLaunchArgument("loop_cooldown", default_value="3.0"),
         DeclareLaunchArgument("rviz", default_value="true"),
+        DeclareLaunchArgument("initial_path_topic", default_value="/initial_path"),
         gazebo,
         topic_bridge,
         pose_service_bridge,

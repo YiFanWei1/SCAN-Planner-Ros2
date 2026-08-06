@@ -26,6 +26,7 @@ def _setup(context):
     simulator_backend = LaunchConfiguration("simulator_backend").perform(context)
     keypoints_file = LaunchConfiguration("keypoints_file").perform(context)
     reference_path_file = LaunchConfiguration("reference_path_file").perform(context)
+    initial_path_topic = LaunchConfiguration("initial_path_topic").perform(context)
     navi_mode = int(LaunchConfiguration("navi_mode").perform(context))
     if sensor_type not in ("lidar", "depth"):
         raise RuntimeError("sensor_type must be 'lidar' or 'depth'")
@@ -118,7 +119,7 @@ def _setup(context):
                 ("cloud", cloud),
                 ("depth", depth),
                 ("move_base_simple/goal", "/move_base_simple/goal"),
-                ("initial_path", "/initial_path"),
+                ("initial_path", initial_path_topic),
             ],
         )
     ]
@@ -266,6 +267,7 @@ def generate_launch_description():
             DeclareLaunchArgument("simulator_backend", default_value="pointcloud_render"),
             DeclareLaunchArgument("keypoints_file", default_value=""),
             DeclareLaunchArgument("reference_path_file", default_value=""),
+            DeclareLaunchArgument("initial_path_topic", default_value="/initial_path"),
             DeclareLaunchArgument("use_gpu", default_value="false"),
             DeclareLaunchArgument("use_pcd_map", default_value="false"),
             DeclareLaunchArgument("pcd_map_file", default_value=""),
