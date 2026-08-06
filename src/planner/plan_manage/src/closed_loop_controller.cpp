@@ -28,6 +28,8 @@ public:
     kp_yaw_ = declare_parameter<double>("kp_yaw", 1.5);
     max_vx_ = declare_parameter<double>("max_vx", 0.75);
     max_vy_ = declare_parameter<double>("max_vy", 0.35);
+    max_vz_ = declare_parameter<double>("max_vz", 0.30);
+    kp_z_ = declare_parameter<double>("kp_z", 1.0);
     max_vyaw_ = std::min(declare_parameter<double>("max_vyaw", 1.0), kMaxVYawLimit);
     finish_dist_ = declare_parameter<double>("finish_dist", 0.15);
 
@@ -154,6 +156,8 @@ private:
     geometry_msgs::msg::Twist command;
     command.linear.x = std::clamp(c * vel_world.x() + s * vel_world.y(), -max_vx_, max_vx_);
     command.linear.y = std::clamp(-s * vel_world.x() + c * vel_world.y(), -max_vy_, max_vy_);
+    command.linear.z = std::clamp(
+        vel_des.z() + kp_z_ * (pos_des.z() - odom_pos_.z()), -max_vz_, max_vz_);
     command.angular.z = yaw_command;
     if (exec_time_ >= traj_duration_ && pos_error.norm() < finish_dist_)
       command = geometry_msgs::msg::Twist();
@@ -175,7 +179,7 @@ private:
   double exec_time_{0.0};
   rclcpp::Time last_update_time_{0, 0, RCL_ROS_TIME};
   double time_forward_, heading_error_threshold_, kp_pos_, kp_yaw_;
-  double max_vx_, max_vy_, max_vyaw_, finish_dist_;
+  double max_vx_, max_vy_, max_vz_, max_vyaw_, kp_z_, finish_dist_;
 };
 }  // namespace scan_planner
 

@@ -15,13 +15,22 @@
     </gazebo>
   </xacro:macro>
 
-  <xacro:macro name="go2_gazebo">
-    <gazebo>
-      <plugin filename="libgz_ros2_control-system.so"
-              name="gz_ros2_control::GazeboSimROS2ControlPlugin">
-        <parameters>$(find go2_description)/config/ros2_controllers.yaml</parameters>
-      </plugin>
-    </gazebo>
+  <xacro:macro name="go2_gazebo" params="kinematic_mode:=false">
+    <!-- The SCAN demo moves the model through SetEntityPose.  Making it static
+         prevents the physics solver and joint controller from fighting that pose. -->
+    <xacro:if value="${kinematic_mode}">
+      <gazebo>
+        <static>true</static>
+      </gazebo>
+    </xacro:if>
+    <xacro:unless value="${kinematic_mode}">
+      <gazebo>
+        <plugin filename="libgz_ros2_control-system.so"
+                name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+          <parameters>$(find go2_description)/config/ros2_controllers.yaml</parameters>
+        </plugin>
+      </gazebo>
+    </xacro:unless>
 
     <gazebo reference="imu_link">
       <sensor name="imu_sensor" type="imu">
@@ -29,6 +38,42 @@
         <update_rate>200</update_rate>
         <topic>/go2/imu</topic>
         <imu/>
+      </sensor>
+    </gazebo>
+
+    <gazebo reference="lidar_link">
+      <sensor name="go2_3d_lidar" type="gpu_lidar">
+        <always_on>true</always_on>
+        <visualize>true</visualize>
+        <update_rate>10</update_rate>
+        <topic>/go2/lidar</topic>
+        <gz_frame_id>lidar_link</gz_frame_id>
+        <lidar>
+          <scan>
+            <horizontal>
+              <samples>1024</samples>
+              <resolution>1</resolution>
+              <min_angle>-${pi}</min_angle>
+              <max_angle>${pi}</max_angle>
+            </horizontal>
+            <vertical>
+              <samples>32</samples>
+              <resolution>1</resolution>
+              <min_angle>-${pi / 12.0}</min_angle>
+              <max_angle>${pi / 12.0}</max_angle>
+            </vertical>
+          </scan>
+          <range>
+            <min>0.2</min>
+            <max>30.0</max>
+            <resolution>0.02</resolution>
+          </range>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.01</stddev>
+          </noise>
+        </lidar>
       </sensor>
     </gazebo>
 

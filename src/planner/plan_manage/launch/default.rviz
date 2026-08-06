@@ -5,7 +5,7 @@ Panels:
     Property Tree Widget:
       Expanded: ~
       Splitter Ratio: 0.5
-    Tree Height: 1206
+    Tree Height: 591
   - Class: rviz_common/Selection
     Name: Selection
   - Class: rviz_common/Tool Properties
@@ -210,6 +210,11 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
+        lidar_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
         trunk:
           Alpha: 1
           Show Axes: false
@@ -252,6 +257,38 @@ Visualization Manager:
         Value: /quad_0/path
       Value: true
     - Alpha: 1
+      Buffer Length: 1
+      Class: rviz_default_plugins/Path
+      Color: 80; 180; 255
+      Enabled: true
+      Line Style: Lines
+      Line Width: 0.029999999329447746
+      Name: Ground Reference Path
+      Pose Style: None
+      Topic:
+        Depth: 1
+        Durability Policy: Transient Local
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /initial_path
+      Value: true
+    - Alpha: 1
+      Buffer Length: 1
+      Class: rviz_default_plugins/Path
+      Color: 255; 170; 0
+      Enabled: true
+      Line Style: Lines
+      Line Width: 0.05000000074505806
+      Name: Body Reference Path
+      Pose Style: None
+      Topic:
+        Depth: 1
+        Durability Policy: Transient Local
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /initial_body_path
+      Value: true
+    - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
         Max Value: 20.178617477416992
@@ -278,7 +315,6 @@ Visualization Manager:
       Topic:
         Depth: 1
         Durability Policy: Transient Local
-        Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Reliable
         Value: /map_generator/global_cloud
@@ -297,7 +333,7 @@ Visualization Manager:
       Color: 255; 255; 255
       Color Transformer: FlatColor
       Decay Time: 0
-      Enabled: true
+      Enabled: false
       Invert Rainbow: false
       Max Color: 255; 255; 255
       Max Intensity: 199
@@ -312,18 +348,17 @@ Visualization Manager:
       Topic:
         Depth: 5
         Durability Policy: Volatile
-        Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Best Effort
         Value: /quad_0/cloud
       Use Fixed Frame: true
       Use rainbow: true
-      Value: true
+      Value: false
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 0.574999988079071
-        Min Value: -0.125
+        Max Value: 1.024999976158142
+        Min Value: -0.02500000037252903
         Value: true
       Axis: Z
       Channel Name: intensity
@@ -346,7 +381,6 @@ Visualization Manager:
       Topic:
         Depth: 5
         Durability Policy: Volatile
-        Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Best Effort
         Value: /grid_map/occupancy
@@ -356,8 +390,8 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 0.574999988079071
-        Min Value: -0.5249999761581421
+        Max Value: 1.024999976158142
+        Min Value: -0.125
         Value: true
       Axis: Z
       Channel Name: intensity
@@ -380,7 +414,6 @@ Visualization Manager:
       Topic:
         Depth: 5
         Durability Policy: Volatile
-        Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Best Effort
         Value: /grid_map/occupancy_inflate
@@ -415,6 +448,8 @@ Visualization Manager:
       Value: true
     - Class: rviz_default_plugins/TF
       Enabled: true
+      Filter (blacklist): ""
+      Filter (whitelist): ""
       Frame Timeout: 15
       Frames:
         All Enabled: true
@@ -480,7 +515,7 @@ Visualization Manager:
           Value: true
         imu_link:
           Value: true
-        sensor:
+        lidar_link:
           Value: true
         sliding_map:
           Value: true
@@ -497,56 +532,20 @@ Visualization Manager:
         world:
           base:
             trunk:
-              FL_hip:
-                FL_thigh:
-                  FL_calf:
-                    FL_foot:
-                      {}
-                  FL_calf_rotor:
-                    {}
-                FL_thigh_rotor:
-                  {}
               FL_hip_rotor:
                 {}
-              FR_hip:
-                FR_thigh:
-                  FR_calf:
-                    FR_foot:
-                      {}
-                  FR_calf_rotor:
-                    {}
-                FR_thigh_rotor:
-                  {}
               FR_hip_rotor:
                 {}
-              RL_hip:
-                RL_thigh:
-                  RL_calf:
-                    RL_foot:
-                      {}
-                  RL_calf_rotor:
-                    {}
-                RL_thigh_rotor:
-                  {}
               RL_hip_rotor:
                 {}
-              RR_hip:
-                RR_thigh:
-                  RR_calf:
-                    RR_foot:
-                      {}
-                  RR_calf_rotor:
-                    {}
-                RR_thigh_rotor:
-                  {}
               RR_hip_rotor:
                 {}
               front_camera:
                 {}
               imu_link:
                 {}
-          sensor:
-            {}
+              lidar_link:
+                {}
           sliding_map:
             {}
       Update Interval: 0
@@ -600,7 +599,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 31.07322120666504
+      Distance: 48.34770202636719
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -615,24 +614,24 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.0549992322921753
+      Pitch: 1.494998812675476
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz_default_plugins)
-      Yaw: 2.970010995864868
+      Yaw: 3.1150131225585938
     Saved: ~
 Window Geometry:
   Displays:
     collapsed: false
-  Height: 1472
+  Height: 749
   Hide Left Dock: false
   Hide Right Dock: false
-  QMainWindow State: 000000ff00000000fd00000001000000000000032f00000524fc0200000004fb000000100044006900730070006c006100790073010000006e000005240000018200fffffffb0000001200530065006c0065006300740069006f006e000000031d00000135000000b000fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007300000003f900000199000000b000fffffffb0000000a00560069006500770073000000041b000001770000013200ffffff000006410000052400000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd00000001000000000000032f0000028ffc0200000004fb000000100044006900730070006c006100790073010000003f0000028f000000cc00fffffffb0000001200530065006c0065006300740069006f006e000000031d000001350000005d00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007300000003f9000001990000005d00fffffffb0000000a00560069006500770073000000041b00000177000000a900ffffff000002390000028f00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Selection:
     collapsed: false
   Tool Properties:
     collapsed: false
   Views:
     collapsed: false
-  Width: 2428
-  X: 132
-  Y: 54
+  Width: 1390
+  X: 437
+  Y: 154

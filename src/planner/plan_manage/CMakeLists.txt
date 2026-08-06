@@ -15,6 +15,7 @@ find_package(nav_msgs REQUIRED)
 find_package(path_searching REQUIRED)
 find_package(plan_env REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(ros_gz_interfaces REQUIRED)
 find_package(scan_planner_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
@@ -45,6 +46,7 @@ foreach(target open_loop_controller closed_loop_controller go2_kinematic_sim go2
     std_msgs tf2 tf2_geometry_msgs tf2_ros)
   target_link_libraries(${target} Eigen3::Eigen)
 endforeach()
+ament_target_dependencies(go2_kinematic_sim ros_gz_interfaces)
 
 install(TARGETS
   scan_planner_node open_loop_controller closed_loop_controller
@@ -56,6 +58,7 @@ install(FILES launch/default.rviz DESTINATION share/${PROJECT_NAME}/rviz OPTIONA
 install(PROGRAMS
   scripts/keypoint_recorder.py
   scripts/reference_path_publisher.py
+  scripts/loop_path_publisher.py
   DESTINATION lib/${PROJECT_NAME} OPTIONAL)
 
 if(BUILD_TESTING)
@@ -71,6 +74,11 @@ if(BUILD_TESTING)
   ament_add_pytest_test(
     test_reference_path_publisher_unit
     test/test_reference_path_publisher_unit.py
+    PYTHON_EXECUTABLE /usr/bin/python3
+    ENV PYTEST_DISABLE_PLUGIN_AUTOLOAD=1)
+  ament_add_pytest_test(
+    test_loop_path_publisher_unit
+    test/test_loop_path_publisher_unit.py
     PYTHON_EXECUTABLE /usr/bin/python3
     ENV PYTEST_DISABLE_PLUGIN_AUTOLOAD=1)
   set(ENV{PYTEST_DISABLE_PLUGIN_AUTOLOAD} "${_pytest_disable_plugin_autoload}")

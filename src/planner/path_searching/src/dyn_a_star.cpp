@@ -204,6 +204,8 @@ ASTAR_RET AStar::AstarSearch(const double step_size, Vector3d start_pt, Vector3d
     double tentative_gScore;
 
     int num_iter = 0;
+    int occupied_neighbor_count = 0;
+    int out_of_pool_neighbor_count = 0;
     while (!openSet_.empty())
     {
         num_iter++;
@@ -237,6 +239,7 @@ ASTAR_RET AStar::AstarSearch(const double step_size, Vector3d start_pt, Vector3d
 
                 if (neighborIdx(0) < 1 || neighborIdx(0) >= POOL_SIZE_(0) - 1 || neighborIdx(1) < 1 || neighborIdx(1) >= POOL_SIZE_(1) - 1 || neighborIdx(2) < 1 || neighborIdx(2) >= POOL_SIZE_(2) - 1)
                 {
+                    ++out_of_pool_neighbor_count;
                     continue;
                 }
 
@@ -255,6 +258,7 @@ ASTAR_RET AStar::AstarSearch(const double step_size, Vector3d start_pt, Vector3d
                 const double neighbor_yaw = std::atan2(static_cast<double>(dy), static_cast<double>(dx));
                 if (checkOccupancy(Index2Coord(neighborPtr->index), neighbor_yaw))
                 {
+                    ++occupied_neighbor_count;
                     continue;
                 }
 
@@ -282,7 +286,13 @@ ASTAR_RET AStar::AstarSearch(const double step_size, Vector3d start_pt, Vector3d
         if (std::chrono::duration<double>(time_2 - time_1).count() > 0.2)
         {
             RCLCPP_WARN(rclcpp::get_logger("path_searching"),
-                        "Failed in A-star path search: 0.2 second time limit exceeded");
+                        "[AStarDiag] result=TIMEOUT start=[%.3f %.3f %.3f] end=[%.3f %.3f %.3f] "
+                        "adjusted_start=[%.3f %.3f %.3f] adjusted_end=[%.3f %.3f %.3f] "
+                        "iter=%d occupied_rejects=%d pool_rejects=%d open=%zu",
+                        start_pt.x(), start_pt.y(), start_pt.z(), end_pt.x(), end_pt.y(), end_pt.z(),
+                        search_start.x(), search_start.y(), search_start.z(),
+                        search_end.x(), search_end.y(), search_end.z(), num_iter,
+                        occupied_neighbor_count, out_of_pool_neighbor_count, openSet_.size());
             return ASTAR_RET::SEARCH_ERR;
         }
     }
@@ -294,6 +304,14 @@ ASTAR_RET AStar::AstarSearch(const double step_size, Vector3d start_pt, Vector3d
         RCLCPP_WARN(rclcpp::get_logger("path_searching"),
                     "A-star path search took %.3fs, iter=%d", elapsed, num_iter);
 
+    RCLCPP_WARN(rclcpp::get_logger("path_searching"),
+                "[AStarDiag] result=OPEN_SET_EMPTY start=[%.3f %.3f %.3f] end=[%.3f %.3f %.3f] "
+                "adjusted_start=[%.3f %.3f %.3f] adjusted_end=[%.3f %.3f %.3f] "
+                "iter=%d occupied_rejects=%d pool_rejects=%d elapsed_ms=%.2f",
+                start_pt.x(), start_pt.y(), start_pt.z(), end_pt.x(), end_pt.y(), end_pt.z(),
+                search_start.x(), search_start.y(), search_start.z(),
+                search_end.x(), search_end.y(), search_end.z(), num_iter,
+                occupied_neighbor_count, out_of_pool_neighbor_count, elapsed * 1000.0);
     return ASTAR_RET::SEARCH_ERR;
 }
 

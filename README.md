@@ -159,6 +159,18 @@ Go2 四足机器人物理模型基于 Gazebo Fortress、`ros_gz_sim` 和 `gz_ros
 ros2 launch go2_description go2_sim.launch.py
 ```
 
+使用 Gazebo 三维激光雷达直接扫描带地面和静态障碍物的场景，并让
+SCAN-Planner Mode 3 按闭合路径循环导航（不读取 PCD），可运行：
+
+```bash
+source install/setup.bash
+ros2 launch scan_planner gazebo_lidar_demo.launch.py
+```
+
+雷达点云发布在 `/go2/lidar/points`，参考路径发布在 `/initial_path`。
+可通过 `loop_enabled`、`loop_position_tolerance`、`loop_cooldown` 和 `rviz`
+启动参数调整循环行为和界面启动。
+
 如需在不启动物理仿真时查看模型，可运行：
 
 ```bash

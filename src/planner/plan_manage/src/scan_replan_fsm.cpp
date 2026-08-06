@@ -47,6 +47,8 @@ namespace scan_planner
     self_double_cylinder_radius_ = load_parameter<double>(node_, "grid_map.double_cylinder_radius", 0.0);
     self_double_cylinder_offset_ = load_parameter<double>(node_, "grid_map.double_cylinder_offset", 0.0);
     body_height_ = load_parameter<double>(node_, "grid_map.body_height", 0.0);
+    reference_path_min_distance_ =
+        load_parameter<double>(node_, "fsm.reference_path_min_distance", 0.5);
     self_inflation_frame_id_ = load_parameter<std::string>(node_, "grid_map.frame_id", "world");
 
     if (navi_mode_ == NAVI_MODE::PRESET_TARGET)
@@ -357,7 +359,8 @@ namespace scan_planner
 
     std::vector<Eigen::Vector3d> waypoints;
     std::string path_error;
-    if (!prepareReferenceWaypoints(*msg, body_height_, 0.5, waypoints, &path_error))
+    if (!prepareReferenceWaypoints(
+            *msg, body_height_, reference_path_min_distance_, waypoints, &path_error))
     {
       RCLCPP_WARN(node_->get_logger(), "Ignoring initial_path: %s", path_error.c_str());
       return;
@@ -651,6 +654,23 @@ namespace scan_planner
             return;
           }
           replan_fail_count_++;
+          changeFSMExecState(GEN_NEW_TRAJ, "FSM");
+          return;
+        }
+
+        // A local trajectory only covers a finite planning horizon.  If
+        // replanning failed near the end of that horizon, reaching its
+        // terminal point does not mean that the global/reference-path target
+        // has been reached.  Keep the target alive and start a fresh plan
+        // from odometry; otherwise Mode 3 incorrectly falls into WAIT_TARGET
+        // halfway through a long route and the controller commands zero.
+        const double remaining_distance = (end_pt_ - odom_pos_).norm();
+        if (remaining_distance >= no_replan_thresh_)
+        {
+          RCLCPP_WARN_THROTTLE(
+              node_->get_logger(), *node_->get_clock(), 2000,
+              "Local trajectory ended %.2f m before the global target; replanning from odometry",
+              remaining_distance);
           changeFSMExecState(GEN_NEW_TRAJ, "FSM");
           return;
         }

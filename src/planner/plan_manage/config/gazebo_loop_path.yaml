@@ -1,0 +1,47 @@
+loop_path_publisher:
+  ros__parameters:
+    use_sim_time: true
+    frame_id: world
+    loop_enabled: false
+    loop_position_tolerance: 0.5
+    loop_departure_distance: 1.0
+    loop_speed_tolerance: 0.2
+    loop_cooldown: 3.0
+    shuttle_repeat_enabled: true
+    # Alternate the uphill and return routes in the same travel direction,
+    # producing a continuous circuit instead of reversing the return route.
+    cycle_via_initial_route: true
+    path_point_spacing: 0.20
+    body_height: 0.40
+    # x_center, half_width, ramp_y_start, ramp_y_end, z_start, z_end.
+    # Above each ramp the corresponding platform remains at z_end.
+    terrain_profiles:
+      [-6.0, 1.5, 1.0, 5.0, 0.0, 1.0,
+        6.0, 1.5, 3.0, 5.0, 0.0, 1.0]
+    # x_min, x_max, y_min, y_max, ground_z for the elevated connector.
+    terrain_platforms: [-4.1, 4.1, 5.5, 8.5, 1.0]
+    waypoints:
+      [-6.0,  1.0, 0.0,
+       -6.0,  2.0, 0.25,
+       -6.0,  3.0, 0.50,
+       -6.0,  4.0, 0.75,
+       -6.0,  5.0, 1.0,
+       -6.0,  7.0, 1.0]
+    # Once the first platform is reached, traverse the connector, descend the
+    # steep ramp and return over ground to the foot of ramp one.  With
+    # Reaching its end republishes the uphill route for the next circuit.
+    shuttle_waypoints:
+      [-6.0,  7.0, 1.0,
+       -4.0,  7.0, 1.0,
+        0.0,  7.0, 1.0,
+        4.0,  7.0, 1.0,
+        6.0,  7.0, 1.0,
+        6.0,  5.0, 1.0,
+        6.0,  4.5, 0.75,
+        6.0,  4.0, 0.50,
+        6.0,  3.5, 0.25,
+        6.0,  3.0, 0.0,
+        6.0, -3.0, 0.0,
+        0.0, -3.0, 0.0,
+       -6.0, -3.0, 0.0,
+       -6.0,  1.0, 0.0]

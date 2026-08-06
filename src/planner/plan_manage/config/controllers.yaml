@@ -1,13 +1,15 @@
 closed_loop_controller:
   ros__parameters:
     use_sim_time: false
-    time_forward: 0.8
-    heading_error_threshold: 0.8
+    time_forward: 0.5
+    heading_error_threshold: 0.6
     kp_pos: 0.8
-    kp_yaw: 1.5
+    kp_yaw: 1.2
     max_vx: 0.75
     max_vy: 0.35
-    max_vyaw: 1.0
+    max_vz: 0.30
+    kp_z: 1.0
+    max_vyaw: 0.6
     finish_dist: 0.15
 
 open_loop_controller:
@@ -15,6 +17,10 @@ open_loop_controller:
     use_sim_time: false
     frame_id: world
     child_frame_id: base
+    sync_gazebo_pose: false
+    gazebo_entity_name: go2
+    gazebo_set_pose_service: /world/scan_demo/set_pose
+    gazebo_sync_rate: 30.0
     publish_rate: 100.0
     yaw_min_speed: 0.05
     hold_final_position: true
@@ -32,7 +38,9 @@ go2_kinematic_sim:
     init_yaw: 0.0
     max_vx: 0.75
     max_vy: 0.35
-    max_vyaw: 1.0
+    max_vz: 0.30
+    max_vyaw: 0.6
+    gazebo_sync_rate: 60.0
     cmd_timeout: 0.3
     sim_rate: 100.0
     publish_tf: true

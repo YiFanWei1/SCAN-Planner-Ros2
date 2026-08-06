@@ -31,8 +31,8 @@ inline bool prepareReferenceWaypoints(
   }
 
   waypoints.reserve(path.poses.size());
-  Eigen::Vector3d final_waypoint;
-  Eigen::Vector3d last_waypoint;
+  Eigen::Vector3d final_waypoint = Eigen::Vector3d::Zero();
+  Eigen::Vector3d last_waypoint = Eigen::Vector3d::Zero();
   bool first = true;
 
   for (const auto &pose_stamped : path.poses)

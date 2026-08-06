@@ -148,7 +148,11 @@ namespace scan_planner
       }
       else
       {
-        RCLCPP_ERROR(rclcpp::get_logger("bspline_opt"), "A-star failed; aborting optimization");
+        RCLCPP_ERROR(rclcpp::get_logger("bspline_opt"),
+                     "[ReplanDiag] init_control_points A-star failed ret=%d segment=%zu/%zu "
+                     "ids=[%d,%d] start=[%.3f %.3f %.3f] end=[%.3f %.3f %.3f]",
+                     static_cast<int>(ret), i + 1, segment_ids.size(), segment_ids[i].first,
+                     segment_ids[i].second, in.x(), in.y(), in.z(), out.x(), out.y(), out.z());
         return a_star_paths;
       }
     }
@@ -820,7 +824,11 @@ namespace scan_planner
         }
         else
         {
-          RCLCPP_ERROR(rclcpp::get_logger("bspline_opt"), "A-star error");
+          RCLCPP_ERROR(rclcpp::get_logger("bspline_opt"),
+                       "[ReplanDiag] rebound A-star failed ret=%d segment=%zu/%zu ids=[%d,%d] "
+                       "start=[%.3f %.3f %.3f] end=[%.3f %.3f %.3f]",
+                       static_cast<int>(ret), i + 1, segment_ids.size(), segment_ids[i].first,
+                       segment_ids[i].second, in.x(), in.y(), in.z(), out.x(), out.y(), out.z());
           segment_ids.erase(segment_ids.begin() + i);
           i--;
         }

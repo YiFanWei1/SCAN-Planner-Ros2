@@ -1,0 +1,127 @@
+<?xml version="1.0"?>
+<sdf version="1.9">
+  <world name="scan_demo">
+    <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics"/>
+    <plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands"/>
+    <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster"/>
+    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+    <gravity>0 0 -9.81</gravity>
+    <physics name="1ms" type="ignored">
+      <max_step_size>0.002</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+    </physics>
+    <light name="sun" type="directional">
+      <cast_shadows>true</cast_shadows><pose>0 0 10 0 0 0</pose>
+      <diffuse>0.8 0.8 0.8 1</diffuse><specular>0.2 0.2 0.2 1</specular>
+      <direction>-0.5 0.1 -0.9</direction>
+    </light>
+
+    <model name="ground"><static>true</static><link name="link">
+      <collision name="collision"><geometry><box><size>20 20 0.1</size></box></geometry></collision>
+      <visual name="visual"><geometry><box><size>20 20 0.1</size></box></geometry>
+        <material><ambient>0.55 0.58 0.55 1</ambient><diffuse>0.55 0.58 0.55 1</diffuse></material></visual>
+      <pose>0 0 -0.05 0 0 0</pose>
+    </link></model>
+
+    <model name="north_wall"><static>true</static><pose>0 10 0.75 0 0 0</pose><link name="link">
+      <collision name="collision"><geometry><box><size>20 0.2 1.5</size></box></geometry></collision>
+      <visual name="visual"><geometry><box><size>20 0.2 1.5</size></box></geometry></visual>
+    </link></model>
+    <model name="south_wall"><static>true</static><pose>0 -10 0.75 0 0 0</pose><link name="link">
+      <collision name="collision"><geometry><box><size>20 0.2 1.5</size></box></geometry></collision>
+      <visual name="visual"><geometry><box><size>20 0.2 1.5</size></box></geometry></visual>
+    </link></model>
+    <model name="east_wall"><static>true</static><pose>10 0 0.75 0 0 0</pose><link name="link">
+      <collision name="collision"><geometry><box><size>0.2 20 1.5</size></box></geometry></collision>
+      <visual name="visual"><geometry><box><size>0.2 20 1.5</size></box></geometry></visual>
+    </link></model>
+    <model name="west_wall"><static>true</static><pose>-10 0 0.75 0 0 0</pose><link name="link">
+      <collision name="collision"><geometry><box><size>0.2 20 1.5</size></box></geometry></collision>
+      <visual name="visual"><geometry><box><size>0.2 20 1.5</size></box></geometry></visual>
+    </link></model>
+
+    <model name="center_block"><static>true</static><pose>0 0 0.8 0 0 0.2</pose><link name="link">
+      <collision name="collision"><geometry><box><size>2.2 1.6 1.6</size></box></geometry></collision>
+      <visual name="visual"><geometry><box><size>2.2 1.6 1.6</size></box></geometry>
+        <material><ambient>0.65 0.25 0.15 1</ambient><diffuse>0.65 0.25 0.15 1</diffuse></material></visual>
+    </link></model>
+    <model name="center_column_a"><static>true</static><pose>-2.8 1.8 1.0 0 0 0</pose><link name="link">
+      <collision name="collision"><geometry><cylinder><radius>0.55</radius><length>2</length></cylinder></geometry></collision>
+      <visual name="visual"><geometry><cylinder><radius>0.55</radius><length>2</length></cylinder></geometry></visual>
+    </link></model>
+    <model name="center_column_b"><static>true</static><pose>2.7 -1.5 0.9 0 0 0</pose><link name="link">
+      <collision name="collision"><geometry><cylinder><radius>0.65</radius><length>1.8</length></cylinder></geometry></collision>
+      <visual name="visual"><geometry><cylinder><radius>0.65</radius><length>1.8</length></cylinder></geometry></visual>
+    </link></model>
+    <model name="route_obstacle"><static>true</static><pose>0 -6 0.75 0 0 0</pose><link name="link">
+      <collision name="collision"><geometry><box><size>1.2 1.2 1.5</size></box></geometry></collision>
+      <visual name="visual"><geometry><box><size>1.2 1.2 1.5</size></box></geometry>
+        <material><ambient>0.15 0.3 0.7 1</ambient><diffuse>0.15 0.3 0.7 1</diffuse></material></visual>
+    </link></model>
+
+    <!-- 4 m run, 1 m rise (14 degree) ramp leading to a 4 x 4 m platform. -->
+    <model name="training_ramp"><static>true</static><pose>-6 3 0.5 0.244979 0 0</pose><link name="link">
+      <collision name="collision"><geometry><box><size>3.0 4.123 0.14</size></box></geometry></collision>
+      <visual name="visual"><geometry><box><size>3.0 4.123 0.14</size></box></geometry>
+        <material><ambient>0.30 0.55 0.30 1</ambient><diffuse>0.30 0.55 0.30 1</diffuse></material></visual>
+    </link></model>
+    <model name="gentle_ramp_left_guard"><static>true</static><pose>-7.58 3 0.95 0 0 0</pose><link name="link">
+      <collision name="collision"><geometry><box><size>0.16 4.5 1.1</size></box></geometry></collision>
+      <visual name="visual"><geometry><box><size>0.16 4.5 1.1</size></box></geometry>
+        <material><ambient>0.9 0.9 0.15 1</ambient><diffuse>0.9 0.9 0.15 1</diffuse></material></visual>
+    </link></model>
+    <model name="gentle_ramp_right_guard"><static>true</static><pose>-4.42 3 0.95 0 0 0</pose><link name="link">
+      <collision name="collision"><geometry><box><size>0.16 4.5 1.1</size></box></geometry></collision>
+      <visual name="visual"><geometry><box><size>0.16 4.5 1.1</size></box></geometry>
+        <material><ambient>0.9 0.9 0.15 1</ambient><diffuse>0.9 0.9 0.15 1</diffuse></material></visual>
+    </link></model>
+    <model name="training_platform"><static>true</static><pose>-6 7 0.5 0 0 0</pose><link name="link">
+      <collision name="collision"><geometry><box><size>4.0 4.0 1.0</size></box></geometry></collision>
+      <visual name="visual"><geometry><box><size>4.0 4.0 1.0</size></box></geometry>
+        <material><ambient>0.25 0.45 0.25 1</ambient><diffuse>0.25 0.45 0.25 1</diffuse></material></visual>
+    </link></model>
+
+    <!-- 2 m run, 1 m rise (26.6 degree) ramp and the second platform. -->
+    <model name="steep_training_ramp"><static>true</static><pose>6 4 0.5 0.463648 0 0</pose><link name="link">
+      <collision name="collision"><geometry><box><size>3.0 2.236 0.14</size></box></geometry></collision>
+      <visual name="visual"><geometry><box><size>3.0 2.236 0.14</size></box></geometry>
+        <material><ambient>0.75 0.42 0.12 1</ambient><diffuse>0.75 0.42 0.12 1</diffuse></material></visual>
+    </link></model>
+    <model name="steep_ramp_left_guard"><static>true</static><pose>4.42 4 1.0 0 0 0</pose><link name="link">
+      <collision name="collision"><geometry><box><size>0.16 2.6 1.2</size></box></geometry></collision>
+      <visual name="visual"><geometry><box><size>0.16 2.6 1.2</size></box></geometry>
+        <material><ambient>0.95 0.25 0.1 1</ambient><diffuse>0.95 0.25 0.1 1</diffuse></material></visual>
+    </link></model>
+    <model name="steep_ramp_right_guard"><static>true</static><pose>7.58 4 1.0 0 0 0</pose><link name="link">
+      <collision name="collision"><geometry><box><size>0.16 2.6 1.2</size></box></geometry></collision>
+      <visual name="visual"><geometry><box><size>0.16 2.6 1.2</size></box></geometry>
+        <material><ambient>0.95 0.25 0.1 1</ambient><diffuse>0.95 0.25 0.1 1</diffuse></material></visual>
+    </link></model>
+    <model name="steep_training_platform"><static>true</static><pose>6 7 0.5 0 0 0</pose><link name="link">
+      <collision name="collision"><geometry><box><size>4.0 4.0 1.0</size></box></geometry></collision>
+      <visual name="visual"><geometry><box><size>4.0 4.0 1.0</size></box></geometry>
+        <material><ambient>0.60 0.32 0.10 1</ambient><diffuse>0.60 0.32 0.10 1</diffuse></material></visual>
+    </link></model>
+
+    <!-- Elevated connector between the two platform tops.  Its top surface is
+         exactly z=1.0, matching both platforms, with overlapping ends so
+         there is no collision seam at x=+-4. -->
+    <model name="platform_connector"><static>true</static><pose>0 7 0.85 0 0 0</pose><link name="link">
+      <collision name="collision"><geometry><box><size>8.2 3.0 0.3</size></box></geometry></collision>
+      <visual name="visual"><geometry><box><size>8.2 3.0 0.3</size></box></geometry>
+        <material><ambient>0.20 0.42 0.58 1</ambient><diffuse>0.20 0.42 0.58 1</diffuse></material></visual>
+    </link></model>
+    <model name="connector_south_guard"><static>true</static><pose>0 5.42 1.45 0 0 0</pose><link name="link">
+      <collision name="collision"><geometry><box><size>8.3 0.16 0.9</size></box></geometry></collision>
+      <visual name="visual"><geometry><box><size>8.3 0.16 0.9</size></box></geometry>
+        <material><ambient>0.9 0.75 0.12 1</ambient><diffuse>0.9 0.75 0.12 1</diffuse></material></visual>
+    </link></model>
+    <model name="connector_north_guard"><static>true</static><pose>0 8.58 1.45 0 0 0</pose><link name="link">
+      <collision name="collision"><geometry><box><size>8.3 0.16 0.9</size></box></geometry></collision>
+      <visual name="visual"><geometry><box><size>8.3 0.16 0.9</size></box></geometry>
+        <material><ambient>0.9 0.75 0.12 1</ambient><diffuse>0.9 0.75 0.12 1</diffuse></material></visual>
+    </link></model>
+  </world>
+</sdf>

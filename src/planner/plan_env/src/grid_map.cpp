@@ -64,12 +64,25 @@ void GridMap::initMap(rclcpp::Node *node)
   load_parameter(node_, "grid_map.sensor_type", mp_.sensor_type_, string("lidar"));
   load_parameter(node_, "grid_map.cloud_is_world", mp_.cloud_is_world_, true);
   load_parameter(node_, "grid_map.need_extrinsic", mp_.need_extrinsic_, true);
+  load_parameter(node_, "grid_map.min_obstacle_height_below_sensor",
+                 mp_.min_obstacle_height_below_sensor_, -1.0);
 
-  mp_.lidar_extrinsic_ <<
-      1.0, 0.0, 0.0, -0.01100,
-      0.0, 1.0, 0.0, -0.02329,
-      0.0, 0.0, 1.0,  0.04412,
-      0.0, 0.0, 0.0,  1.00000;
+  double lidar_extrinsic_x, lidar_extrinsic_y, lidar_extrinsic_z;
+  double lidar_extrinsic_roll, lidar_extrinsic_pitch, lidar_extrinsic_yaw;
+  load_parameter(node_, "grid_map.lidar_extrinsic_x", lidar_extrinsic_x, -0.01100);
+  load_parameter(node_, "grid_map.lidar_extrinsic_y", lidar_extrinsic_y, -0.02329);
+  load_parameter(node_, "grid_map.lidar_extrinsic_z", lidar_extrinsic_z, 0.04412);
+  load_parameter(node_, "grid_map.lidar_extrinsic_roll", lidar_extrinsic_roll, 0.0);
+  load_parameter(node_, "grid_map.lidar_extrinsic_pitch", lidar_extrinsic_pitch, 0.0);
+  load_parameter(node_, "grid_map.lidar_extrinsic_yaw", lidar_extrinsic_yaw, 0.0);
+  const Eigen::Matrix3d lidar_rotation =
+      (Eigen::AngleAxisd(lidar_extrinsic_yaw, Eigen::Vector3d::UnitZ()) *
+       Eigen::AngleAxisd(lidar_extrinsic_pitch, Eigen::Vector3d::UnitY()) *
+       Eigen::AngleAxisd(lidar_extrinsic_roll, Eigen::Vector3d::UnitX())).toRotationMatrix();
+  mp_.lidar_extrinsic_.setIdentity();
+  mp_.lidar_extrinsic_.block<3, 3>(0, 0) = lidar_rotation;
+  mp_.lidar_extrinsic_.block<3, 1>(0, 3) =
+      Eigen::Vector3d(lidar_extrinsic_x, lidar_extrinsic_y, lidar_extrinsic_z);
 
   mp_.depth_extrinsic_ <<
       0.0,  0.707107, 0.707107, -0.15170,
@@ -148,12 +161,18 @@ void GridMap::initMap(rclcpp::Node *node)
   }
   else if (mp_.sensor_type_ == "lidar")
   {
-    lidar_pose_sub_ = node_->create_subscription<nav_msgs::msg::Odometry>(
-        "sensor_pose", rclcpp::SensorDataQoS(),
-        std::bind(&GridMap::sensorPoseCallback, this, std::placeholders::_1));
-    cloud_sub_ = node_->create_subscription<sensor_msgs::msg::PointCloud2>(
-        "cloud", rclcpp::SensorDataQoS(),
-        std::bind(&GridMap::cloudCallback, this, std::placeholders::_1));
+    lidar_cloud_filter_sub_ =
+        std::make_shared<message_filters::Subscriber<sensor_msgs::msg::PointCloud2>>();
+    lidar_pose_filter_sub_ =
+        std::make_shared<message_filters::Subscriber<nav_msgs::msg::Odometry>>();
+    lidar_cloud_filter_sub_->subscribe(node_, "cloud", rmw_qos_profile_sensor_data);
+    lidar_pose_filter_sub_->subscribe(node_, "sensor_pose", rmw_qos_profile_sensor_data);
+    sync_cloud_pose_.reset(new message_filters::Synchronizer<SyncPolicyCloudPose>(
+        SyncPolicyCloudPose(100), *lidar_cloud_filter_sub_, *lidar_pose_filter_sub_));
+    sync_cloud_pose_->setMaxIntervalDuration(rclcpp::Duration::from_seconds(0.05));
+    sync_cloud_pose_->registerCallback(
+        std::bind(&GridMap::cloudPoseCallback, this, std::placeholders::_1,
+                  std::placeholders::_2));
   }
 
   sliding_map_frame_sub_ = node_->create_subscription<nav_msgs::msg::Odometry>(
@@ -165,8 +184,12 @@ void GridMap::initMap(rclcpp::Node *node)
   vis_timer_ = node_->create_wall_timer(std::chrono::milliseconds(50),
                                         std::bind(&GridMap::visCallback, this));
 
-  map_pub_ = node_->create_publisher<sensor_msgs::msg::PointCloud2>("grid_map/occupancy", rclcpp::SensorDataQoS());
-  map_inf_pub_ = node_->create_publisher<sensor_msgs::msg::PointCloud2>("grid_map/occupancy_inflate", rclcpp::SensorDataQoS());
+  // Reliable publishers remain compatible with both RViz Best Effort and
+  // Reliable subscribers, so the planner's actual collision voxels are visible.
+  map_pub_ = node_->create_publisher<sensor_msgs::msg::PointCloud2>(
+      "grid_map/occupancy", rclcpp::QoS(5).reliable());
+  map_inf_pub_ = node_->create_publisher<sensor_msgs::msg::PointCloud2>(
+      "grid_map/occupancy_inflate", rclcpp::QoS(5).reliable());
   sliding_map_bbox_pub_ = node_->create_publisher<visualization_msgs::msg::Marker>("grid_map/sliding_map_bbox", 10);
 
   unknown_pub_ = node_->create_publisher<sensor_msgs::msg::PointCloud2>("grid_map/unknown", rclcpp::SensorDataQoS());
@@ -898,11 +921,18 @@ void GridMap::cloudCallback(const sensor_msgs::msg::PointCloud2::ConstSharedPtr 
 
   md_.proj_points_cnt = 0;
 
+  size_t invalid_points = 0;
+  size_t below_sensor_points = 0;
+  size_t outside_update_points = 0;
+
   for (size_t i = 0; i < latest_cloud.points.size(); ++i)
   {
     const pcl::PointXYZ &pt = latest_cloud.points[i];
     if (!std::isfinite(pt.x) || !std::isfinite(pt.y) || !std::isfinite(pt.z))
+    {
+      ++invalid_points;
       continue;
+    }
 
     Eigen::Vector3d pt_world;
     if (mp_.cloud_is_world_)
@@ -914,13 +944,22 @@ void GridMap::cloudCallback(const sensor_msgs::msg::PointCloud2::ConstSharedPtr 
       const Eigen::Vector3d pt_sensor(pt.x, pt.y, pt.z);
       pt_world = sensor_r * pt_sensor + ray_pos;
     }
+    if (mp_.min_obstacle_height_below_sensor_ >= 0.0 &&
+        pt_world.z() < ray_pos.z() - mp_.min_obstacle_height_below_sensor_)
+    {
+      ++below_sensor_points;
+      continue;
+    }
     const Eigen::Vector3d devi = pt_world - ray_pos;
     const double ray_length = devi.norm();
     const bool in_local_range =
         fabs(devi(0)) <= mp_.local_update_range_(0) && fabs(devi(1)) <= mp_.local_update_range_(1) &&
         fabs(devi(2)) <= mp_.local_update_range_(2);
     if (!in_local_range && ray_length <= mp_.max_ray_length_)
+    {
+      ++outside_update_points;
       continue;
+    }
 
     if (md_.proj_points_cnt >= static_cast<int>(md_.proj_points_.size()))
       md_.proj_points_.push_back(pt_world);
@@ -930,11 +969,29 @@ void GridMap::cloudCallback(const sensor_msgs::msg::PointCloud2::ConstSharedPtr 
     md_.proj_points_cnt++;
   }
 
+  RCLCPP_INFO_THROTTLE(
+      node_->get_logger(), *node_->get_clock(), 2000,
+      "[GridMapDiag] cloud=%zu accepted=%d invalid=%zu below_sensor=%zu outside_update=%zu "
+      "sensor_z=%.3f cutoff_z=%.3f",
+      latest_cloud.points.size(), md_.proj_points_cnt, invalid_points, below_sensor_points,
+      outside_update_points, ray_pos.z(),
+      ray_pos.z() - mp_.min_obstacle_height_below_sensor_);
+
   if (md_.proj_points_cnt == 0)
     return;
 
   md_.use_cloud_update_ = true;
   md_.occ_need_update_ = true;
+}
+
+void GridMap::cloudPoseCallback(
+    const sensor_msgs::msg::PointCloud2::ConstSharedPtr &cloud,
+    const nav_msgs::msg::Odometry::ConstSharedPtr &pose)
+{
+  // Transform each scan with the odometry sample carrying the closest stamp.
+  // Using the latest asynchronous pose smears walls whenever the robot rotates.
+  sensorPoseCallback(pose);
+  cloudCallback(cloud);
 }
 
 void GridMap::publishMap()

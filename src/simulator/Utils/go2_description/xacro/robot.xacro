@@ -4,6 +4,7 @@
 
     <xacro:arg name="DEBUG" default="false"/>
     <xacro:arg name="use_gazebo" default="true"/>
+    <xacro:arg name="kinematic_mode" default="false"/>
 
     <xacro:include filename="$(find go2_description)/xacro/const.xacro"/>
     <xacro:include filename="$(find go2_description)/xacro/materials.xacro"/>
@@ -102,6 +103,26 @@
     <link name="front_camera">
     </link>
 
+    <joint name="lidar_joint" type="fixed">
+        <parent link="trunk"/>
+        <child link="lidar_link"/>
+        <origin rpy="0 0 0" xyz="0 0 0.30"/>
+    </joint>
+
+    <link name="lidar_link">
+        <visual>
+            <geometry><cylinder radius="0.045" length="0.065"/></geometry>
+            <material name="black"/>
+        </visual>
+        <collision>
+            <geometry><cylinder radius="0.045" length="0.065"/></geometry>
+        </collision>
+        <inertial>
+            <mass value="0.15"/>
+            <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+        </inertial>
+    </link>
+
     <!--
     <joint name="load_joint" type="fixed">
         <parent link="trunk"/>
@@ -135,7 +156,9 @@
     <xacro:leg name="RL" mirror="1"  mirror_dae="True"   front_hind="-1" front_hind_dae="False" />
 
     <xacro:if value="$(arg use_gazebo)">
-        <xacro:go2_ros2_control/>
-        <xacro:go2_gazebo/>
+        <xacro:unless value="$(arg kinematic_mode)">
+            <xacro:go2_ros2_control/>
+        </xacro:unless>
+        <xacro:go2_gazebo kinematic_mode="$(arg kinematic_mode)"/>
     </xacro:if>
 </robot>

@@ -8,6 +8,16 @@
   ros_type_name: sensor_msgs/msg/Imu
   gz_type_name: gz.msgs.IMU
   direction: GZ_TO_ROS
+- ros_topic_name: /go2/lidar/scan
+  gz_topic_name: /go2/lidar
+  ros_type_name: sensor_msgs/msg/LaserScan
+  gz_type_name: gz.msgs.LaserScan
+  direction: GZ_TO_ROS
+- ros_topic_name: /go2/lidar/points
+  gz_topic_name: /go2/lidar/points
+  ros_type_name: sensor_msgs/msg/PointCloud2
+  gz_type_name: gz.msgs.PointCloudPacked
+  direction: GZ_TO_ROS
 - ros_topic_name: /tf
   gz_topic_name: /model/go2/pose
   ros_type_name: tf2_msgs/msg/TFMessage
