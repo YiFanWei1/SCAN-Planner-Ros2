@@ -27,6 +27,10 @@ def _setup(context):
     keypoints_file = LaunchConfiguration("keypoints_file").perform(context)
     reference_path_file = LaunchConfiguration("reference_path_file").perform(context)
     initial_path_topic = LaunchConfiguration("initial_path_topic").perform(context)
+    clear_map_on_new_path = _as_bool(
+        LaunchConfiguration("clear_map_on_new_path").perform(context))
+    fresh_observations_before_planning = int(
+        LaunchConfiguration("fresh_observations_before_planning").perform(context))
     navi_mode = int(LaunchConfiguration("navi_mode").perform(context))
     if sensor_type not in ("lidar", "depth"):
         raise RuntimeError("sensor_type must be 'lidar' or 'depth'")
@@ -102,6 +106,8 @@ def _setup(context):
         **intrinsics,
         "fsm.navi_mode": navi_mode,
         "fsm.reference_path_min_distance": 0.15 if simulator_backend == "gazebo_lidar" else 0.5,
+        "fsm.clear_map_on_new_path": clear_map_on_new_path,
+        "fsm.fresh_observations_before_planning": fresh_observations_before_planning,
         "grid_map.sensor_type": sensor_type,
         "grid_map.cloud_is_world": cloud_is_world,
         "grid_map.need_extrinsic": need_extrinsic,
@@ -268,6 +274,8 @@ def generate_launch_description():
             DeclareLaunchArgument("keypoints_file", default_value=""),
             DeclareLaunchArgument("reference_path_file", default_value=""),
             DeclareLaunchArgument("initial_path_topic", default_value="/initial_path"),
+            DeclareLaunchArgument("clear_map_on_new_path", default_value="false"),
+            DeclareLaunchArgument("fresh_observations_before_planning", default_value="2"),
             DeclareLaunchArgument("use_gpu", default_value="false"),
             DeclareLaunchArgument("use_pcd_map", default_value="false"),
             DeclareLaunchArgument("pcd_map_file", default_value=""),

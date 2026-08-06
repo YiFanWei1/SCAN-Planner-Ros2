@@ -49,6 +49,16 @@ namespace scan_planner
     body_height_ = load_parameter<double>(node_, "grid_map.body_height", 0.0);
     reference_path_min_distance_ =
         load_parameter<double>(node_, "fsm.reference_path_min_distance", 0.5);
+    clear_map_on_new_path_ =
+        load_parameter<bool>(node_, "fsm.clear_map_on_new_path", false);
+    fresh_observations_before_planning_ =
+        load_parameter<int>(node_, "fsm.fresh_observations_before_planning", 2);
+    map_refresh_warning_timeout_ =
+        load_parameter<double>(node_, "fsm.map_refresh_warning_timeout", 0.5);
+    if (fresh_observations_before_planning_ < 1)
+      throw std::runtime_error("fsm.fresh_observations_before_planning must be at least 1");
+    if (map_refresh_warning_timeout_ <= 0.0)
+      throw std::runtime_error("fsm.map_refresh_warning_timeout must be positive");
     self_inflation_frame_id_ = load_parameter<std::string>(node_, "grid_map.frame_id", "world");
 
     if (navi_mode_ == NAVI_MODE::PRESET_TARGET)
@@ -357,6 +367,30 @@ namespace scan_planner
       return;
     }
 
+    if (clear_map_on_new_path_)
+    {
+      pending_reference_path_ = msg;
+      planner_manager_->grid_map_->resetForReferencePath();
+      required_observation_sequence_ =
+          planner_manager_->grid_map_->getCompletedObservationSequence() +
+          static_cast<uint64_t>(fresh_observations_before_planning_);
+      map_refresh_request_time_ = node_->now();
+      map_refresh_timeout_warned_ = false;
+      RCLCPP_INFO(node_->get_logger(),
+                  "[MapRefresh] Deferred reference path until %d fresh map observations "
+                  "have been fused (target_sequence=%llu)",
+                  fresh_observations_before_planning_,
+                  static_cast<unsigned long long>(required_observation_sequence_));
+      return;
+    }
+
+    processReferencePath(msg);
+  }
+
+  void SCANReplanFSM::processReferencePath(
+      const nav_msgs::msg::Path::ConstSharedPtr &msg)
+  {
+
     std::vector<Eigen::Vector3d> waypoints;
     std::string path_error;
     if (!prepareReferenceWaypoints(
@@ -388,6 +422,38 @@ namespace scan_planner
     {
       RCLCPP_ERROR(node_->get_logger(), "Unable to generate global trajectory from reference path");
     }
+  }
+
+  bool SCANReplanFSM::processPendingReferencePath()
+  {
+    if (!pending_reference_path_)
+      return false;
+
+    const uint64_t current_sequence =
+        planner_manager_->grid_map_->getCompletedObservationSequence();
+    if (current_sequence < required_observation_sequence_)
+    {
+      const double elapsed = (node_->now() - map_refresh_request_time_).seconds();
+      if (!map_refresh_timeout_warned_ && elapsed >= map_refresh_warning_timeout_)
+      {
+        RCLCPP_WARN(node_->get_logger(),
+                    "[MapRefresh] Still waiting for fresh observations after %.2fs "
+                    "(current=%llu target=%llu); planning remains deferred",
+                    elapsed, static_cast<unsigned long long>(current_sequence),
+                    static_cast<unsigned long long>(required_observation_sequence_));
+        map_refresh_timeout_warned_ = true;
+      }
+      return true;
+    }
+
+    auto path = pending_reference_path_;
+    pending_reference_path_.reset();
+    RCLCPP_INFO(node_->get_logger(),
+                "[MapRefresh] Fresh map ready at observation_sequence=%llu; "
+                "accepting deferred reference path",
+                static_cast<unsigned long long>(current_sequence));
+    processReferencePath(path);
+    return false;
   }
 
   void SCANReplanFSM::odometryCallback(const nav_msgs::msg::Odometry::ConstSharedPtr &msg)
@@ -529,6 +595,9 @@ namespace scan_planner
 
   void SCANReplanFSM::execFSMCallback()
   {
+    if (processPendingReferencePath())
+      return;
+
     updateLocalTrajTimeFreeze();
 
     static int fsm_num = 0;

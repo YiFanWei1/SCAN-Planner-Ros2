@@ -45,6 +45,9 @@ def generate_launch_description():
             "init_z": "0.4",
             "use_sim_time": "true",
             "initial_path_topic": LaunchConfiguration("initial_path_topic"),
+            "clear_map_on_new_path": LaunchConfiguration("clear_map_on_new_path"),
+            "fresh_observations_before_planning": LaunchConfiguration(
+                "fresh_observations_before_planning"),
         }.items(),
     )
     spawn = Node(
@@ -108,6 +111,8 @@ def generate_launch_description():
         DeclareLaunchArgument("loop_cooldown", default_value="3.0"),
         DeclareLaunchArgument("rviz", default_value="true"),
         DeclareLaunchArgument("initial_path_topic", default_value="/initial_path"),
+        DeclareLaunchArgument("clear_map_on_new_path", default_value="false"),
+        DeclareLaunchArgument("fresh_observations_before_planning", default_value="2"),
         gazebo,
         topic_bridge,
         pose_service_bridge,

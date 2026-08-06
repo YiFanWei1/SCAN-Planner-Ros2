@@ -4,8 +4,6 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
-        - /PointCloud21
-        - /TF1
         - /TF1/Frames1
       Splitter Ratio: 0.5
     Tree Height: 572
@@ -101,7 +99,7 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 1.6749999523162842
+        Max Value: 1.975000023841858
         Min Value: -0.07500000298023224
         Value: true
       Axis: Z
@@ -253,16 +251,16 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 16.210969924926758
+      Distance: 27.564970016479492
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 1.8103264570236206
-        Y: 6.422427177429199
-        Z: 0.574263334274292
+        X: -0.09199793636798859
+        Y: 0.6931352615356445
+        Z: 0.5026562213897705
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
@@ -281,5 +279,5 @@ Window Geometry:
   Hide Right Dock: false
   QMainWindow State: 000000ff00000000fd000000010000000000000156000002c2fc0200000001fb000000100044006900730070006c006100790073010000003f000002c2000000cc00ffffff000003a4000002c200000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Width: 1280
-  X: 66
-  Y: 59
+  X: 171
+  Y: 139

@@ -16,6 +16,7 @@ def generate_launch_description():
         DeclareLaunchArgument("input_path", default_value="/initial_path"),
         DeclareLaunchArgument("body_pose", default_value="/quad_0/body_pose"),
         DeclareLaunchArgument("rviz", default_value="true"),
+        DeclareLaunchArgument("fixed_frame", default_value="world"),
         DeclareLaunchArgument("use_sim_time", default_value="true"),
         DeclareLaunchArgument("max_linear_z_error", default_value="0.04"),
         DeclareLaunchArgument("slope_merge_threshold", default_value="0.04"),
@@ -41,7 +42,10 @@ def generate_launch_description():
         Node(
             package="rviz2",
             executable="rviz2",
-            arguments=["-d", os.path.join(share, "rviz", "segments.rviz")],
+            arguments=[
+                "-d", os.path.join(share, "rviz", "segments.rviz"),
+                "-f", LaunchConfiguration("fixed_frame"),
+            ],
             parameters=[{"use_sim_time": LaunchConfiguration("use_sim_time")}],
             condition=IfCondition(LaunchConfiguration("rviz")),
             output="screen",

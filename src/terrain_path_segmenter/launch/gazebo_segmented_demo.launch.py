@@ -19,6 +19,8 @@ def generate_launch_description():
         launch_arguments={
             'rviz': 'false',
             'initial_path_topic': '/terrain_path/current',
+            'clear_map_on_new_path': 'true',
+            'fresh_observations_before_planning': '2',
         }.items(),
     )
     segmenter = Node(

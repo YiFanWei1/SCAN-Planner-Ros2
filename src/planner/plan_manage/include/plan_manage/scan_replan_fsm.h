@@ -3,6 +3,7 @@
 
 #include <Eigen/Eigen>
 #include <algorithm>
+#include <cstdint>
 #include <geometry_msgs/msg/pose_stamped.hpp>
 #include <iostream>
 #include <nav_msgs/msg/odometry.hpp>
@@ -62,6 +63,9 @@ namespace scan_planner
     double self_double_cylinder_radius_, self_double_cylinder_offset_;
     double body_height_;
     double reference_path_min_distance_;
+    bool clear_map_on_new_path_;
+    int fresh_observations_before_planning_;
+    double map_refresh_warning_timeout_;
     std::string self_inflation_frame_id_;
 
     /* planning data */
@@ -75,6 +79,10 @@ namespace scan_planner
     int replan_fail_count_{0};
     int max_replan_fail_count_{1000};
     rclcpp::Time last_freeze_update_time_;
+    rclcpp::Time map_refresh_request_time_;
+    nav_msgs::msg::Path::ConstSharedPtr pending_reference_path_;
+    uint64_t required_observation_sequence_{0};
+    bool map_refresh_timeout_warned_{false};
 
     Eigen::Vector3d odom_pos_, odom_vel_, odom_acc_; // odometry state
     Eigen::Quaterniond odom_orient_;
@@ -120,6 +128,8 @@ namespace scan_planner
     double getOdomYaw() const;
     double estimateYawFromSegment(const Eigen::Vector3d &from, const Eigen::Vector3d &to) const;
     void updateLocalTrajTimeFreeze();
+    void processReferencePath(const nav_msgs::msg::Path::ConstSharedPtr &msg);
+    bool processPendingReferencePath();
 
     /* ROS functions */
     void execFSMCallback();

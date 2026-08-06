@@ -10,6 +10,7 @@
 #include <cv_bridge/cv_bridge.h>
 #endif
 #include <cmath>
+#include <cstdint>
 #include <geometry_msgs/msg/pose_stamped.hpp>
 #include <iostream>
 #include <random>
@@ -148,6 +149,7 @@ struct MappingData {
 
   double fuse_time_, max_fuse_time_;
   int update_num_;
+  uint64_t completed_observation_sequence_;
 
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
@@ -162,6 +164,8 @@ public:
   // occupancy map management
   void resetBuffer();
   void resetBuffer(Eigen::Vector3d min, Eigen::Vector3d max);
+  void resetForReferencePath();
+  uint64_t getCompletedObservationSequence() const;
 
   inline void posToIndex(const Eigen::Vector3d& pos, Eigen::Vector3i& id);
   inline void indexToPos(const Eigen::Vector3i& id, Eigen::Vector3d& pos);

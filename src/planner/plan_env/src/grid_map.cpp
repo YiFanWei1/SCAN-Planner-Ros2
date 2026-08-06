@@ -208,6 +208,7 @@ void GridMap::initMap(rclcpp::Node *node)
 
   md_.fuse_time_ = 0.0;
   md_.update_num_ = 0;
+  md_.completed_observation_sequence_ = 0;
   md_.max_fuse_time_ = 0.0;
   md_.local_bound_min_ = mp_.map_bound_min_idx_;
   md_.local_bound_max_ = mp_.map_bound_max_idx_;
@@ -448,6 +449,23 @@ void GridMap::resetBuffer()
   resetAllMapData();
   md_.local_bound_min_ = mp_.map_bound_min_idx_;
   md_.local_bound_max_ = mp_.map_bound_max_idx_;
+}
+
+void GridMap::resetForReferencePath()
+{
+  resetBuffer();
+  md_.occ_need_update_ = false;
+  md_.use_cloud_update_ = false;
+  md_.proj_points_cnt = 0;
+  RCLCPP_INFO(node_->get_logger(),
+              "[MapRefresh] Cleared occupancy and inflation for a new reference path; "
+              "observation_sequence=%llu",
+              static_cast<unsigned long long>(md_.completed_observation_sequence_));
+}
+
+uint64_t GridMap::getCompletedObservationSequence() const
+{
+  return md_.completed_observation_sequence_;
 }
 
 void GridMap::resetBuffer(Eigen::Vector3d min_pos, Eigen::Vector3d max_pos)
@@ -776,6 +794,7 @@ void GridMap::updateOccupancyCallback()
     projectDepthImage();
   // t2 = ros::Time::now();
   raycastProcess();
+  ++md_.completed_observation_sequence_;
   // t3 = ros::Time::now();
 
   // t4 = ros::Time::now();

@@ -48,6 +48,9 @@ class TerrainPathVisualizer(Node):
         transient_qos = QoSProfile(depth=1)
         transient_qos.reliability = ReliabilityPolicy.RELIABLE
         transient_qos.durability = DurabilityPolicy.TRANSIENT_LOCAL
+        input_qos = QoSProfile(depth=10)
+        input_qos.reliability = ReliabilityPolicy.RELIABLE
+        input_qos.durability = DurabilityPolicy.VOLATILE
         self.marker_pub = self.create_publisher(
             MarkerArray, "segments", transient_qos)
         self.processed_path_pub = self.create_publisher(
@@ -57,7 +60,7 @@ class TerrainPathVisualizer(Node):
         self.current_goal_pub = self.create_publisher(
             PoseStamped, "current_goal", transient_qos)
         self.path_sub = self.create_subscription(
-            Path, "global_path", self.path_callback, transient_qos)
+            Path, "global_path", self.path_callback, input_qos)
         self.odom_sub = self.create_subscription(
             Odometry, "body_pose", self.odom_callback, 20)
 
