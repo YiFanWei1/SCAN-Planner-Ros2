@@ -52,6 +52,13 @@ scan_planner_node:
     grid_map.p_max: 0.98
     grid_map.p_occ: 0.80
     grid_map.max_ray_length: 5.0
+    grid_map.occupancy_decay_enabled: true
+    grid_map.occupancy_decay_start: 0.3
+    grid_map.occupancy_decay_interval: 0.1
+    grid_map.occupancy_decay_min_range: 0.8
+    grid_map.occupancy_decay_max_range: 5.0
+    grid_map.occupancy_decay_sensor_timeout: 0.5
+    grid_map.occupancy_decay_log_odds: -0.8472978604
     grid_map.vis_height: 0.3
     grid_map.show_occ_time: false
 

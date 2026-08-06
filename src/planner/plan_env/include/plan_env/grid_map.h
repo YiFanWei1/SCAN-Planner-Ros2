@@ -19,6 +19,7 @@
 #include <rclcpp/rclcpp.hpp>
 #include <rmw/qos_profiles.h>
 #include <tuple>
+#include <unordered_set>
 #include <sensor_msgs/msg/image.hpp>
 #include <sensor_msgs/image_encodings.hpp>
 #include <sensor_msgs/msg/point_cloud2.hpp>
@@ -85,6 +86,11 @@ struct MappingParameters {
   double prob_hit_log_, prob_miss_log_, clamp_min_log_, clamp_max_log_,
       min_occupancy_log_;                   // logit of occupancy probability
   double min_ray_length_, max_ray_length_;  // range of doing raycasting
+  bool occupancy_decay_enabled_;
+  double occupancy_decay_start_, occupancy_decay_interval_;
+  double occupancy_decay_min_range_, occupancy_decay_max_range_;
+  double occupancy_decay_sensor_timeout_;
+  double occupancy_decay_log_odds_;
 
   /* visualization and computation time display */
   double vis_height_, ground_height_;
@@ -150,6 +156,9 @@ struct MappingData {
   double fuse_time_, max_fuse_time_;
   int update_num_;
   uint64_t completed_observation_sequence_;
+  std::vector<int64_t> last_hit_time_ns_, last_decay_time_ns_;
+  std::unordered_set<int> active_occupied_voxels_;
+  int64_t last_cloud_time_ns_;
 
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
@@ -223,6 +232,7 @@ private:
 
   // update occupancy by raycasting
   void updateOccupancyCallback();
+  void decayOccupancyCallback();
   void visCallback();
 
   // main update process
@@ -281,7 +291,7 @@ private:
   rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr unknown_pub_;
   rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr depth_cloud_pub_;
   rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr extrinsic_pose_pub_;
-  rclcpp::TimerBase::SharedPtr occ_timer_, vis_timer_;
+  rclcpp::TimerBase::SharedPtr occ_timer_, vis_timer_, decay_timer_;
 
   //
   uniform_real_distribution<double> rand_noise_;
