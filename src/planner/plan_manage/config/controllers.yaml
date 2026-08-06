@@ -2,7 +2,14 @@ closed_loop_controller:
   ros__parameters:
     use_sim_time: false
     time_forward: 0.5
+    # Heading is taken from a spatially distant point, not a noisy initial
+    # B-spline derivative. Keep yaw continuous across local replans.
+    yaw_lookahead_distance: 0.5
+    yaw_min_direction_distance: 0.10
+    yaw_direction_sample_dt: 0.05
+    max_desired_yaw_rate: 1.2
     heading_error_threshold: 0.6
+    heading_error_hold_time: 0.25
     kp_pos: 0.8
     kp_yaw: 1.2
     max_vx: 0.75

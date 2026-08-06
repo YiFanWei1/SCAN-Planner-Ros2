@@ -1,0 +1,13 @@
+go2_kinematic_sim:
+  ros__parameters:
+    terrain_following: true
+    terrain_body_clearance: 0.4
+    terrain_profiles:
+      [-8.5, 0.75, -7.5, -5.5, 0.5, 0.0,
+        8.5, 0.75, -7.5, -5.5, 0.5, 0.0,
+       -6.0, 1.50,  1.0,  5.0, 0.0, 1.0,
+        6.0, 1.50,  3.0,  5.0, 0.0, 1.0]
+    terrain_platforms:
+      [-9.25,  0.00, -9.4, -7.5, 0.5,
+        0.00,  9.25, -9.4, -7.5, 0.5,
+       -4.10,  4.10,  5.5,  8.5, 1.0]

@@ -4,6 +4,10 @@ scan_planner_node:
 
     fsm.navi_mode: 1
     fsm.thresh_replan: 1.0
+    # Internal trigger period. 0.05 s compensates for the FSM transition and
+    # optimization cycles, yielding about 10 Hz at /planning/bspline.
+    # Set to 0.0 to use thresh_replan instead.
+    fsm.replan_period: 0.05
     fsm.thresh_no_replan: 0.1
     fsm.planning_horizon: 3.5
     fsm.emergency_time: 1.0

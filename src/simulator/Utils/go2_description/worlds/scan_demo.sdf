@@ -123,5 +123,41 @@
       <visual name="visual"><geometry><box><size>8.3 0.16 0.9</size></box></geometry>
         <material><ambient>0.9 0.75 0.12 1</ambient><diffuse>0.9 0.75 0.12 1</diffuse></material></visual>
     </link></model>
+
+    <!-- Two five-step staircases (10 cm rise, 40 cm tread) and independent
+         0.5 m-high platforms. They sit near the side walls and do not alter
+         the original ramp circuit. -->
+    <model name="west_staircase"><static>true</static><pose>-8.5 -13 0 0 0 3.141593</pose><link name="link">
+      <collision name="step_1"><pose>0 -7.3 0.05 0 0 0</pose><geometry><box><size>1.5 0.4 0.1</size></box></geometry></collision>
+      <visual name="step_1_visual"><pose>0 -7.3 0.05 0 0 0</pose><geometry><box><size>1.5 0.4 0.1</size></box></geometry></visual>
+      <collision name="step_2"><pose>0 -6.9 0.10 0 0 0</pose><geometry><box><size>1.5 0.4 0.2</size></box></geometry></collision>
+      <visual name="step_2_visual"><pose>0 -6.9 0.10 0 0 0</pose><geometry><box><size>1.5 0.4 0.2</size></box></geometry></visual>
+      <collision name="step_3"><pose>0 -6.5 0.15 0 0 0</pose><geometry><box><size>1.5 0.4 0.3</size></box></geometry></collision>
+      <visual name="step_3_visual"><pose>0 -6.5 0.15 0 0 0</pose><geometry><box><size>1.5 0.4 0.3</size></box></geometry></visual>
+      <collision name="step_4"><pose>0 -6.1 0.20 0 0 0</pose><geometry><box><size>1.5 0.4 0.4</size></box></geometry></collision>
+      <visual name="step_4_visual"><pose>0 -6.1 0.20 0 0 0</pose><geometry><box><size>1.5 0.4 0.4</size></box></geometry></visual>
+      <collision name="step_5"><pose>0 -5.7 0.25 0 0 0</pose><geometry><box><size>1.5 0.4 0.5</size></box></geometry></collision>
+      <visual name="step_5_visual"><pose>0 -5.7 0.25 0 0 0</pose><geometry><box><size>1.5 0.4 0.5</size></box></geometry></visual>
+    </link></model>
+    <model name="east_staircase"><static>true</static><pose>8.5 -13 0 0 0 3.141593</pose><link name="link">
+      <collision name="step_1"><pose>0 -7.3 0.05 0 0 0</pose><geometry><box><size>1.5 0.4 0.1</size></box></geometry></collision>
+      <visual name="step_1_visual"><pose>0 -7.3 0.05 0 0 0</pose><geometry><box><size>1.5 0.4 0.1</size></box></geometry></visual>
+      <collision name="step_2"><pose>0 -6.9 0.10 0 0 0</pose><geometry><box><size>1.5 0.4 0.2</size></box></geometry></collision>
+      <visual name="step_2_visual"><pose>0 -6.9 0.10 0 0 0</pose><geometry><box><size>1.5 0.4 0.2</size></box></geometry></visual>
+      <collision name="step_3"><pose>0 -6.5 0.15 0 0 0</pose><geometry><box><size>1.5 0.4 0.3</size></box></geometry></collision>
+      <visual name="step_3_visual"><pose>0 -6.5 0.15 0 0 0</pose><geometry><box><size>1.5 0.4 0.3</size></box></geometry></visual>
+      <collision name="step_4"><pose>0 -6.1 0.20 0 0 0</pose><geometry><box><size>1.5 0.4 0.4</size></box></geometry></collision>
+      <visual name="step_4_visual"><pose>0 -6.1 0.20 0 0 0</pose><geometry><box><size>1.5 0.4 0.4</size></box></geometry></visual>
+      <collision name="step_5"><pose>0 -5.7 0.25 0 0 0</pose><geometry><box><size>1.5 0.4 0.5</size></box></geometry></collision>
+      <visual name="step_5_visual"><pose>0 -5.7 0.25 0 0 0</pose><geometry><box><size>1.5 0.4 0.5</size></box></geometry></visual>
+    </link></model>
+    <model name="west_stair_platform"><static>true</static><pose>-4.625 -8.45 0.25 0 0 0</pose><link name="link">
+      <collision name="collision"><geometry><box><size>9.25 1.9 0.5</size></box></geometry></collision>
+      <visual name="visual"><geometry><box><size>9.25 1.9 0.5</size></box></geometry><material><ambient>0.25 0.45 0.7 1</ambient><diffuse>0.25 0.45 0.7 1</diffuse></material></visual>
+    </link></model>
+    <model name="east_stair_platform"><static>true</static><pose>4.625 -8.45 0.25 0 0 0</pose><link name="link">
+      <collision name="collision"><geometry><box><size>9.25 1.9 0.5</size></box></geometry></collision>
+      <visual name="visual"><geometry><box><size>9.25 1.9 0.5</size></box></geometry><material><ambient>0.18 0.55 0.68 1</ambient><diffuse>0.18 0.55 0.68 1</diffuse></material></visual>
+    </link></model>
   </world>
 </sdf>

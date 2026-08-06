@@ -53,7 +53,7 @@ namespace scan_planner
 
     /* parameters */
     int navi_mode_; // 1 manual select, 2 hard code
-    double no_replan_thresh_, replan_thresh_;
+    double no_replan_thresh_, replan_thresh_, replan_period_;
     std::vector<Eigen::Vector3d> preset_waypoints_;
     int waypoint_num_;
     double planning_horizon_;

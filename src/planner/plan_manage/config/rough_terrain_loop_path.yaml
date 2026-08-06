@@ -1,0 +1,36 @@
+loop_path_publisher:
+  ros__parameters:
+    use_sim_time: true
+    frame_id: world
+    loop_enabled: true
+    loop_position_tolerance: 0.35
+    loop_departure_distance: 1.0
+    loop_speed_tolerance: 0.2
+    loop_cooldown: 2.0
+    shuttle_repeat_enabled: false
+    cycle_via_initial_route: false
+    path_point_spacing: 0.20
+    body_height: 0.40
+    # Closed two-lane circuit. Every terrain seam is an explicit waypoint;
+    # densification therefore preserves the exact piecewise-linear surface Z.
+    waypoints:
+      [-1.5, -11.0, 0.00,
+       -1.5, -8.0, 0.00,
+       -1.5, -6.0, 0.25,
+       -1.5, -4.0, 0.05,
+       -1.5, -1.0, 0.55,
+       -1.5,  1.0, 0.55,
+       -1.5,  3.0, 0.20,
+       -1.5,  6.0, 0.80,
+       -1.5,  8.0, 0.40,
+       -1.5, 10.0, 0.00,
+        1.5, 10.0, 0.00,
+        1.5,  8.0, 0.40,
+        1.5,  6.0, 0.80,
+        1.5,  3.0, 0.20,
+        1.5,  1.0, 0.55,
+        1.5, -1.0, 0.55,
+        1.5, -4.0, 0.05,
+        1.5, -6.0, 0.25,
+        1.5, -8.0, 0.00,
+        1.5, -11.0, 0.00]

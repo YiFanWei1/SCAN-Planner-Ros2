@@ -23,7 +23,12 @@ public:
   ClosedLoopController() : Node("closed_loop_controller")
   {
     time_forward_ = declare_parameter<double>("time_forward", 0.8);
+    yaw_lookahead_distance_ = declare_parameter<double>("yaw_lookahead_distance", 0.5);
+    yaw_min_direction_distance_ = declare_parameter<double>("yaw_min_direction_distance", 0.10);
+    yaw_direction_sample_dt_ = declare_parameter<double>("yaw_direction_sample_dt", 0.05);
+    max_desired_yaw_rate_ = declare_parameter<double>("max_desired_yaw_rate", 1.2);
     heading_error_threshold_ = declare_parameter<double>("heading_error_threshold", 0.8);
+    heading_error_hold_time_ = declare_parameter<double>("heading_error_hold_time", 0.25);
     kp_pos_ = declare_parameter<double>("kp_pos", 0.8);
     kp_yaw_ = declare_parameter<double>("kp_yaw", 1.5);
     max_vx_ = declare_parameter<double>("max_vx", 0.75);
@@ -65,12 +70,48 @@ private:
 
   double estimateDesiredYaw(double t_cur, const Eigen::Vector3d &pos_des) const
   {
-    const double t_look = std::min(traj_duration_, t_cur + time_forward_);
-    Eigen::Vector3d direction = traj_[0].evaluateDeBoorT(t_look) - pos_des;
-    if (direction.head<2>().squaredNorm() < 1e-4)
-      direction = traj_[1].evaluateDeBoorT(t_cur);
-    return direction.head<2>().squaredNorm() < 1e-4
-        ? odom_yaw_ : std::atan2(direction.y(), direction.x());
+    // A fixed time preview is unreliable at the beginning of a trajectory:
+    // endpoint derivatives are often close to zero and a centimetre-scale
+    // lateral correction can then produce an arbitrary atan2 heading. Search
+    // for a point far enough ahead in XY instead.
+    Eigen::Vector3d direction = Eigen::Vector3d::Zero();
+    const double sample_dt = std::max(0.01, yaw_direction_sample_dt_);
+    for (double t = std::min(traj_duration_, t_cur + sample_dt);
+         t <= traj_duration_ + 1e-9; t += sample_dt)
+    {
+      direction = traj_[0].evaluateDeBoorT(std::min(t, traj_duration_)) - pos_des;
+      if (direction.head<2>().norm() >= yaw_lookahead_distance_)
+        break;
+      if (t >= traj_duration_)
+        break;
+    }
+
+    // Retain the old time preview as a fallback for very short trajectories.
+    if (direction.head<2>().norm() < yaw_min_direction_distance_)
+    {
+      const double t_look = std::min(traj_duration_, t_cur + time_forward_);
+      direction = traj_[0].evaluateDeBoorT(t_look) - pos_des;
+    }
+    if (direction.head<2>().norm() < yaw_min_direction_distance_)
+      return have_desired_yaw_ ? desired_yaw_ : odom_yaw_;
+    return std::atan2(direction.y(), direction.x());
+  }
+
+  double updateDesiredYaw(double raw_yaw, double dt)
+  {
+    if (!have_desired_yaw_)
+    {
+      desired_yaw_ = odom_yaw_;
+      have_desired_yaw_ = true;
+    }
+    if (dt <= 0.0)
+      return desired_yaw_;
+
+    const double delta = normalizeAngle(raw_yaw - desired_yaw_);
+    const double max_delta = std::max(0.0, max_desired_yaw_rate_) * dt;
+    desired_yaw_ = normalizeAngle(
+        desired_yaw_ + std::clamp(delta, -max_delta, max_delta));
+    return desired_yaw_;
   }
 
   void publishStop(double yaw_rate = 0.0)
@@ -108,6 +149,7 @@ private:
     exec_time_ = 0.0;
     last_update_time_ = now();
     receive_traj_ = true;
+    heading_error_duration_ = 0.0;
     RCLCPP_INFO(get_logger(), "Received trajectory %lld, duration %.3fs",
                 static_cast<long long>(traj_id_), traj_duration_);
   }
@@ -132,9 +174,17 @@ private:
     if (dt < 0.0 || dt > 0.2) dt = 0.0;
     const double t_eval = std::min(exec_time_, traj_duration_);
     Eigen::Vector3d pos_des = traj_[0].evaluateDeBoorT(t_eval);
-    const double yaw_error = normalizeAngle(estimateDesiredYaw(t_eval, pos_des) - odom_yaw_);
+    const double raw_desired_yaw = estimateDesiredYaw(t_eval, pos_des);
+    const double yaw_error = normalizeAngle(updateDesiredYaw(raw_desired_yaw, dt) - odom_yaw_);
     const double yaw_command = std::clamp(kp_yaw_ * yaw_error, -max_vyaw_, max_vyaw_);
     if (std::abs(yaw_error) > heading_error_threshold_)
+      heading_error_duration_ += dt;
+    else
+      heading_error_duration_ = 0.0;
+
+    // Do not freeze on a transient heading jump from a newly received
+    // B-spline. Go2 can translate laterally while its yaw converges.
+    if (heading_error_duration_ >= heading_error_hold_time_)
     {
       publishExecutionFrozen(true);
       publishStop(yaw_command);
@@ -177,8 +227,13 @@ private:
   Eigen::Vector3d odom_pos_{Eigen::Vector3d::Zero()};
   double odom_yaw_{0.0};
   double exec_time_{0.0};
+  bool have_desired_yaw_{false};
+  double desired_yaw_{0.0};
+  double heading_error_duration_{0.0};
   rclcpp::Time last_update_time_{0, 0, RCL_ROS_TIME};
-  double time_forward_, heading_error_threshold_, kp_pos_, kp_yaw_;
+  double time_forward_, yaw_lookahead_distance_, yaw_min_direction_distance_;
+  double yaw_direction_sample_dt_, max_desired_yaw_rate_;
+  double heading_error_threshold_, heading_error_hold_time_, kp_pos_, kp_yaw_;
   double max_vx_, max_vy_, max_vz_, max_vyaw_, kp_z_, finish_dist_;
 };
 }  // namespace scan_planner

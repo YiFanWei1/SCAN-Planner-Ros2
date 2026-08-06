@@ -46,10 +46,14 @@ public:
         "terrain_profiles", std::vector<double>{});
     terrain_platforms_ = declare_parameter<std::vector<double>>(
         "terrain_platforms", std::vector<double>{});
+    terrain_bands_ = declare_parameter<std::vector<double>>(
+        "terrain_bands", std::vector<double>{});
     if (terrain_profiles_.size() % 6 != 0)
       throw std::invalid_argument("terrain_profiles must contain groups of six values");
     if (terrain_platforms_.size() % 5 != 0)
       throw std::invalid_argument("terrain_platforms must contain groups of five values");
+    if (terrain_bands_.size() % 6 != 0)
+      throw std::invalid_argument("terrain_bands must contain groups of six values");
 
     tf_broadcaster_ = std::make_unique<tf2_ros::TransformBroadcaster>(*this);
     odom_pub_ = create_publisher<nav_msgs::msg::Odometry>("body_pose", 100);
@@ -181,6 +185,21 @@ private:
           y >= terrain_platforms_[index + 2] && y <= terrain_platforms_[index + 3])
         return terrain_platforms_[index + 4];
     }
+    // x_min, x_max, y_min, y_max, z_at_y_min, z_at_y_max. Unlike the legacy
+    // profiles, bands are bounded in Y and therefore support multiple
+    // consecutive ascending and descending panels in the same lane.
+    for (size_t index = 0; index < terrain_bands_.size(); index += 6)
+    {
+      const double x_min = terrain_bands_[index];
+      const double x_max = terrain_bands_[index + 1];
+      const double y_min = terrain_bands_[index + 2];
+      const double y_max = terrain_bands_[index + 3];
+      if (x < x_min || x > x_max || y < y_min || y > y_max)
+        continue;
+      const double ratio = (y - y_min) / std::max(1e-6, y_max - y_min);
+      return terrain_bands_[index + 4] +
+             ratio * (terrain_bands_[index + 5] - terrain_bands_[index + 4]);
+    }
     for (size_t index = 0; index < terrain_profiles_.size(); index += 6)
     {
       const double x_center = terrain_profiles_[index];
@@ -216,6 +235,7 @@ private:
   double terrain_body_clearance_{0.4};
   std::vector<double> terrain_profiles_;
   std::vector<double> terrain_platforms_;
+  std::vector<double> terrain_bands_;
   rclcpp::Time last_cmd_time_{0, 0, RCL_ROS_TIME};
   rclcpp::Time last_sim_time_{0, 0, RCL_ROS_TIME};
   rclcpp::Time last_gazebo_sync_time_{0, 0, RCL_ROS_TIME};

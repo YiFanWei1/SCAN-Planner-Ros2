@@ -31,7 +31,7 @@ def parse_terrain_profiles(values):
         x_center, half_width, y_start, y_end, z_start, z_end = profile
         if not all(math.isfinite(value) for value in profile):
             raise ValueError("terrain_profiles must contain finite values")
-        if half_width < 0.0 or y_end <= y_start or z_end < z_start:
+        if half_width < 0.0 or y_end <= y_start:
             raise ValueError("invalid terrain profile dimensions")
     return profiles
 
@@ -126,10 +126,16 @@ class LoopPathPublisher(Node):
         self.shuttle_repeat_enabled = self.get_parameter("shuttle_repeat_enabled").value
         self.cycle_via_initial_route = self.get_parameter("cycle_via_initial_route").value
         self.path_point_spacing = self.get_parameter("path_point_spacing").value
-        self.terrain_profiles = parse_terrain_profiles(
-            self.get_parameter("terrain_profiles").value)
-        self.terrain_platforms = parse_terrain_platforms(
-            self.get_parameter("terrain_platforms").value)
+        try:
+            terrain_profile_values = self.get_parameter("terrain_profiles").value
+        except ParameterUninitializedException:
+            terrain_profile_values = []
+        try:
+            terrain_platform_values = self.get_parameter("terrain_platforms").value
+        except ParameterUninitializedException:
+            terrain_platform_values = []
+        self.terrain_profiles = parse_terrain_profiles(terrain_profile_values)
+        self.terrain_platforms = parse_terrain_platforms(terrain_platform_values)
         self.body_height = self.get_parameter("body_height").value
         if min(self.position_tolerance, self.departure_distance, self.speed_tolerance) < 0.0:
             raise ValueError("loop tolerances must be non-negative")

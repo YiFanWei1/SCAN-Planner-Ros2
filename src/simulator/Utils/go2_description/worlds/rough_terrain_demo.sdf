@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+<sdf version="1.9">
+  <world name="rough_terrain_demo">
+    <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics"/>
+    <plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands"/>
+    <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster"/>
+    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+    <gravity>0 0 -9.81</gravity>
+    <physics name="1ms" type="ignored">
+      <max_step_size>0.002</max_step_size><real_time_factor>1.0</real_time_factor>
+    </physics>
+    <light name="sun" type="directional">
+      <cast_shadows>true</cast_shadows><pose>0 0 12 0 0 0</pose>
+      <diffuse>0.85 0.85 0.85 1</diffuse><specular>0.2 0.2 0.2 1</specular>
+      <direction>-0.4 0.2 -0.9</direction>
+    </light>
+
+    <model name="ground"><static>true</static><link name="link"><pose>0 0 -0.05 0 0 0</pose>
+      <collision name="collision"><geometry><box><size>24 24 0.1</size></box></geometry></collision>
+      <visual name="visual"><geometry><box><size>24 24 0.1</size></box></geometry>
+        <material><ambient>0.32 0.36 0.32 1</ambient><diffuse>0.32 0.36 0.32 1</diffuse></material></visual>
+    </link></model>
+
+    <!-- An eight-metre-wide continuous rolling terrain lane.  Panel poses
+         account for their 0.12 m thickness, so the configured path heights
+         coincide with the actual top surfaces at every seam. -->
+    <model name="rise_1"><static>true</static><pose>0 -7 0.0655 0.124355 0 0</pose><link name="link">
+      <collision name="collision"><geometry><box><size>8 2.0156 0.12</size></box></geometry></collision>
+      <visual name="visual"><geometry><box><size>8 2.0156 0.12</size></box></geometry>
+        <material><ambient>0.25 0.52 0.30 1</ambient><diffuse>0.25 0.52 0.30 1</diffuse></material></visual>
+    </link></model>
+    <model name="dip_1"><static>true</static><pose>0 -5 0.0903 -0.099669 0 0</pose><link name="link">
+      <collision name="collision"><geometry><box><size>8 2.0100 0.12</size></box></geometry></collision>
+      <visual name="visual"><geometry><box><size>8 2.0100 0.12</size></box></geometry>
+        <material><ambient>0.22 0.46 0.38 1</ambient><diffuse>0.22 0.46 0.38 1</diffuse></material></visual>
+    </link></model>
+    <model name="rise_2"><static>true</static><pose>0 -2.5 0.2408 0.165149 0 0</pose><link name="link">
+      <collision name="collision"><geometry><box><size>8 3.0414 0.12</size></box></geometry></collision>
+      <visual name="visual"><geometry><box><size>8 3.0414 0.12</size></box></geometry>
+        <material><ambient>0.50 0.48 0.20 1</ambient><diffuse>0.50 0.48 0.20 1</diffuse></material></visual>
+    </link></model>
+    <model name="middle_crest"><static>true</static><pose>0 0 0.49 0 0 0</pose><link name="link">
+      <collision name="collision"><geometry><box><size>8 2.0 0.12</size></box></geometry></collision>
+      <visual name="visual"><geometry><box><size>8 2.0 0.12</size></box></geometry>
+        <material><ambient>0.58 0.42 0.16 1</ambient><diffuse>0.58 0.42 0.16 1</diffuse></material></visual>
+    </link></model>
+    <model name="dip_2"><static>true</static><pose>0 2 0.3159 -0.173246 0 0</pose><link name="link">
+      <collision name="collision"><geometry><box><size>8 2.0304 0.12</size></box></geometry></collision>
+      <visual name="visual"><geometry><box><size>8 2.0304 0.12</size></box></geometry>
+        <material><ambient>0.35 0.48 0.22 1</ambient><diffuse>0.35 0.48 0.22 1</diffuse></material></visual>
+    </link></model>
+    <model name="rise_3"><static>true</static><pose>0 4.5 0.4412 0.197396 0 0</pose><link name="link">
+      <collision name="collision"><geometry><box><size>8 3.0594 0.12</size></box></geometry></collision>
+      <visual name="visual"><geometry><box><size>8 3.0594 0.12</size></box></geometry>
+        <material><ambient>0.52 0.30 0.16 1</ambient><diffuse>0.52 0.30 0.16 1</diffuse></material></visual>
+    </link></model>
+    <model name="dip_3"><static>true</static><pose>0 7 0.5412 -0.197396 0 0</pose><link name="link">
+      <collision name="collision"><geometry><box><size>8 2.0396 0.12</size></box></geometry></collision>
+      <visual name="visual"><geometry><box><size>8 2.0396 0.12</size></box></geometry>
+        <material><ambient>0.42 0.30 0.48 1</ambient><diffuse>0.42 0.30 0.48 1</diffuse></material></visual>
+    </link></model>
+    <model name="exit_slope"><static>true</static><pose>0 9 0.1412 -0.197396 0 0</pose><link name="link">
+      <collision name="collision"><geometry><box><size>8 2.0396 0.12</size></box></geometry></collision>
+      <visual name="visual"><geometry><box><size>8 2.0396 0.12</size></box></geometry>
+        <material><ambient>0.30 0.38 0.52 1</ambient><diffuse>0.30 0.38 0.52 1</diffuse></material></visual>
+    </link></model>
+
+    <!-- Tall side boundaries keep local detours on the traversable surface. -->
+    <model name="west_guard"><static>true</static><pose>-4.2 0 1.0 0 0 0</pose><link name="link">
+      <collision name="collision"><geometry><box><size>0.18 20 2.0</size></box></geometry></collision>
+      <visual name="visual"><geometry><box><size>0.18 20 2.0</size></box></geometry>
+        <material><ambient>0.9 0.75 0.1 1</ambient><diffuse>0.9 0.75 0.1 1</diffuse></material></visual>
+    </link></model>
+    <model name="east_guard"><static>true</static><pose>4.2 0 1.0 0 0 0</pose><link name="link">
+      <collision name="collision"><geometry><box><size>0.18 20 2.0</size></box></geometry></collision>
+      <visual name="visual"><geometry><box><size>0.18 20 2.0</size></box></geometry>
+        <material><ambient>0.9 0.75 0.1 1</ambient><diffuse>0.9 0.75 0.1 1</diffuse></material></visual>
+    </link></model>
+
+    <!-- Shoulder obstacles exercise perception without blocking either lane. -->
+    <model name="shoulder_column_left"><static>true</static><pose>-3.2 -3 0.717 0 0 0</pose><link name="link">
+      <collision name="collision"><geometry><cylinder><radius>0.35</radius><length>1.0</length></cylinder></geometry></collision>
+      <visual name="visual"><geometry><cylinder><radius>0.35</radius><length>1.0</length></cylinder></geometry></visual>
+    </link></model>
+    <model name="shoulder_column_right"><static>true</static><pose>3.2 4.5 1.0 0 0 0</pose><link name="link">
+      <collision name="collision"><geometry><cylinder><radius>0.35</radius><length>1.0</length></cylinder></geometry></collision>
+      <visual name="visual"><geometry><cylinder><radius>0.35</radius><length>1.0</length></cylinder></geometry></visual>
+    </link></model>
+  </world>
+</sdf>

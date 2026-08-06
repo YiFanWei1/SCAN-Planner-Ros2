@@ -24,7 +24,8 @@ def generate_launch_description():
     # This demo owns world->base TF.  Do not bridge Gazebo model poses onto /tf,
     # otherwise two publishers describe the same moving robot.
     bridge_config = os.path.join(go2_share, "config", "bridge_kinematic.yaml")
-    path_config = os.path.join(scan_share, "config", "gazebo_loop_path.yaml")
+    default_path_config = os.path.join(scan_share, "config", "gazebo_loop_path.yaml")
+    path_config = LaunchConfiguration("path_config_file")
 
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(os.path.join(ros_gz_share, "launch", "gz_sim.launch.py")),
@@ -40,14 +41,15 @@ def generate_launch_description():
             "simulator_backend": LaunchConfiguration("simulator_backend"),
             "use_gpu": "false",
             "use_pcd_map": "false",
-            "init_x": "-6.0",
-            "init_y": "1.0",
-            "init_z": "0.4",
+            "init_x": LaunchConfiguration("init_x"),
+            "init_y": LaunchConfiguration("init_y"),
+            "init_z": LaunchConfiguration("init_z"),
             "use_sim_time": "true",
             "initial_path_topic": LaunchConfiguration("initial_path_topic"),
             "clear_map_on_new_path": LaunchConfiguration("clear_map_on_new_path"),
             "fresh_observations_before_planning": LaunchConfiguration(
                 "fresh_observations_before_planning"),
+            "terrain_config_file": LaunchConfiguration("terrain_config_file"),
         }.items(),
     )
     spawn = Node(
@@ -56,7 +58,8 @@ def generate_launch_description():
         output="screen",
         arguments=[
             "-topic", "robot_description", "-name", "go2",
-            "-allow_renaming", "false", "-x", "-6.0", "-y", "-6.0", "-z", "0.4",
+            "-allow_renaming", "false", "-x", LaunchConfiguration("init_x"),
+            "-y", LaunchConfiguration("init_y"), "-z", LaunchConfiguration("init_z"),
         ],
     )
     topic_bridge = Node(
@@ -106,6 +109,11 @@ def generate_launch_description():
              EnvironmentVariable("GZ_SIM_RESOURCE_PATH", default_value="")],
         ),
         DeclareLaunchArgument("simulator_backend", default_value="gazebo_lidar"),
+        DeclareLaunchArgument("path_config_file", default_value=default_path_config),
+        DeclareLaunchArgument("terrain_config_file", default_value=""),
+        DeclareLaunchArgument("init_x", default_value="-6.0"),
+        DeclareLaunchArgument("init_y", default_value="1.0"),
+        DeclareLaunchArgument("init_z", default_value="0.4"),
         DeclareLaunchArgument("loop_enabled", default_value="false"),
         DeclareLaunchArgument("loop_position_tolerance", default_value="0.5"),
         DeclareLaunchArgument("loop_cooldown", default_value="3.0"),

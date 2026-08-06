@@ -26,6 +26,9 @@ def _setup(context):
     simulator_backend = LaunchConfiguration("simulator_backend").perform(context)
     keypoints_file = LaunchConfiguration("keypoints_file").perform(context)
     reference_path_file = LaunchConfiguration("reference_path_file").perform(context)
+    terrain_config_file = LaunchConfiguration("terrain_config_file").perform(context)
+    gazebo_set_pose_service = LaunchConfiguration(
+        "gazebo_set_pose_service").perform(context)
     initial_path_topic = LaunchConfiguration("initial_path_topic").perform(context)
     clear_map_on_new_path = _as_bool(
         LaunchConfiguration("clear_map_on_new_path").perform(context))
@@ -190,6 +193,7 @@ def _setup(context):
                     parameters=[
                         controllers_yaml,
                         common,
+                        *([terrain_config_file] if terrain_config_file else []),
                         {
                             "init_x": init_x,
                             "init_y": init_y,
@@ -197,16 +201,19 @@ def _setup(context):
                             "publish_tf": simulator_backend == "gazebo_lidar",
                             "sync_gazebo_pose": simulator_backend == "gazebo_lidar",
                             "gazebo_entity_name": "go2",
-                            "gazebo_set_pose_service": "/world/scan_demo/set_pose",
+                            "gazebo_set_pose_service": gazebo_set_pose_service,
                             "terrain_following": simulator_backend == "gazebo_lidar",
                             "terrain_body_clearance": 0.4,
-                            "terrain_profiles": [
-                                -6.0, 1.5, 1.0, 5.0, 0.0, 1.0,
-                                 6.0, 1.5, 3.0, 5.0, 0.0, 1.0,
-                            ] if simulator_backend == "gazebo_lidar" else [],
-                            "terrain_platforms": [
-                                -4.1, 4.1, 5.5, 8.5, 1.0,
-                            ] if simulator_backend == "gazebo_lidar" else [],
+                            **({
+                                "terrain_profiles": [
+                                    -6.0, 1.5, 1.0, 5.0, 0.0, 1.0,
+                                     6.0, 1.5, 3.0, 5.0, 0.0, 1.0,
+                                ],
+                                "terrain_platforms": [
+                                    -4.1, 4.1, 5.5, 8.5, 1.0,
+                                ],
+                            } if simulator_backend == "gazebo_lidar" and
+                                 not terrain_config_file else {}),
                         },
                     ],
                     remappings=[
@@ -273,6 +280,9 @@ def generate_launch_description():
             DeclareLaunchArgument("simulator_backend", default_value="pointcloud_render"),
             DeclareLaunchArgument("keypoints_file", default_value=""),
             DeclareLaunchArgument("reference_path_file", default_value=""),
+            DeclareLaunchArgument("terrain_config_file", default_value=""),
+            DeclareLaunchArgument(
+                "gazebo_set_pose_service", default_value="/world/scan_demo/set_pose"),
             DeclareLaunchArgument("initial_path_topic", default_value="/initial_path"),
             DeclareLaunchArgument("clear_map_on_new_path", default_value="false"),
             DeclareLaunchArgument("fresh_observations_before_planning", default_value="2"),
