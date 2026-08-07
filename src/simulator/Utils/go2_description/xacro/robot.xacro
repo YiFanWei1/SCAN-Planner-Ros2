@@ -106,7 +106,8 @@
     <joint name="lidar_joint" type="fixed">
         <parent link="trunk"/>
         <child link="lidar_link"/>
-        <origin rpy="0 0 0" xyz="0 0 0.30"/>
+        <!-- Keep the sensor just above the trunk to reduce the near-ground blind zone. -->
+        <origin rpy="0 0 0" xyz="0 0 0.12"/>
     </joint>
 
     <link name="lidar_link">

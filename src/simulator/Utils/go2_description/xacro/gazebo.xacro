@@ -59,7 +59,7 @@
             <vertical>
               <samples>32</samples>
               <resolution>1</resolution>
-              <min_angle>-${pi / 12.0}</min_angle>
+              <min_angle>-${pi / 6.0}</min_angle>
               <max_angle>${pi / 12.0}</max_angle>
             </vertical>
           </scan>

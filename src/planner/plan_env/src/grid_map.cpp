@@ -84,6 +84,15 @@ void GridMap::initMap(rclcpp::Node *node)
   load_parameter(node_, "grid_map.need_extrinsic", mp_.need_extrinsic_, true);
   load_parameter(node_, "grid_map.min_obstacle_height_below_sensor",
                  mp_.min_obstacle_height_below_sensor_, -1.0);
+  load_parameter(node_, "grid_map.self_filter_enabled", mp_.self_filter_enabled_, false);
+  load_parameter(node_, "grid_map.self_filter_min_x", mp_.self_filter_min_(0), -0.35);
+  load_parameter(node_, "grid_map.self_filter_max_x", mp_.self_filter_max_(0), 0.35);
+  load_parameter(node_, "grid_map.self_filter_min_y", mp_.self_filter_min_(1), -0.25);
+  load_parameter(node_, "grid_map.self_filter_max_y", mp_.self_filter_max_(1), 0.25);
+  load_parameter(node_, "grid_map.self_filter_min_z", mp_.self_filter_min_(2), -0.45);
+  load_parameter(node_, "grid_map.self_filter_max_z", mp_.self_filter_max_(2), 0.16);
+  if ((mp_.self_filter_min_.array() >= mp_.self_filter_max_.array()).any())
+    throw std::invalid_argument("invalid grid_map self-filter bounds");
 
   double lidar_extrinsic_x, lidar_extrinsic_y, lidar_extrinsic_z;
   double lidar_extrinsic_roll, lidar_extrinsic_pitch, lidar_extrinsic_yaw;
@@ -1060,6 +1069,12 @@ void GridMap::cloudCallback(const sensor_msgs::msg::PointCloud2::ConstSharedPtr 
   size_t invalid_points = 0;
   size_t below_sensor_points = 0;
   size_t outside_update_points = 0;
+  size_t self_filtered_points = 0;
+
+  const Eigen::Matrix3d extrinsic_r = mp_.lidar_extrinsic_.block<3, 3>(0, 0);
+  const Eigen::Vector3d extrinsic_t = mp_.lidar_extrinsic_.block<3, 1>(0, 3);
+  const Eigen::Matrix3d body_r = sensor_r * extrinsic_r.transpose();
+  const Eigen::Vector3d body_pos = ray_pos - body_r * extrinsic_t;
 
   for (size_t i = 0; i < latest_cloud.points.size(); ++i)
   {
@@ -1079,6 +1094,16 @@ void GridMap::cloudCallback(const sensor_msgs::msg::PointCloud2::ConstSharedPtr 
     {
       const Eigen::Vector3d pt_sensor(pt.x, pt.y, pt.z);
       pt_world = sensor_r * pt_sensor + ray_pos;
+    }
+    if (mp_.self_filter_enabled_)
+    {
+      const Eigen::Vector3d pt_body = body_r.transpose() * (pt_world - body_pos);
+      if ((pt_body.array() >= mp_.self_filter_min_.array()).all() &&
+          (pt_body.array() <= mp_.self_filter_max_.array()).all())
+      {
+        ++self_filtered_points;
+        continue;
+      }
     }
     if (mp_.min_obstacle_height_below_sensor_ >= 0.0 &&
         pt_world.z() < ray_pos.z() - mp_.min_obstacle_height_below_sensor_)
@@ -1107,10 +1132,10 @@ void GridMap::cloudCallback(const sensor_msgs::msg::PointCloud2::ConstSharedPtr 
 
   RCLCPP_INFO_THROTTLE(
       node_->get_logger(), *node_->get_clock(), 2000,
-      "[GridMapDiag] cloud=%zu accepted=%d invalid=%zu below_sensor=%zu outside_update=%zu "
+      "[GridMapDiag] cloud=%zu accepted=%d invalid=%zu self_filtered=%zu below_sensor=%zu outside_update=%zu "
       "sensor_z=%.3f cutoff_z=%.3f",
-      latest_cloud.points.size(), md_.proj_points_cnt, invalid_points, below_sensor_points,
-      outside_update_points, ray_pos.z(),
+      latest_cloud.points.size(), md_.proj_points_cnt, invalid_points, self_filtered_points,
+      below_sensor_points, outside_update_points, ray_pos.z(),
       ray_pos.z() - mp_.min_obstacle_height_below_sensor_);
 
   if (md_.proj_points_cnt == 0)

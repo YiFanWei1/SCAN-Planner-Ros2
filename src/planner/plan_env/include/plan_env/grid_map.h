@@ -101,6 +101,8 @@ struct MappingParameters {
   bool cloud_is_world_;
   bool need_extrinsic_;
   double min_obstacle_height_below_sensor_;
+  bool self_filter_enabled_;
+  Eigen::Vector3d self_filter_min_, self_filter_max_;
   Eigen::Matrix4d lidar_extrinsic_;
   Eigen::Matrix4d depth_extrinsic_;
 

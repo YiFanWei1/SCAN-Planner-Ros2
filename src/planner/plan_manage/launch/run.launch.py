@@ -86,13 +86,23 @@ def _setup(context):
         intrinsics = {
             "grid_map.lidar_extrinsic_x": 0.0,
             "grid_map.lidar_extrinsic_y": 0.0,
-            "grid_map.lidar_extrinsic_z": 0.30,
+            "grid_map.lidar_extrinsic_z": 0.12,
             "grid_map.lidar_extrinsic_roll": 0.0,
             "grid_map.lidar_extrinsic_pitch": 0.0,
             "grid_map.lidar_extrinsic_yaw": 0.0,
             # Disable the sensor-relative height filter for this experiment so
             # ground and ramp returns also participate in occupancy integration.
             "grid_map.min_obstacle_height_below_sensor": -1.0,
+            # Remove returns from the trunk and legs after transforming every
+            # point into the body frame. The box includes the robot footprint
+            # but leaves nearby external obstacles untouched.
+            "grid_map.self_filter_enabled": True,
+            "grid_map.self_filter_min_x": -0.35,
+            "grid_map.self_filter_max_x": 0.35,
+            "grid_map.self_filter_min_y": -0.25,
+            "grid_map.self_filter_max_y": 0.25,
+            "grid_map.self_filter_min_z": -0.45,
+            "grid_map.self_filter_max_z": 0.16,
         }
     else:
         body_pose = "/quad_0/body_pose"
