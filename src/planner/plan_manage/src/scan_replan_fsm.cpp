@@ -1,14 +1,14 @@
 
-#include <plan_manage/scan_replan_fsm.h>
-#include <plan_manage/reference_path_utils.h>
-#include <cmath>
-#include <limits>
-#include <stdexcept>
+#include <plan_manage/scan_replan_fsm.h>       // SCAN 重规划状态机类声明和成员变量定义。
+#include <plan_manage/reference_path_utils.h>  // 参考路径预处理工具函数，例如路径抽稀和高度修正。
+#include <cmath>                               // 数学函数支持，例如 std::atan2、std::ceil、std::cos。
+#include <limits>                              // 数值极值支持，用于表示无穷大的刹车距离。
+#include <stdexcept>                           // 标准异常支持，用于参数非法时抛出运行时错误。
 
 namespace
 {
-  template <typename T>
-  T load_parameter(rclcpp::Node *node, const std::string &name, const T &default_value)
+  template <typename T> // 模板函数允许用同一套逻辑读取 int、double、bool、string、vector 等参数类型。
+  T load_parameter(rclcpp::Node *node, const std::string &name, const T &default_value) // 读取 ROS2 参数，未声明时先按默认值声明。
   {
     // 如果参数尚未在 ROS2 参数服务器中声明，则先用默认值声明，避免直接读取时报错。
     if (!node->has_parameter(name)) node->declare_parameter<T>(name, default_value);
@@ -51,13 +51,13 @@ namespace scan_planner
     self_double_cylinder_offset_ = load_parameter<double>(node_, "grid_map.double_cylinder_offset", 0.0); // 前后圆柱相对中心的偏移。
     body_height_ = load_parameter<double>(node_, "grid_map.body_height", 0.0);    // 机体高度，用于参考路径高度修正。
     reference_path_min_distance_ =
-        load_parameter<double>(node_, "fsm.reference_path_min_distance", 0.5);
+        load_parameter<double>(node_, "fsm.reference_path_min_distance", 0.5); // 参考路径点间最小保留距离，用于过滤过密点。
     clear_map_on_new_path_ =
-        load_parameter<bool>(node_, "fsm.clear_map_on_new_path", false);
+        load_parameter<bool>(node_, "fsm.clear_map_on_new_path", false); // 收到新参考路径时是否清空旧地图并等待新观测。
     fresh_observations_before_planning_ =
-        load_parameter<int>(node_, "fsm.fresh_observations_before_planning", 2);
+        load_parameter<int>(node_, "fsm.fresh_observations_before_planning", 2); // 清图后至少等待融合的新观测帧数。
     map_refresh_warning_timeout_ =
-        load_parameter<double>(node_, "fsm.map_refresh_warning_timeout", 0.5);
+        load_parameter<double>(node_, "fsm.map_refresh_warning_timeout", 0.5); // 等待新地图超过该时间后输出一次提醒。
     if (replan_period_ < 0.0) // 重规划周期不能为负，0 表示不使用周期触发。
       throw std::runtime_error("fsm.replan_period must be non-negative");
     if (fresh_observations_before_planning_ < 1) // 清图后至少等待一帧新观测，否则可能用空地图规划。
@@ -68,9 +68,9 @@ namespace scan_planner
 
     if (navi_mode_ == NAVI_MODE::PRESET_TARGET) // 预设航点模式：从参数中读取展平的 x,y,z 序列。
     {
-      const auto flat_waypoints = load_parameter<std::vector<double>>(node_, "fsm.waypoints", {});
+      const auto flat_waypoints = load_parameter<std::vector<double>>(node_, "fsm.waypoints", {}); // 读取预设航点扁平数组。
       if (flat_waypoints.empty() || flat_waypoints.size() % 3 != 0)
-        throw std::runtime_error("navi_mode=2 requires non-empty fsm.waypoints with x,y,z triples");
+        throw std::runtime_error("navi_mode=2 requires non-empty fsm.waypoints with x,y,z triples"); // 航点数量必须是 3 的倍数。
       waypoint_num_ = static_cast<int>(flat_waypoints.size() / 3); // 每 3 个 double 组成一个三维航点。
       preset_waypoints_.resize(waypoint_num_);                    // 预分配航点数组，便于按索引填充。
       for (int i = 0; i < waypoint_num_; i++)
@@ -92,16 +92,16 @@ namespace scan_planner
     safety_timer_ = node_->create_wall_timer(std::chrono::milliseconds(50),
                                              std::bind(&SCANReplanFSM::checkCollisionCallback, this)); // 20Hz 前向碰撞检查。
     odom_sub_ = node_->create_subscription<nav_msgs::msg::Odometry>(
-        "body_pose", rclcpp::SensorDataQoS(),
-        std::bind(&SCANReplanFSM::odometryCallback, this, std::placeholders::_1));
+        "body_pose", rclcpp::SensorDataQoS(), // 订阅机体位姿/速度，SensorDataQoS 更适合高频传感器数据。
+        std::bind(&SCANReplanFSM::odometryCallback, this, std::placeholders::_1)); // 收到里程计后更新 odom_pos_/odom_vel_/odom_orient_。
     go2_execution_frozen_sub_ = node_->create_subscription<std_msgs::msg::Bool>(
-        "planning/go2_execution_frozen", 10,
-        std::bind(&SCANReplanFSM::go2ExecutionFrozenCallback, this, std::placeholders::_1));
+        "planning/go2_execution_frozen", 10, // 订阅 Go2 执行端冻结标志，用于暂停轨迹时间推进。
+        std::bind(&SCANReplanFSM::go2ExecutionFrozenCallback, this, std::placeholders::_1)); // 回调中记录冻结状态。
 
-    bspline_pub_ = node_->create_publisher<scan_planner_msgs::msg::Bspline>("planning/bspline", 10);
-    data_disp_pub_ = node_->create_publisher<scan_planner_msgs::msg::DataDisp>("planning/data_display", 100);
+    bspline_pub_ = node_->create_publisher<scan_planner_msgs::msg::Bspline>("planning/bspline", 10); // 发布局部 B 样条轨迹给控制端。
+    data_disp_pub_ = node_->create_publisher<scan_planner_msgs::msg::DataDisp>("planning/data_display", 100); // 发布规划调试数据。
     self_inflation_pub_ = node_->create_publisher<visualization_msgs::msg::Marker>(
-        "self_inflation", rclcpp::QoS(1).reliable().transient_local());
+        "self_inflation", rclcpp::QoS(1).reliable().transient_local()); // 发布自身膨胀体 marker，transient_local 让 RViz 后加入也能看到。
 
     if (navi_mode_ == NAVI_MODE::MANUAL_TARGET) // 手动目标模式：订阅 RViz 的 2D/3D goal。
       goal_sub_ = node_->create_subscription<geometry_msgs::msg::PoseStamped>(
@@ -110,10 +110,10 @@ namespace scan_planner
     else if (navi_mode_ == NAVI_MODE::REFERENCE_PATH) // 参考路径模式：订阅外部发布的 nav_msgs/Path。
       path_sub_ = node_->create_subscription<nav_msgs::msg::Path>(
           "initial_path", 1, std::bind(&SCANReplanFSM::pathCallback, this, std::placeholders::_1));
-    else if (navi_mode_ == NAVI_MODE::PRESET_TARGET)
+    else if (navi_mode_ == NAVI_MODE::PRESET_TARGET) // 预设航点模式不需要目标话题，首帧 odom 到来后自动规划。
       RCLCPP_INFO(node_->get_logger(), "Preset waypoint mode will start after the first odometry message");
     else
-      throw std::runtime_error("fsm.navi_mode must be 1, 2, or 3");
+      throw std::runtime_error("fsm.navi_mode must be 1, 2, or 3"); // 导航模式非法时直接终止初始化。
   }
 
   void SCANReplanFSM::planGlobalTrajbyGivenWps()
@@ -481,10 +481,10 @@ namespace scan_planner
 
     //odom_acc_ = estimateAcc( msg );
 
-    odom_orient_.w() = msg->pose.pose.orientation.w;
-    odom_orient_.x() = msg->pose.pose.orientation.x;
-    odom_orient_.y() = msg->pose.pose.orientation.y;
-    odom_orient_.z() = msg->pose.pose.orientation.z;
+    odom_orient_.w() = msg->pose.pose.orientation.w; // 更新姿态四元数 w 分量。
+    odom_orient_.x() = msg->pose.pose.orientation.x; // 更新姿态四元数 x 分量。
+    odom_orient_.y() = msg->pose.pose.orientation.y; // 更新姿态四元数 y 分量。
+    odom_orient_.z() = msg->pose.pose.orientation.z; // 更新姿态四元数 z 分量。
 
     have_odom_ = true;              // 标记里程计已经可用。
     publishSelfInflationMarker();   // 发布自身膨胀体可视化，便于检查碰撞模型。
@@ -509,7 +509,7 @@ namespace scan_planner
     if (dt <= 0.0 || dt > 0.2) // 时间跳变或间隔过大时不补偿，避免轨迹时间被异常拉动。
       return;
 
-    LocalTrajData *info = &planner_manager_->local_data_;
+    LocalTrajData *info = &planner_manager_->local_data_; // 获取当前局部轨迹数据，后续可能平移其起始时间。
     if (go2_execution_frozen_ && info->start_time_.seconds() > 1e-5)
       info->start_time_ += rclcpp::Duration::from_seconds(dt); // 执行冻结时平移轨迹起始时间，使 t_cur 保持不变。
   }
@@ -547,11 +547,11 @@ namespace scan_planner
     marker.scale.x = 2.0 * radius;                               // 圆柱直径 x。
     marker.scale.y = 2.0 * radius;                               // 圆柱直径 y。
     marker.scale.z = height;                                     // 圆柱高度。
-    marker.color.r = 0.1;
-    marker.color.g = 0.6;
-    marker.color.b = 1.0;
-    marker.color.a = 0.4;
-    marker.lifetime = rclcpp::Duration::from_seconds(0.2);
+    marker.color.r = 0.1;                                  // marker 颜色红色通道。
+    marker.color.g = 0.6;                                  // marker 颜色绿色通道。
+    marker.color.b = 1.0;                                  // marker 颜色蓝色通道。
+    marker.color.a = 0.4;                                  // marker 透明度，半透明便于观察障碍和机体。
+    marker.lifetime = rclcpp::Duration::from_seconds(0.2); // marker 生命周期略大于发布周期，避免 RViz 中残留过久。
 
     Eigen::Vector3d center = odom_pos_;     // 以当前里程计位置作为双圆柱模型中心。
     center(2) += 0.5 * (z_up - z_down);     // 根据上下膨胀高度调整圆柱中心高度。
@@ -560,17 +560,17 @@ namespace scan_planner
     Eigen::Vector3d front = center + self_double_cylinder_offset_ * heading;      // 前圆柱中心。
     Eigen::Vector3d rear = center - self_double_cylinder_offset_ * heading;       // 后圆柱中心。
 
-    marker.id = 0;
-    marker.pose.position.x = front(0);
-    marker.pose.position.y = front(1);
-    marker.pose.position.z = front(2);
-    self_inflation_pub_->publish(marker);
+    marker.id = 0;                         // 前圆柱 marker id。
+    marker.pose.position.x = front(0);     // 前圆柱中心 x。
+    marker.pose.position.y = front(1);     // 前圆柱中心 y。
+    marker.pose.position.z = front(2);     // 前圆柱中心 z。
+    self_inflation_pub_->publish(marker);  // 发布前圆柱膨胀体。
 
-    marker.id = 1;
-    marker.pose.position.x = rear(0);
-    marker.pose.position.y = rear(1);
-    marker.pose.position.z = rear(2);
-    self_inflation_pub_->publish(marker);
+    marker.id = 1;                         // 后圆柱 marker id。
+    marker.pose.position.x = rear(0);      // 后圆柱中心 x。
+    marker.pose.position.y = rear(1);      // 后圆柱中心 y。
+    marker.pose.position.z = rear(2);      // 后圆柱中心 z。
+    self_inflation_pub_->publish(marker);  // 发布后圆柱膨胀体。
   }
 
   void SCANReplanFSM::changeFSMExecState(FSM_EXEC_STATE new_state, string pos_call)
@@ -589,14 +589,14 @@ namespace scan_planner
 
   std::pair<int, SCANReplanFSM::FSM_EXEC_STATE> SCANReplanFSM::timesOfConsecutiveStateCalls()
   {
-    return std::pair<int, FSM_EXEC_STATE>(continuously_called_times_, exec_state_);
+    return std::pair<int, FSM_EXEC_STATE>(continuously_called_times_, exec_state_); // 返回当前状态被连续请求的次数和状态本身。
   }
 
   void SCANReplanFSM::printFSMExecState()
   {
-    static string state_str[7] = {"INIT", "WAIT_TARGET", "GEN_NEW_TRAJ", "REPLAN_TRAJ", "EXEC_TRAJ", "EMERGENCY_STOP"};
+    static string state_str[7] = {"INIT", "WAIT_TARGET", "GEN_NEW_TRAJ", "REPLAN_TRAJ", "EXEC_TRAJ", "EMERGENCY_STOP"}; // 状态枚举到可读字符串的映射。
 
-    cout << "[FSM]: state: " + state_str[int(exec_state_)] << endl;
+    cout << "[FSM]: state: " + state_str[int(exec_state_)] << endl; // 输出当前 FSM 状态，便于终端调试。
   }
 
   void SCANReplanFSM::execFSMCallback()
