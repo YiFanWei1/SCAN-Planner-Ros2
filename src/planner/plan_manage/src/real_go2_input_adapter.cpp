@@ -252,7 +252,12 @@ private:
     if (!pending_path_ || !materiallyChanged(*pending_path_))
       return;
     nav_msgs::msg::Path output = *pending_path_;
-    output.header.frame_id = output.header.frame_id.empty() ? "map" : output.header.frame_id;
+    // The real setup assumes map -> camera_init is identity. Normalize the
+    // path frame here so RViz and SCAN do not require an otherwise redundant
+    // TF edge when a navigation stack labels /plan as "map".
+    output.header.frame_id = world_frame_;
+    for (auto &pose : output.poses)
+      pose.header.frame_id = world_frame_;
     path_pub_->publish(output);
     published_path_ = output;
     pending_path_.reset();

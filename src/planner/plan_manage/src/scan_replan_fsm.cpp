@@ -64,7 +64,7 @@ namespace scan_planner
     }
 
     /* initialize main modules */
-    visualization_.reset(new PlanningVisualization(node_));
+    visualization_.reset(new PlanningVisualization(node_, self_inflation_frame_id_));
     planner_manager_.reset(new SCANPlannerManager);
     planner_manager_->initPlanModules(node_, visualization_);
 

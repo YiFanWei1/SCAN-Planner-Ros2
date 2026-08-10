@@ -12,10 +12,11 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
     share = get_package_share_directory("scan_planner")
+    terrain_share = get_package_share_directory("terrain_path_segmenter")
     planner_config = os.path.join(share, "config", "planner.yaml")
     controller_config = os.path.join(share, "config", "controllers.yaml")
     real_config = os.path.join(share, "config", "real_go2_livox.yaml")
-    rviz_config = os.path.join(share, "rviz", "default.rviz")
+    rviz_config = os.path.join(terrain_share, "rviz", "segments.rviz")
 
     adapter = Node(
         package="scan_planner",
@@ -30,8 +31,33 @@ def generate_launch_description():
             ("body_pose", "/scan_planner/body_pose"),
             ("sensor_pose", "/scan_planner/sensor_pose"),
             ("cloud_out", "/scan_planner/cloud"),
-            ("initial_path", "/scan_planner/initial_path"),
+            # The adapter only validates, rate-limits and de-duplicates /plan.
+            # Terrain segmentation owns the path sent to SCAN.
+            ("initial_path", "/scan_planner/global_path_filtered"),
             ("status", "/scan_planner/input_status"),
+        ],
+    )
+
+    segmenter = Node(
+        package="terrain_path_segmenter",
+        executable="terrain_path_visualizer",
+        name="terrain_path_segmenter",
+        output="screen",
+        parameters=[{
+            "use_sim_time": False,
+            "max_linear_z_error": LaunchConfiguration("max_linear_z_error"),
+            "slope_merge_threshold": LaunchConfiguration("slope_merge_threshold"),
+            "minimum_segment_length": LaunchConfiguration("minimum_segment_length"),
+            "segment_reached_tolerance": LaunchConfiguration(
+                "segment_reached_tolerance"),
+        }],
+        remappings=[
+            ("global_path", "/scan_planner/global_path_filtered"),
+            ("body_pose", "/scan_planner/body_pose"),
+            ("segments", "/terrain_path/segments"),
+            ("processed_path", "/terrain_path/processed"),
+            ("current_path", "/scan_planner/initial_path"),
+            ("current_goal", "/terrain_path/current_goal"),
         ],
     )
 
@@ -67,7 +93,9 @@ def generate_launch_description():
         executable="cmd_vel_safety_gate",
         name="cmd_vel_safety_gate",
         output="screen",
-        parameters=[real_config],
+        parameters=[real_config, {
+            "enable_motion_on_start": LaunchConfiguration("enable_motion"),
+        }],
         remappings=[
             ("cmd_vel_raw", "/scan_planner/cmd_vel_raw"),
             ("body_pose", "/scan_planner/body_pose"),
@@ -96,7 +124,13 @@ def generate_launch_description():
 
     return LaunchDescription([
         DeclareLaunchArgument("rviz", default_value="true"),
+        DeclareLaunchArgument("enable_motion", default_value="false"),
+        DeclareLaunchArgument("max_linear_z_error", default_value="0.04"),
+        DeclareLaunchArgument("slope_merge_threshold", default_value="0.04"),
+        DeclareLaunchArgument("minimum_segment_length", default_value="0.5"),
+        DeclareLaunchArgument("segment_reached_tolerance", default_value="0.30"),
         adapter,
+        segmenter,
         planner,
         controller,
         gate,

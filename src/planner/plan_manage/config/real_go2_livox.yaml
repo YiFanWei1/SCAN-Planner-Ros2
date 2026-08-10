@@ -16,6 +16,9 @@ scan_planner_node:
 closed_loop_controller:
   ros__parameters:
     use_sim_time: false
+    trajectory_frame: camera_init
+    trajectory_visualization_rate: 20.0
+    trajectory_visualization_dt: 0.10
     max_vx: 0.30
     max_vy: 0.20
     max_vyaw: 0.50
@@ -48,6 +51,9 @@ cmd_vel_safety_gate:
     max_vyaw: 0.50
     odom_timeout: 0.15
     trajectory_timeout: 0.50
-    planner_heartbeat_timeout: 0.20
+    # DataDisp is event-driven visualization data, not a periodic heartbeat.
+    # Trajectory validity, odometry and raw-command timeouts remain enforced.
+    require_planner_heartbeat: false
+    planner_heartbeat_timeout: 4.00
     command_timeout: 0.15
     publish_rate: 100.0

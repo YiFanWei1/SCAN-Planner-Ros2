@@ -27,6 +27,7 @@ public:
     odom_timeout_ = declare_parameter<double>("odom_timeout", 0.15);
     trajectory_timeout_ = declare_parameter<double>("trajectory_timeout", 0.50);
     planner_heartbeat_timeout_ = declare_parameter<double>("planner_heartbeat_timeout", 0.20);
+    require_planner_heartbeat_ = declare_parameter<bool>("require_planner_heartbeat", true);
     command_timeout_ = declare_parameter<double>("command_timeout", 0.15);
     publish_rate_ = declare_parameter<double>("publish_rate", 100.0);
 
@@ -99,8 +100,8 @@ private:
       reason = "emergency_stop";
     else if (!have_odom_ || (current - last_odom_time_).seconds() > odom_timeout_)
       reason = "odometry_timeout";
-    else if (!have_planner_heartbeat_ ||
-             (current - last_planner_heartbeat_time_).seconds() > planner_heartbeat_timeout_)
+    else if (require_planner_heartbeat_ && (!have_planner_heartbeat_ ||
+             (current - last_planner_heartbeat_time_).seconds() > planner_heartbeat_timeout_))
       reason = "planner_heartbeat_timeout";
     else if (!have_trajectory_ ||
              (current - last_trajectory_time_).seconds() > trajectory_valid_for_)
@@ -135,6 +136,7 @@ private:
   bool enabled_{false}, emergency_stop_{false};
   bool have_cmd_{false}, have_odom_{false}, have_trajectory_{false};
   bool have_planner_heartbeat_{false};
+  bool require_planner_heartbeat_{true};
   double max_vx_, max_vy_, max_vyaw_, odom_timeout_, trajectory_timeout_, command_timeout_;
   double planner_heartbeat_timeout_, trajectory_valid_for_{0.0};
   double publish_rate_;

@@ -7,6 +7,7 @@
 #include <Eigen/Eigen>
 #include <geometry_msgs/msg/twist.hpp>
 #include <nav_msgs/msg/odometry.hpp>
+#include <nav_msgs/msg/path.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <scan_planner_msgs/msg/bspline.hpp>
 #include <std_msgs/msg/bool.hpp>
@@ -32,6 +33,9 @@ public:
     finish_dist_ = declare_parameter<double>("finish_dist", 0.15);
     odom_timeout_ = declare_parameter<double>("odom_timeout", 0.15);
     trajectory_timeout_ = declare_parameter<double>("trajectory_timeout", 0.50);
+    trajectory_frame_ = declare_parameter<std::string>("trajectory_frame", "world");
+    visualization_rate_ = declare_parameter<double>("trajectory_visualization_rate", 20.0);
+    visualization_dt_ = declare_parameter<double>("trajectory_visualization_dt", 0.10);
 
     bspline_sub_ = create_subscription<scan_planner_msgs::msg::Bspline>(
         "planning/bspline", 10,
@@ -40,10 +44,13 @@ public:
         "body_pose", rclcpp::SensorDataQoS(),
         std::bind(&ClosedLoopController::odomCallback, this, std::placeholders::_1));
     cmd_vel_pub_ = create_publisher<geometry_msgs::msg::Twist>("cmd_vel", 20);
+    trajectory_path_pub_ = create_publisher<nav_msgs::msg::Path>(
+        "planning/bspline_path", rclcpp::QoS(1).reliable().transient_local());
     execution_frozen_pub_ = create_publisher<std_msgs::msg::Bool>("planning/go2_execution_frozen", 10);
     cmd_timer_ = create_wall_timer(std::chrono::milliseconds(10),
                                    std::bind(&ClosedLoopController::cmdCallback, this));
     last_update_time_ = now();
+    last_visualization_time_ = now() - rclcpp::Duration::from_seconds(1.0);
     RCLCPP_INFO(get_logger(), "Closed-loop controller ready");
   }
 
@@ -124,6 +131,7 @@ private:
   void cmdCallback()
   {
     const auto current_time = now();
+    publishTrajectoryPath(current_time);
     if (!receive_traj_ || !have_odom_ ||
         (current_time - last_odom_time_).seconds() > odom_timeout_ ||
         (current_time - last_trajectory_time_).seconds() > traj_duration_ + trajectory_timeout_)
@@ -166,7 +174,42 @@ private:
     cmd_vel_pub_->publish(command);
   }
 
+  void publishTrajectoryPath(const rclcpp::Time &current_time)
+  {
+    if (!receive_traj_ || visualization_rate_ <= 0.0 || visualization_dt_ <= 0.0)
+      return;
+    if ((current_time - last_visualization_time_).seconds() < 1.0 / visualization_rate_)
+      return;
+    last_visualization_time_ = current_time;
+
+    nav_msgs::msg::Path path;
+    path.header.stamp = current_time;
+    path.header.frame_id = trajectory_frame_;
+    const double start = std::min(exec_time_, traj_duration_);
+    for (double t = start; t < traj_duration_; t += visualization_dt_)
+    {
+      const Eigen::Vector3d point = traj_[0].evaluateDeBoorT(t);
+      geometry_msgs::msg::PoseStamped pose;
+      pose.header = path.header;
+      pose.pose.position.x = point.x();
+      pose.pose.position.y = point.y();
+      pose.pose.position.z = point.z();
+      pose.pose.orientation.w = 1.0;
+      path.poses.push_back(pose);
+    }
+    const Eigen::Vector3d endpoint = traj_[0].evaluateDeBoorT(traj_duration_);
+    geometry_msgs::msg::PoseStamped pose;
+    pose.header = path.header;
+    pose.pose.position.x = endpoint.x();
+    pose.pose.position.y = endpoint.y();
+    pose.pose.position.z = endpoint.z();
+    pose.pose.orientation.w = 1.0;
+    path.poses.push_back(pose);
+    trajectory_path_pub_->publish(path);
+  }
+
   rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr cmd_vel_pub_;
+  rclcpp::Publisher<nav_msgs::msg::Path>::SharedPtr trajectory_path_pub_;
   rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr execution_frozen_pub_;
   rclcpp::Subscription<scan_planner_msgs::msg::Bspline>::SharedPtr bspline_sub_;
   rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_sub_;
@@ -182,6 +225,9 @@ private:
   rclcpp::Time last_update_time_{0, 0, RCL_ROS_TIME};
   rclcpp::Time last_odom_time_{0, 0, RCL_ROS_TIME};
   rclcpp::Time last_trajectory_time_{0, 0, RCL_ROS_TIME};
+  rclcpp::Time last_visualization_time_{0, 0, RCL_ROS_TIME};
+  std::string trajectory_frame_;
+  double visualization_rate_, visualization_dt_;
   double time_forward_, heading_error_threshold_, kp_pos_, kp_yaw_;
   double odom_timeout_, trajectory_timeout_;
   double max_vx_, max_vy_, max_vyaw_, finish_dist_;
