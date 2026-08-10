@@ -42,6 +42,17 @@ namespace scan_planner
     emergency_time_ = load_parameter<double>(node_, "fsm.emergency_time", 1.0);
     enable_fail_safe_ = load_parameter<bool>(node_, "fsm.fail_safe", true);
     max_replan_fail_count_ = load_parameter<int>(node_, "fsm.max_replan_fail_count", 1000);
+    replan_retry_interval_ = load_parameter<double>(node_, "fsm.replan_retry_interval", 0.1);
+    replan_retry_interval_ = std::max(0.01, replan_retry_interval_);
+    auto_retry_after_failures_ =
+        load_parameter<bool>(node_, "fsm.auto_retry_after_failures", false);
+    failure_retry_cooldown_ =
+        std::max(0.1, load_parameter<double>(node_, "fsm.failure_retry_cooldown", 1.0));
+    last_replan_attempt_time_ = node_->now() - rclcpp::Duration::from_seconds(replan_retry_interval_);
+    failure_emergency_start_time_ = node_->now();
+    last_odom_receive_time_ = node_->now();
+    last_target_receive_time_ = node_->now();
+    last_successful_traj_time_ = node_->now();
     self_inflation_z_up_ = load_parameter<double>(node_, "grid_map.obstacles_inflation_z_up", 0.0);
     self_inflation_z_down_ = load_parameter<double>(node_, "grid_map.obstacles_inflation_z_down", 0.0);
     self_double_cylinder_radius_ = load_parameter<double>(node_, "grid_map.double_cylinder_radius", 0.0);
@@ -151,7 +162,7 @@ namespace scan_planner
     if (msg->poses[0].pose.position.z < -0.1)
       return;
 
-    cout << "Triggered!" << endl;
+    RCLCPP_DEBUG(node_->get_logger(), "Waypoint trigger received");
     trigger_ = true;
     init_pt_ = odom_pos_;
 
@@ -364,11 +375,18 @@ namespace scan_planner
     }
 
     trigger_ = true;
+    last_target_receive_time_ = node_->now();
     end_pt_ = waypoints.back();
     bool success = planGlobalTrajByWaypoints(waypoints);
 
     if (success)
     {
+      // A refreshed global reference is not a successful local replan. The
+      // real /plan can update continuously; clearing this counter here masks
+      // an uninterrupted A-star failure burst and prevents the bounded
+      // emergency-stop/retry policy from ever activating. Only publication of
+      // a valid local B-spline resets the counter.
+      last_replan_attempt_time_ = node_->now() - rclcpp::Duration::from_seconds(replan_retry_interval_);
       /*** FSM ***/
       if (exec_state_ == WAIT_TARGET)
       {
@@ -379,7 +397,7 @@ namespace scan_planner
         changeFSMExecState(REPLAN_TRAJ, "TRIG");
       }
 
-      RCLCPP_INFO(node_->get_logger(), "Reference path accepted");
+      RCLCPP_DEBUG(node_->get_logger(), "Reference path accepted");
     }
     else
     {
@@ -389,6 +407,7 @@ namespace scan_planner
 
   void SCANReplanFSM::odometryCallback(const nav_msgs::msg::Odometry::ConstSharedPtr &msg)
   {
+    last_odom_receive_time_ = node_->now();
     odom_pos_(0) = msg->pose.pose.position.x;
     odom_pos_(1) = msg->pose.pose.position.y;
     odom_pos_(2) = msg->pose.pose.position.z;
@@ -509,7 +528,8 @@ namespace scan_planner
     static string state_str[7] = {"INIT", "WAIT_TARGET", "GEN_NEW_TRAJ", "REPLAN_TRAJ", "EXEC_TRAJ", "EMERGENCY_STOP"};
     int pre_s = int(exec_state_);
     exec_state_ = new_state;
-    cout << "[" + pos_call + "]: from " + state_str[pre_s] + " to " + state_str[int(new_state)] << endl;
+    (void)pos_call;
+    (void)pre_s;
   }
 
   std::pair<int, SCANReplanFSM::FSM_EXEC_STATE> SCANReplanFSM::timesOfConsecutiveStateCalls()
@@ -521,7 +541,7 @@ namespace scan_planner
   {
     static string state_str[7] = {"INIT", "WAIT_TARGET", "GEN_NEW_TRAJ", "REPLAN_TRAJ", "EXEC_TRAJ", "EMERGENCY_STOP"};
 
-    cout << "[FSM]: state: " + state_str[int(exec_state_)] << endl;
+    RCLCPP_DEBUG(node_->get_logger(), "FSM state: %s", state_str[int(exec_state_)].c_str());
   }
 
   void SCANReplanFSM::execFSMCallback()
@@ -533,10 +553,38 @@ namespace scan_planner
     if (fsm_num == 100)
     {
       printFSMExecState();
-      if (!have_odom_)
-        cout << "no odom." << endl;
-      if (!trigger_)
-        cout << "wait for goal." << endl;
+      // if (have_target_)
+      // {
+      //   const rclcpp::Time now = node_->now();
+      //   const double traj_gap = have_successful_traj_
+      //                               ? (now - last_successful_traj_time_).seconds()
+      //                               : (now - last_target_receive_time_).seconds();
+      //   if (traj_gap > 1.0)
+      //   {
+      //     static const char *state_names[] = {
+      //         "INIT", "WAIT_TARGET", "GEN_NEW_TRAJ", "REPLAN_TRAJ", "EXEC_TRAJ", "EMERGENCY_STOP"};
+      //     const int state_index = static_cast<int>(exec_state_);
+      //     const char *state_name = state_index >= 0 && state_index < 6
+      //                                  ? state_names[state_index]
+      //                                  : "UNKNOWN";
+      //     const double odom_age = have_odom_
+      //                                 ? std::max(0.0, (now - last_odom_receive_time_).seconds())
+      //                                 : std::numeric_limits<double>::infinity();
+      //     const double cloud_age = planner_manager_->grid_map_->getLastCloudAge();
+      //     const LocalTrajData &local = planner_manager_->local_data_;
+      //     const double local_elapsed = local.start_time_.seconds() > 1e-5
+      //                                      ? (now - local.start_time_).seconds()
+      //                                      : -1.0;
+      //     RCLCPP_WARN(node_->get_logger(),
+      //                 "[LocalPathGap] age=%.2fs state=%s target=%d new_target=%d failures=%d "
+      //                 "odom_age=%.3fs cloud_age=%.3fs local_elapsed=%.2fs local_duration=%.2fs "
+      //                 "odom=[%.3f %.3f %.3f] target=[%.3f %.3f %.3f]",
+      //                 traj_gap, state_name, have_target_, have_new_target_, replan_fail_count_,
+      //                 odom_age, cloud_age, local_elapsed, local.duration_,
+      //                 odom_pos_(0), odom_pos_(1), odom_pos_(2),
+      //                 end_pt_(0), end_pt_(1), end_pt_(2));
+      //   }
+      // }
       fsm_num = 0;
     }
 
@@ -569,6 +617,10 @@ namespace scan_planner
 
     case GEN_NEW_TRAJ:
     {
+      if ((node_->now() - last_replan_attempt_time_).seconds() < replan_retry_interval_)
+        break;
+      last_replan_attempt_time_ = node_->now();
+
       setStartStateFromOdomOrCurrentTraj();
 
       // Eigen::Vector3d rot_x = odom_orient_.toRotationMatrix().block(0, 0, 3, 1);
@@ -599,6 +651,9 @@ namespace scan_planner
 
     case REPLAN_TRAJ:
     {
+      if ((node_->now() - last_replan_attempt_time_).seconds() < replan_retry_interval_)
+        break;
+      last_replan_attempt_time_ = node_->now();
 
       if (planFromCurrentTraj())
       {
@@ -696,12 +751,27 @@ namespace scan_planner
           changeFSMExecState(GEN_NEW_TRAJ, "FSM");
         else if (enable_fail_safe_ && need_hover_stop_ && odom_vel_.norm() < 0.1)
         {
-          RCLCPP_INFO(node_->get_logger(),
-                      "Exiting EMERGENCY_STOP; switching to WAIT_TARGET for a new target");
-          need_hover_stop_ = false;
-          have_target_ = false;
-          trigger_ = false;
-          changeFSMExecState(WAIT_TARGET, "EMERGENCY_EXIT");
+          const bool cooldown_elapsed =
+              (node_->now() - failure_emergency_start_time_).seconds() >= failure_retry_cooldown_;
+          if (auto_retry_after_failures_ && have_target_ && cooldown_elapsed)
+          {
+            RCLCPP_WARN(node_->get_logger(),
+                        "Failure cooldown elapsed; retrying the retained target from current odometry");
+            need_hover_stop_ = false;
+            replan_fail_count_ = 0;
+            last_replan_attempt_time_ =
+                node_->now() - rclcpp::Duration::from_seconds(replan_retry_interval_);
+            changeFSMExecState(GEN_NEW_TRAJ, "EMERGENCY_RETRY");
+          }
+          else if (!auto_retry_after_failures_ || !have_target_)
+          {
+            RCLCPP_INFO(node_->get_logger(),
+                        "Exiting EMERGENCY_STOP; switching to WAIT_TARGET for a new target");
+            need_hover_stop_ = false;
+            have_target_ = false;
+            trigger_ = false;
+            changeFSMExecState(WAIT_TARGET, "EMERGENCY_EXIT");
+          }
         }
       }
 
@@ -720,11 +790,18 @@ namespace scan_planner
   {
     if (replan_fail_count_ >= max_replan_fail_count_)
     {
-      RCLCPP_WARN(node_->get_logger(),
-                  "Replan failed %d times; emergency stop and wait for a new target", replan_fail_count_);
+      if (auto_retry_after_failures_)
+        RCLCPP_WARN(node_->get_logger(),
+                    "Replan failed %d times; emergency stop, then retry retained target after %.2fs",
+                    replan_fail_count_, failure_retry_cooldown_);
+      else
+        RCLCPP_WARN(node_->get_logger(),
+                    "Replan failed %d times; emergency stop and wait for a new target",
+                    replan_fail_count_);
       replan_fail_count_ = 0;
       need_hover_stop_ = true;
       flag_escape_emergency_ = true;
+      failure_emergency_start_time_ = node_->now();
       changeFSMExecState(EMERGENCY_STOP, "finishProcess");
     }
   }
@@ -740,20 +817,29 @@ namespace scan_planner
 
     if (navi_mode_ == NAVI_MODE::REFERENCE_PATH)
     {
-      start_pt_ = info->position_traj_.evaluateDeBoorT(t_cur);
-      start_vel_ = info->velocity_traj_.evaluateDeBoorT(t_cur);
-      start_acc_ = info->acceleration_traj_.evaluateDeBoorT(t_cur);
+      // The controller follows the spline by geometric projection, therefore
+      // elapsed spline time is not a reliable estimate of actual progress.
+      start_pt_ = odom_pos_;
+      start_vel_ = odom_vel_;
+      start_acc_.setZero();
 
-      bool success = callReboundReplan(false, false);
+      const Eigen::Vector2d to_goal = end_pt_.head<2>() - start_pt_.head<2>();
+      if (!start_vel_.allFinite() ||
+          (to_goal.norm() > 1e-3 && start_vel_.head<2>().dot(to_goal) < 0.0))
+        start_vel_.setZero();
+
+      RCLCPP_DEBUG_THROTTLE(node_->get_logger(), *node_->get_clock(), 1000,
+                           "Reference replan from live odom: [%.2f %.2f %.2f]",
+                           start_pt_(0), start_pt_(1), start_pt_(2));
+
+      // Rebuild initialization from live state instead of retaining stale
+      // control points from the previous segment.
+      bool success = callReboundReplan(true, false);
       if (!success)
       {
-        success = callReboundReplan(true, false);
+        success = callReboundReplan(true, true);
         if (!success)
-        {
-          success = callReboundReplan(true, true);
-          if (!success)
-            return false;
-        }
+          return false;
       }
 
       return true;
@@ -846,13 +932,25 @@ namespace scan_planner
       Eigen::Vector3d pos_next = info->position_traj_.evaluateDeBoorT(std::min(t + time_step, info->duration_));
       if (map->getInflateOccupancy(pos, estimateYawFromSegment(pos, pos_next)))
       {
-        if (planFromCurrentTraj()) // Make a chance
+        // The safety timer runs at 20 Hz and used to bypass the FSM retry
+        // limiter. Share the same attempt timestamp so collision checks cannot
+        // create a second dense optimization loop.
+        const auto now = node_->now();
+        const bool retry_ready =
+            (now - last_replan_attempt_time_).seconds() >= replan_retry_interval_;
+        if (retry_ready)
+          last_replan_attempt_time_ = now;
+
+        if (retry_ready && planFromCurrentTraj()) // Make a bounded chance
         {
+          replan_fail_count_ = 0;
           changeFSMExecState(EXEC_TRAJ, "SAFETY");
           return;
         }
         else
         {
+          if (retry_ready)
+            replan_fail_count_++;
           if (t - t_cur < emergency_time_) // 0.8s of emergency time
           {
             RCLCPP_WARN(node_->get_logger(), "Obstacle discovered; emergency stop in %.3fs", t - t_cur);
@@ -879,7 +977,11 @@ namespace scan_planner
         planner_manager_->reboundReplan(start_pt_, start_vel_, start_acc_, local_target_pt_, local_target_vel_, (have_new_target_ || flag_use_poly_init), flag_randomPolyTraj);
     have_new_target_ = false;
 
-    cout << "final_plan_success=" << plan_success << endl;
+    if (!plan_success)
+      RCLCPP_WARN_THROTTLE(node_->get_logger(), *node_->get_clock(), 1000,
+                           "Local replan failed: start=[%.3f %.3f %.3f], target=[%.3f %.3f %.3f]",
+                           start_pt_(0), start_pt_(1), start_pt_(2),
+                           local_target_pt_(0), local_target_pt_(1), local_target_pt_(2));
 
     if (plan_success)
     {
@@ -911,6 +1013,8 @@ namespace scan_planner
       }
 
       bspline_pub_->publish(bspline);
+      last_successful_traj_time_ = node_->now();
+      // have_successful_traj_ = true;
 
       visualization_->displayOptimalTraj(info->position_traj_, 0);
     }

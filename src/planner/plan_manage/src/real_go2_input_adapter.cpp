@@ -5,6 +5,8 @@
 #include <memory>
 #include <mutex>
 #include <optional>
+#include <iomanip>
+#include <sstream>
 #include <string>
 
 #include <Eigen/Geometry>
@@ -73,8 +75,8 @@ public:
                                     std::bind(&RealGo2InputAdapter::pathTimer, this));
     last_path_publish_time_ = now() - rclcpp::Duration::from_seconds(10.0);
     publishStatus("waiting_for_inputs");
-    RCLCPP_INFO(get_logger(), "Real Go2 input adapter ready; lidar->base=(%.3f, %.3f, %.3f)",
-                lidar_to_base_.x(), lidar_to_base_.y(), lidar_to_base_.z());
+    RCLCPP_DEBUG(get_logger(), "Real Go2 input adapter ready; lidar->base=(%.3f, %.3f, %.3f)",
+                 lidar_to_base_.x(), lidar_to_base_.y(), lidar_to_base_.z());
   }
 
 private:
@@ -112,11 +114,20 @@ private:
     if (last_valid_stamp_ && (stamp - *last_valid_stamp_).seconds() >= validation_window_)
     {
       const double dt = (stamp - *last_valid_stamp_).seconds();
-      const Eigen::Vector3d velocity = (position - last_valid_position_) / dt;
-      if (velocity.head<2>().norm() > max_horizontal_speed_ ||
-          std::abs(velocity.z()) > max_vertical_speed_)
+      const Eigen::Vector3d delta = position - last_valid_position_;
+      const Eigen::Vector3d velocity = delta / dt;
+      const double horizontal_speed = velocity.head<2>().norm();
+      const double vertical_speed = std::abs(velocity.z());
+      if (horizontal_speed > max_horizontal_speed_ || vertical_speed > max_vertical_speed_)
       {
-        reason = "lidar odometry jump exceeds configured speed limit";
+        std::ostringstream detail;
+        detail << std::fixed << std::setprecision(3)
+               << "lidar odometry jump: dt=" << dt
+               << "s delta=[" << delta.x() << ", " << delta.y() << ", " << delta.z() << "]m"
+               << " horizontal_speed=" << horizontal_speed << "m/s (limit="
+               << max_horizontal_speed_ << ") vertical_speed=" << vertical_speed
+               << "m/s (limit=" << max_vertical_speed_ << ")";
+        reason = detail.str();
         input_valid_ = false;
         return false;
       }
@@ -262,8 +273,8 @@ private:
     published_path_ = output;
     pending_path_.reset();
     last_path_publish_time_ = now();
-    RCLCPP_INFO(get_logger(), "Forwarded global path with %zu points, length %.2f m",
-                output.poses.size(), pathLength(output));
+    RCLCPP_DEBUG(get_logger(), "Forwarded global path with %zu points, length %.2f m",
+                 output.poses.size(), pathLength(output));
   }
 
   void publishStatus(const std::string &text)

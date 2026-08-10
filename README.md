@@ -180,3 +180,11 @@ SCAN-Planner 的实现借鉴了 EGO-Planner、ROG-Map、MARSIM、Mockamap 和 Le
 
 
 ros2 run tf2_ros static_transform_publisher   --x 0 --y 0 --z 0   --roll 0 --pitch 0 --yaw 0   --frame-id body   --child-frame-id livox_lidar
+
+
+wei@wei:~/github_code/SCAN-Planner-Ros2$ 
+ros2 launch scan_planner real_go2_livox.launch.py   rviz:=true   enable_motion:=true
+
+
+wei@wei:~/github_code/SCAN-Planner-Ros2$ 
+ros2 bag play /home/wei/bag/navigation_data/   --start-offset 15   --topics /plan /lio_odom_hf /livox/lidar

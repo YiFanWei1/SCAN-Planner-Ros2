@@ -2,16 +2,50 @@ scan_planner_node:
   ros__parameters:
     use_sim_time: false
     fsm.navi_mode: 3
+    # Distance-triggered replanning: about 3 Hz at the bag's ~0.6 m/s speed.
+    fsm.thresh_replan: 0.20
+    # Avoid a 100 Hz failure loop; enter the safety stop after about 2 seconds.
+    fsm.replan_retry_interval: 0.10
+    fsm.max_replan_fail_count: 20
+    # After a bounded failure burst, stop first and retry the retained target
+    # at low duty cycle instead of depending on a materially changed /plan.
+    fsm.auto_retry_after_failures: true
+    fsm.failure_retry_cooldown: 1.0
     fsm.reference_path_min_distance: 0.15
     fsm.clear_map_on_new_path: false
+    # Final dynamic-feasibility threshold is manager.max_acc (0.5) plus this
+    # tolerance, giving 3.0 m/s^2 for the fast stair bag test.
+    optimization.acc_tolerance: 2.5
     grid_map.frame_id: camera_init
     grid_map.sliding_map_frame_id: sliding_map
     grid_map.sensor_type: lidar
     grid_map.cloud_is_world: false
     grid_map.need_extrinsic: false
-    grid_map.body_height: 0.31
-    grid_map.obstacles_inflation_z_up: 0.05
+    # /plan stores terrain height; lift it to the Go2 base_link centre.
+    # Keep this independent from the segmenter, which must preserve source Z.
+    grid_map.body_height: 0.30
+    # Restore the normal Go2 double-cylinder collision envelope.
+    grid_map.double_cylinder_radius: 0.25
+    grid_map.double_cylinder_offset: 0.18
+    grid_map.obstacles_inflation_z_up: 0.02
     grid_map.obstacles_inflation_z_down: 0.05
+    # Optional self/near-body point exclusion. Disable this on the real robot
+    # when close-proximity obstacle perception is required.
+    grid_map.body_exclusion_enabled: true
+    grid_map.body_exclusion_half_length: 0.55
+    grid_map.body_exclusion_half_width: 0.40
+    grid_map.body_exclusion_z_down: 0.35
+    grid_map.body_exclusion_z_up: 0.35
+    # Forget stale occupied voxels produced by moving objects. A maximally
+    # occupied voxel crosses the occupancy threshold in about 1.0 s when it
+    # is no longer hit, while a stopped point-cloud stream never erases map.
+    grid_map.occupancy_decay_enabled: true
+    grid_map.occupancy_decay_start: 0.8
+    grid_map.occupancy_decay_interval: 0.1
+    grid_map.occupancy_decay_min_range: 0.8
+    grid_map.occupancy_decay_max_range: 5.0
+    grid_map.occupancy_decay_sensor_timeout: 0.5
+    grid_map.occupancy_decay_log_odds: -0.8472978604
 
 closed_loop_controller:
   ros__parameters:
@@ -33,10 +67,13 @@ real_go2_input_adapter:
     lidar_to_base_y: 0.0
     lidar_to_base_z: -0.21
     sync_tolerance: 0.05
-    max_input_horizontal_speed: 5.0
-    max_input_vertical_speed: 2.0
+    max_input_horizontal_speed: 8.0
+    max_input_vertical_speed: 4.0
     odom_validation_window: 0.10
-    max_vertical_displacement_from_start: 2.0
+    # The recorded route descends from floor 5 to floor 1, so a large genuine
+    # displacement from the startup height is expected. Frame-to-frame jumps
+    # remain guarded by max_input_vertical_speed below.
+    max_vertical_displacement_from_start: 20.0
     path_update_rate: 1.0
     path_endpoint_threshold: 0.30
     path_geometry_threshold: 0.20

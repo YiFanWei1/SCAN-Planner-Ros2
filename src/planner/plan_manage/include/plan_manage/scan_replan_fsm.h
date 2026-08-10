@@ -73,6 +73,15 @@ namespace scan_planner
     int continuously_called_times_{0};
     int replan_fail_count_{0};
     int max_replan_fail_count_{1000};
+    double replan_retry_interval_{0.1};
+    bool auto_retry_after_failures_{false};
+    double failure_retry_cooldown_{1.0};
+    rclcpp::Time last_replan_attempt_time_;
+    rclcpp::Time failure_emergency_start_time_;
+    rclcpp::Time last_odom_receive_time_;
+    rclcpp::Time last_target_receive_time_;
+    rclcpp::Time last_successful_traj_time_;
+    bool have_successful_traj_{false};
     rclcpp::Time last_freeze_update_time_;
 
     Eigen::Vector3d odom_pos_, odom_vel_, odom_acc_; // odometry state

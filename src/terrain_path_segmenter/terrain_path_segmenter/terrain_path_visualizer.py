@@ -33,6 +33,7 @@ class TerrainPathVisualizer(Node):
         self.declare_parameter("slope_merge_threshold", 0.04)
         self.declare_parameter("minimum_segment_length", 0.5)
         self.declare_parameter("segment_reached_tolerance", 0.25)
+        self.declare_parameter("accept_first_path_only", False)
         self.declare_parameter("visual_z_offset", 0.05)
         self.declare_parameter("line_width", 0.07)
 
@@ -43,6 +44,8 @@ class TerrainPathVisualizer(Node):
             "minimum_segment_length").value
         self.reached_tolerance = self.get_parameter(
             "segment_reached_tolerance").value
+        self.accept_first_path_only = self.get_parameter(
+            "accept_first_path_only").value
         self.z_offset = self.get_parameter("visual_z_offset").value
         self.line_width = self.get_parameter("line_width").value
 
@@ -70,10 +73,19 @@ class TerrainPathVisualizer(Node):
         self.ranges = []
         self.current_index = 0
         self.last_odom = None
-        self.get_logger().info(
-            "Waiting for a global path; visualization only, no command output")
+        self.ignored_path_updates = 0
+        self.get_logger().debug(
+            "Waiting for a global path; accept_first_path_only=%s" %
+            self.accept_first_path_only)
 
     def path_callback(self, message):
+        if self.accept_first_path_only and self.path is not None:
+            self.ignored_path_updates += 1
+            if self.ignored_path_updates == 1 or self.ignored_path_updates % 50 == 0:
+                self.get_logger().debug(
+                    "Ignoring global path update because first-path-only mode "
+                    f"is active (ignored={self.ignored_path_updates})")
+            return
         if len(message.poses) < 2:
             self.get_logger().warning("Ignoring path with fewer than two poses")
             return
@@ -91,7 +103,7 @@ class TerrainPathVisualizer(Node):
         self.current_index = 0
         self.processed_path_pub.publish(self.path)
         self.publish_visualization()
-        self.get_logger().info(
+        self.get_logger().debug(
             f"Segmented {len(points)} path points into {len(ranges)} sections")
 
     def odom_callback(self, message):
@@ -109,7 +121,7 @@ class TerrainPathVisualizer(Node):
             if distance > self.reached_tolerance:
                 break
             self.current_index += 1
-            self.get_logger().info(
+            self.get_logger().debug(
                 f"Visualization advanced to segment {self.current_index + 1}/"
                 f"{len(self.ranges)}")
             self.publish_visualization()

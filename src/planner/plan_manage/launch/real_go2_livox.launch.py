@@ -48,6 +48,8 @@ def generate_launch_description():
             "max_linear_z_error": LaunchConfiguration("max_linear_z_error"),
             "slope_merge_threshold": LaunchConfiguration("slope_merge_threshold"),
             "minimum_segment_length": LaunchConfiguration("minimum_segment_length"),
+            "accept_first_path_only": LaunchConfiguration(
+                "accept_first_global_path_only"),
             "segment_reached_tolerance": LaunchConfiguration(
                 "segment_reached_tolerance"),
         }],
@@ -108,6 +110,19 @@ def generate_launch_description():
         ],
     )
 
+    map_to_camera_init_tf = Node(
+        package="tf2_ros",
+        executable="static_transform_publisher",
+        name="map_to_camera_init_tf",
+        output="screen",
+        arguments=[
+            "--x", "0", "--y", "0", "--z", "0",
+            "--roll", "0", "--pitch", "0", "--yaw", "0",
+            "--frame-id", "map",
+            "--child-frame-id", "camera_init",
+        ],
+    )
+
     rviz = Node(
         package="rviz2",
         executable="rviz2",
@@ -128,11 +143,13 @@ def generate_launch_description():
         DeclareLaunchArgument("max_linear_z_error", default_value="0.04"),
         DeclareLaunchArgument("slope_merge_threshold", default_value="0.04"),
         DeclareLaunchArgument("minimum_segment_length", default_value="0.5"),
+        DeclareLaunchArgument("accept_first_global_path_only", default_value="false"),
         DeclareLaunchArgument("segment_reached_tolerance", default_value="0.30"),
         adapter,
         segmenter,
         planner,
         controller,
         gate,
+        map_to_camera_init_tf,
         rviz,
     ])

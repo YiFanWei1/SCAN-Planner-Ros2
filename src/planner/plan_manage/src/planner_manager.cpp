@@ -43,7 +43,7 @@ namespace scan_planner
 
   SCANPlannerManager::SCANPlannerManager() {}
 
-  SCANPlannerManager::~SCANPlannerManager() { std::cout << "des manager" << std::endl; }
+  SCANPlannerManager::~SCANPlannerManager() = default;
 
   void SCANPlannerManager::initPlanModules(rclcpp::Node *node, PlanningVisualization::Ptr vis)
   {
@@ -84,22 +84,13 @@ namespace scan_planner
                                         Eigen::Vector3d local_target_vel, bool flag_polyInit, bool flag_randomPolyTraj)
   {
 
-    static int count = 0;
-    std::cout << endl
-              << "[rebo replan]: -------------------------------------" << count++ << std::endl;
-    cout.precision(3);
-    cout << "start: " << start_pt.transpose() << ", " << start_vel.transpose() << "\ngoal:" << local_target_pt.transpose() << ", " << local_target_vel.transpose()
-         << endl;
-
     if ((start_pt - local_target_pt).norm() < 0.2)
     {
-      cout << "Close to goal" << endl;
+      RCLCPP_WARN_THROTTLE(node_->get_logger(), *node_->get_clock(), 1000,
+                           "Replan rejected: start is within 0.2 m of local target");
       continuous_failures_count_++;
       return false;
     }
-
-    auto t_start = std::chrono::steady_clock::now();
-    double t_init = 0.0, t_opt = 0.0, t_refine = 0.0;
 
     /*** STEP 1: INIT ***/
     double ts = (start_pt - local_target_pt).norm() > 0.1 ? pp_.ctrl_pt_dist / pp_.max_vel_ * 1.2 : pp_.ctrl_pt_dist / pp_.max_vel_ * 5; // pp_.ctrl_pt_dist / pp_.max_vel_ is too tense, and will surely exceed the acc/vel limits
@@ -256,17 +247,13 @@ namespace scan_planner
     vector<vector<Eigen::Vector3d>> a_star_paths;
     a_star_paths = bspline_optimizer_rebound_->initControlPoints(ctrl_pts, true);
 
-    t_init = std::chrono::duration<double>(std::chrono::steady_clock::now() - t_start).count();
-
     static int vis_id = 0;
     visualization_->displayInitPathList(point_set, 0.2, 0);
     visualization_->displayAStarList(a_star_paths, vis_id);
 
-    t_start = std::chrono::steady_clock::now();
 
     /*** STEP 2: OPTIMIZE ***/
     bool flag_step_1_success = bspline_optimizer_rebound_->BsplineOptimizeTrajRebound(ctrl_pts, ts);
-    cout << "first_optimize_step_success=" << flag_step_1_success << endl;
     if (!flag_step_1_success)
     {
       // visualization_->displayOptimalList( ctrl_pts, vis_id );
@@ -274,9 +261,6 @@ namespace scan_planner
       return false;
     }
     //visualization_->displayOptimalList( ctrl_pts, vis_id );
-
-    t_opt = std::chrono::duration<double>(std::chrono::steady_clock::now() - t_start).count();
-    t_start = std::chrono::steady_clock::now();
 
     /*** STEP 3: REFINE(RE-ALLOCATE TIME) IF NECESSARY ***/
     UniformBspline pos = UniformBspline(ctrl_pts, 3, ts);
@@ -286,8 +270,6 @@ namespace scan_planner
     bool flag_step_2_success = true;
     if (!pos.checkFeasibility(ratio, false))
     {
-      cout << "Need to reallocate time." << endl;
-
       Eigen::MatrixXd optimal_control_points;
       flag_step_2_success = refineTrajAlgo(pos, start_end_derivatives, ratio, ts, optimal_control_points);
       if (flag_step_2_success)
@@ -296,18 +278,14 @@ namespace scan_planner
 
     if (!flag_step_2_success || !checkDynamicFeasibility(pos))
     {
-      printf("\033[34mThis refined trajectory is unsafe or dynamically infeasible. Skip publishing it.\n\033[0m");
+      RCLCPP_WARN(node_->get_logger(),
+                  "Refined trajectory is unsafe or dynamically infeasible; skipping publication");
       continuous_failures_count_++;
       return false;
     }
 
-    t_refine = std::chrono::duration<double>(std::chrono::steady_clock::now() - t_start).count();
-
     // save planned results
     updateTrajInfo(pos, node_->now());
-
-    cout << "total time:\033[42m" << (t_init + t_opt + t_refine)
-         << "\033[0m,optimize:" << (t_init + t_opt) << ",refine:" << t_refine << endl;
 
     // success. YoY
     continuous_failures_count_ = 0;

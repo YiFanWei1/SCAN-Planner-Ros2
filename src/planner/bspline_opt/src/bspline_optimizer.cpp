@@ -969,9 +969,6 @@ namespace scan_planner
     variable_num_ = 3 * (end_id - start_id);
     double final_cost;
 
-    auto t0 = std::chrono::steady_clock::now();
-    auto t1 = t0;
-    auto t2 = t0;
     int restart_nums = 0, rebound_times = 0;
     ;
     bool flag_force_return, flag_occ, success;
@@ -996,11 +993,7 @@ namespace scan_planner
       lbfgs_params.g_epsilon = 0.01;
 
       /* ---------- optimize ---------- */
-      t1 = std::chrono::steady_clock::now();
       int result = lbfgs::lbfgs_optimize(variable_num_, q, &final_cost, BsplineOptimizer::costFunctionRebound, NULL, BsplineOptimizer::earlyExit, this, &lbfgs_params);
-      t2 = std::chrono::steady_clock::now();
-      double time_ms = std::chrono::duration<double, std::milli>(t2 - t1).count();
-      double total_time_ms = std::chrono::duration<double, std::milli>(t2 - t0).count();
 
       /* ---------- success temporary, check collision again ---------- */
       if (result == lbfgs::LBFGS_CONVERGENCE ||
@@ -1026,10 +1019,6 @@ namespace scan_planner
 
             if (t <= bspline_interval_) // First 3 control points in obstacles!
             {
-              cout << cps_.points.col(1).transpose() << "\n"
-                   << cps_.points.col(2).transpose() << "\n"
-                   << cps_.points.col(3).transpose() << "\n"
-                   << cps_.points.col(4).transpose() << endl;
               RCLCPP_WARN(rclcpp::get_logger("bspline_opt"),
                           "First three control points are in obstacles; t=%f", t);
               return false;
@@ -1041,7 +1030,6 @@ namespace scan_planner
 
         if (!flag_occ)
         {
-          printf("\033[32miter(+1)=%d,time(ms)=%5.3f,total_t(ms)=%5.3f,cost=%5.3f\n\033[0m", iter_num_, time_ms, total_time_ms, final_cost);
           success = true;
         }
         else // restart
@@ -1050,14 +1038,12 @@ namespace scan_planner
           initControlPoints(cps_.points, false);
           new_lambda2_ *= 2;
 
-          printf("\033[32miter(+1)=%d,time(ms)=%5.3f,keep optimizing\n\033[0m", iter_num_, time_ms);
         }
       }
       else if (result == lbfgs::LBFGSERR_CANCELED)
       {
         flag_force_return = true;
         rebound_times++;
-        cout << "iter=" << iter_num_ << ",time(ms)=" << time_ms << ",rebound." << endl;
       }
       else
       {

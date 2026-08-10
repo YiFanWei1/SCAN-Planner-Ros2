@@ -14,6 +14,7 @@
 #include <rclcpp/rclcpp.hpp>
 #include <rmw/qos_profiles.h>
 #include <tuple>
+#include <unordered_set>
 #include <sensor_msgs/msg/image.hpp>
 #include <sensor_msgs/image_encodings.hpp>
 #include <sensor_msgs/msg/point_cloud2.hpp>
@@ -61,6 +62,9 @@ struct MappingParameters {
   double resolution_, resolution_inv_;
   double obstacles_inflation_z_up, obstacles_inflation_z_down;
   double double_cylinder_radius_, double_cylinder_offset_;
+  bool body_exclusion_enabled_;
+  double body_exclusion_half_length_, body_exclusion_half_width_;
+  double body_exclusion_z_down_, body_exclusion_z_up_;
   bool map_sliding_en_;
   double map_sliding_thresh_;
   int map_sliding_thresh_vox_;
@@ -80,6 +84,10 @@ struct MappingParameters {
   double prob_hit_log_, prob_miss_log_, clamp_min_log_, clamp_max_log_,
       min_occupancy_log_;                   // logit of occupancy probability
   double min_ray_length_, max_ray_length_;  // range of doing raycasting
+  bool occupancy_decay_enabled_;
+  double occupancy_decay_start_, occupancy_decay_interval_;
+  double occupancy_decay_min_range_, occupancy_decay_max_range_;
+  double occupancy_decay_sensor_timeout_, occupancy_decay_log_odds_;
 
   /* visualization and computation time display */
   double vis_height_, ground_height_;
@@ -111,6 +119,10 @@ struct MappingData {
   Eigen::Vector3d ray_pos_;
   Eigen::Quaterniond ray_q_;
   Eigen::Vector3d sliding_map_frame_pos_;
+  Eigen::Vector3d body_pos_;
+  Eigen::Quaterniond body_q_;
+  bool has_body_pose_;
+  int64_t last_body_exclusion_clear_time_ns_;
 
   // depth image data
 
@@ -134,6 +146,9 @@ struct MappingData {
   vector<char> flag_traverse_, flag_rayend_;
   char raycast_num_;
   queue<Eigen::Vector3i> cache_voxel_;
+  std::vector<int64_t> last_hit_time_ns_, last_decay_time_ns_;
+  std::unordered_set<int> active_occupied_voxels_;
+  int64_t last_cloud_time_ns_;
 
   // range of updating grid
 
@@ -189,6 +204,8 @@ public:
   void publishSlidingMapFrame();
 
   bool hasDepthObservation();
+  bool hasCloudObservation();
+  double getLastCloudAge();
   bool odomValid();
   void getRegion(Eigen::Vector3d& ori, Eigen::Vector3d& size);
   inline double getResolution();
@@ -212,6 +229,7 @@ private:
 
   // update occupancy by raycasting
   void updateOccupancyCallback();
+  void decayOccupancyCallback();
   void visCallback();
 
   // main update process
@@ -232,6 +250,8 @@ private:
   void resetCellByAddressForSliding(int addr, const std::vector<char>& clear_mask);
   void hashIdToGlobalIndex(int addr, Eigen::Vector3i& id_g) const;
   void applyOccupancyUpdate(const Eigen::Vector3i& id, double new_log_odds);
+  bool pointInsideBodyExclusion(const Eigen::Vector3d& point_world) const;
+  void clearBodyExclusionOccupancy();
   void rebuildInflationOffsets();
   void updateInflation(const Eigen::Vector3i& id, int delta, const std::vector<char>* ignore_mask = nullptr);
   void updateInflationLayer(const Eigen::Vector3i& id, int delta,
@@ -263,7 +283,7 @@ private:
   rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr unknown_pub_;
   rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr depth_cloud_pub_;
   rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr extrinsic_pose_pub_;
-  rclcpp::TimerBase::SharedPtr occ_timer_, vis_timer_;
+  rclcpp::TimerBase::SharedPtr occ_timer_, vis_timer_, decay_timer_;
 
   //
   uniform_real_distribution<double> rand_noise_;
