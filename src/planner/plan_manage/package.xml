@@ -13,6 +13,7 @@
   <depend>eigen</depend>
   <depend>geometry_msgs</depend>
   <depend>nav_msgs</depend>
+  <depend>message_filters</depend>
   <depend>path_searching</depend>
   <depend>plan_env</depend>
   <depend>rclcpp</depend>
@@ -20,6 +21,7 @@
   <depend>scan_planner_msgs</depend>
   <depend>sensor_msgs</depend>
   <depend>std_msgs</depend>
+  <depend>std_srvs</depend>
   <depend>tf2</depend>
   <depend>tf2_geometry_msgs</depend>
   <depend>tf2_ros</depend>

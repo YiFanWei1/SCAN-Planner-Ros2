@@ -12,12 +12,14 @@ find_package(bspline_opt REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
+find_package(message_filters REQUIRED)
 find_package(path_searching REQUIRED)
 find_package(plan_env REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(scan_planner_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
+find_package(std_srvs REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
 find_package(tf2_ros REQUIRED)
@@ -46,9 +48,20 @@ foreach(target open_loop_controller closed_loop_controller go2_kinematic_sim go2
   target_link_libraries(${target} Eigen3::Eigen)
 endforeach()
 
+add_executable(real_go2_input_adapter src/real_go2_input_adapter.cpp)
+target_include_directories(real_go2_input_adapter PRIVATE include)
+ament_target_dependencies(real_go2_input_adapter
+  geometry_msgs message_filters nav_msgs rclcpp sensor_msgs std_msgs)
+target_link_libraries(real_go2_input_adapter Eigen3::Eigen)
+
+add_executable(cmd_vel_safety_gate src/cmd_vel_safety_gate.cpp)
+target_include_directories(cmd_vel_safety_gate PRIVATE include)
+ament_target_dependencies(cmd_vel_safety_gate
+  geometry_msgs nav_msgs rclcpp scan_planner_msgs std_msgs std_srvs)
+
 install(TARGETS
   scan_planner_node open_loop_controller closed_loop_controller
-  go2_kinematic_sim go2_gait_publisher
+  go2_kinematic_sim go2_gait_publisher real_go2_input_adapter cmd_vel_safety_gate
   DESTINATION lib/${PROJECT_NAME})
 install(DIRECTORY include/ DESTINATION include)
 install(DIRECTORY launch config DESTINATION share/${PROJECT_NAME} OPTIONAL)
@@ -66,6 +79,10 @@ if(BUILD_TESTING)
   target_include_directories(test_reference_path_utils PRIVATE include)
   ament_target_dependencies(test_reference_path_utils nav_msgs)
   target_link_libraries(test_reference_path_utils Eigen3::Eigen)
+  ament_add_gtest(test_real_input_utils test/test_real_input_utils.cpp)
+  target_include_directories(test_real_input_utils PRIVATE include)
+  ament_target_dependencies(test_real_input_utils geometry_msgs nav_msgs)
+  target_link_libraries(test_real_input_utils Eigen3::Eigen)
   set(_pytest_disable_plugin_autoload "$ENV{PYTEST_DISABLE_PLUGIN_AUTOLOAD}")
   set(ENV{PYTEST_DISABLE_PLUGIN_AUTOLOAD} "1")
   ament_add_pytest_test(

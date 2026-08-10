@@ -9,6 +9,8 @@ closed_loop_controller:
     max_vy: 0.35
     max_vyaw: 1.0
     finish_dist: 0.15
+    odom_timeout: 0.15
+    trajectory_timeout: 0.50
 
 open_loop_controller:
   ros__parameters:

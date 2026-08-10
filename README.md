@@ -176,3 +176,7 @@ SCAN-Planner 的实现借鉴了 EGO-Planner、ROG-Map、MARSIM、Mockamap 和 Le
 ## 许可证
 
 本仓库遵循 [Apache License 2.0](LICENSE)。分发或派生本项目时，请保留 [NOTICE](NOTICE) 中的原项目署名与许可证信息。
+
+
+
+ros2 run tf2_ros static_transform_publisher   --x 0 --y 0 --z 0   --roll 0 --pitch 0 --yaw 0   --frame-id body   --child-frame-id livox_lidar

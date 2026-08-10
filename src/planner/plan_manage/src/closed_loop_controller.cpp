@@ -30,6 +30,8 @@ public:
     max_vy_ = declare_parameter<double>("max_vy", 0.35);
     max_vyaw_ = std::min(declare_parameter<double>("max_vyaw", 1.0), kMaxVYawLimit);
     finish_dist_ = declare_parameter<double>("finish_dist", 0.15);
+    odom_timeout_ = declare_parameter<double>("odom_timeout", 0.15);
+    trajectory_timeout_ = declare_parameter<double>("trajectory_timeout", 0.50);
 
     bspline_sub_ = create_subscription<scan_planner_msgs::msg::Bspline>(
         "planning/bspline", 10,
@@ -106,6 +108,7 @@ private:
     exec_time_ = 0.0;
     last_update_time_ = now();
     receive_traj_ = true;
+    last_trajectory_time_ = now();
     RCLCPP_INFO(get_logger(), "Received trajectory %lld, duration %.3fs",
                 static_cast<long long>(traj_id_), traj_duration_);
   }
@@ -115,17 +118,20 @@ private:
     odom_pos_ << msg->pose.pose.position.x, msg->pose.pose.position.y, msg->pose.pose.position.z;
     odom_yaw_ = tf2::getYaw(msg->pose.pose.orientation);
     have_odom_ = true;
+    last_odom_time_ = now();
   }
 
   void cmdCallback()
   {
-    if (!receive_traj_ || !have_odom_)
+    const auto current_time = now();
+    if (!receive_traj_ || !have_odom_ ||
+        (current_time - last_odom_time_).seconds() > odom_timeout_ ||
+        (current_time - last_trajectory_time_).seconds() > traj_duration_ + trajectory_timeout_)
     {
       publishExecutionFrozen(false);
       publishStop();
       return;
     }
-    const auto current_time = now();
     double dt = (current_time - last_update_time_).seconds();
     if (dt < 0.0 || dt > 0.2) dt = 0.0;
     const double t_eval = std::min(exec_time_, traj_duration_);
@@ -174,7 +180,10 @@ private:
   double odom_yaw_{0.0};
   double exec_time_{0.0};
   rclcpp::Time last_update_time_{0, 0, RCL_ROS_TIME};
+  rclcpp::Time last_odom_time_{0, 0, RCL_ROS_TIME};
+  rclcpp::Time last_trajectory_time_{0, 0, RCL_ROS_TIME};
   double time_forward_, heading_error_threshold_, kp_pos_, kp_yaw_;
+  double odom_timeout_, trajectory_timeout_;
   double max_vx_, max_vy_, max_vyaw_, finish_dist_;
 };
 }  // namespace scan_planner

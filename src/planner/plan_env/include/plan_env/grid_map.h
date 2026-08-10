@@ -4,7 +4,7 @@
 #include <Eigen/Eigen>
 #include <Eigen/StdVector>
 #include <algorithm>
-#include <cv_bridge/cv_bridge.h>
+#include <cv_bridge/cv_bridge.hpp>
 #include <cmath>
 #include <geometry_msgs/msg/pose_stamped.hpp>
 #include <iostream>
