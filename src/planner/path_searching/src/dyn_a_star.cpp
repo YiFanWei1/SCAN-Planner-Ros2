@@ -290,16 +290,33 @@ ASTAR_RET AStar::AstarSearch(const double step_size, Vector3d start_pt, Vector3d
         }
         current->state = GridNode::CLOSEDSET; //move current node from open set to closed set.
 
+        // Keep the search terrain-aware without turning it into an unrestricted
+        // 3-D search.  Stair surfaces are not exactly the straight Z plane
+        // between a collision segment's endpoints, so allow a narrow vertical
+        // band around that reference plane.  Limit each edge to one Z voxel to
+        // prevent a horizontal step from producing an unrealistic vertical
+        // jump across the full band.
+        constexpr int REFERENCE_Z_HALF_BAND_VOXELS = 3;
+        constexpr int MAX_Z_STEP_VOXELS = 1;
         for (int dx = -1; dx <= 1; dx++)
             for (int dy = -1; dy <= 1; dy++)
             {
                 if (dx == 0 && dy == 0)
                     continue;
 
-                Vector3i neighborIdx;
-                neighborIdx(0) = (current->index)(0) + dx;
-                neighborIdx(1) = (current->index)(1) + dy;
-                neighborIdx(2) = interpolateZIndexOnSearchPlane(neighborIdx(0), neighborIdx(1));
+                const int neighbor_x = current->index(0) + dx;
+                const int neighbor_y = current->index(1) + dy;
+                const int reference_z = interpolateZIndexOnSearchPlane(neighbor_x, neighbor_y);
+                const int min_neighbor_z = std::max(
+                    reference_z - REFERENCE_Z_HALF_BAND_VOXELS,
+                    current->index(2) - MAX_Z_STEP_VOXELS);
+                const int max_neighbor_z = std::min(
+                    reference_z + REFERENCE_Z_HALF_BAND_VOXELS,
+                    current->index(2) + MAX_Z_STEP_VOXELS);
+
+                for (int neighbor_z = min_neighbor_z; neighbor_z <= max_neighbor_z; ++neighbor_z)
+                {
+                    Vector3i neighborIdx(neighbor_x, neighbor_y, neighbor_z);
 
                 if (neighborIdx(0) < 1 || neighborIdx(0) >= POOL_SIZE_(0) - 1 || neighborIdx(1) < 1 || neighborIdx(1) >= POOL_SIZE_(1) - 1 || neighborIdx(2) < 1 || neighborIdx(2) >= POOL_SIZE_(2) - 1)
                 {
@@ -350,6 +367,7 @@ ASTAR_RET AStar::AstarSearch(const double step_size, Vector3d start_pt, Vector3d
                     neighborPtr->cameFrom = current;
                     neighborPtr->gScore = tentative_gScore;
                     neighborPtr->fScore = tentative_gScore + getHeu(neighborPtr, endPtr);
+                }
                 }
             }
         const auto time_2 = std::chrono::steady_clock::now();
