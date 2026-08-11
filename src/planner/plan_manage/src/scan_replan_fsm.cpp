@@ -82,6 +82,12 @@ namespace scan_planner
     replan_retry_interval_ = std::max(0.01, replan_retry_interval_);  // 最快 100 Hz，避免失败时忙循环。
     auto_retry_after_failures_ =
         load_parameter<bool>(node_, "fsm.auto_retry_after_failures", false);
+    require_stop_before_emergency_replan_ = load_parameter<bool>(
+        node_, "fsm.require_stop_before_emergency_replan", true);
+    if (!require_stop_before_emergency_replan_)
+      RCLCPP_WARN(node_->get_logger(),
+                  "Emergency replanning will not wait for odometry speed to fall below 0.1 m/s; "
+                  "use this test mode only when motion safety is handled externally");
     failure_retry_cooldown_ =
         std::max(0.1, load_parameter<double>(node_, "fsm.failure_retry_cooldown", 1.0));
     // 将上次尝试时间回拨一个间隔，使首次进入规划状态时可以立即尝试。
@@ -863,10 +869,12 @@ namespace scan_planner
       }
       else
       {
+        const bool stop_condition_satisfied =
+            !require_stop_before_emergency_replan_ || odom_vel_.norm() < 0.1;
         // 碰撞触发的普通急停：停稳后保留目标并重新生成局部轨迹。
-        if (enable_fail_safe_ && !need_hover_stop_ && odom_vel_.norm() < 0.1)
+        if (enable_fail_safe_ && !need_hover_stop_ && stop_condition_satisfied)
           changeFSMExecState(GEN_NEW_TRAJ, "FSM");
-        else if (enable_fail_safe_ && need_hover_stop_ && odom_vel_.norm() < 0.1)
+        else if (enable_fail_safe_ && need_hover_stop_ && stop_condition_satisfied)
         {
           // 连续失败上限触发的悬停：根据策略在冷却后重试旧目标，或丢弃旧目标等待新任务。
           const bool cooldown_elapsed =

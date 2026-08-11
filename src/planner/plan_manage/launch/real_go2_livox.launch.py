@@ -81,6 +81,8 @@ def generate_launch_description():
                 "project_reference_start_z"),
             "fsm.reference_start_z_max_correction": LaunchConfiguration(
                 "reference_start_z_max_correction"),
+            "fsm.require_stop_before_emergency_replan": LaunchConfiguration(
+                "require_stop_before_emergency_replan"),
         }],
         remappings=[
             ("body_pose", "/scan_planner/body_pose"),
@@ -168,6 +170,8 @@ def generate_launch_description():
         DeclareLaunchArgument("enable_motion", default_value="false"),
         DeclareLaunchArgument("project_reference_start_z", default_value="true"),
         DeclareLaunchArgument("reference_start_z_max_correction", default_value="0.60"),
+        DeclareLaunchArgument(
+            "require_stop_before_emergency_replan", default_value="true"),
         # Disable this to feed the adapter's complete filtered global path
         # directly to SCAN instead of sending one terrain segment at a time.
         DeclareLaunchArgument("use_path_segmentation", default_value="true"),

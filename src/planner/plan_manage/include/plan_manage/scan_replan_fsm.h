@@ -79,6 +79,7 @@ namespace scan_planner
     int max_replan_fail_count_{1000};
     double replan_retry_interval_{0.1};
     bool auto_retry_after_failures_{false};
+    bool require_stop_before_emergency_replan_{true};
     double failure_retry_cooldown_{1.0};
     rclcpp::Time last_replan_attempt_time_;
     rclcpp::Time failure_emergency_start_time_;
