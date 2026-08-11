@@ -35,8 +35,8 @@ scan_planner_node:
     # Restore the normal Go2 double-cylinder collision envelope.
     grid_map.double_cylinder_radius: 0.25
     grid_map.double_cylinder_offset: 0.18
-    grid_map.obstacles_inflation_z_up: 0.02
-    grid_map.obstacles_inflation_z_down: 0.05
+    grid_map.obstacles_inflation_z_up: 0.00
+    grid_map.obstacles_inflation_z_down: 0.00
     # Optional self/near-body point exclusion. Disable this on the real robot
     # when close-proximity obstacle perception is required.
     grid_map.body_exclusion_enabled: true

@@ -183,13 +183,43 @@ ros2 run tf2_ros static_transform_publisher   --x 0 --y 0 --z 0   --roll 0 --pit
 
 
 wei@wei:~/github_code/SCAN-Planner-Ros2$ 
-ros2 launch scan_planner real_go2_livox.launch.py   rviz:=true   enable_motion:=true
+ros2 launch scan_planner real_go2_livox.launch.py   rviz:=true   enable_motion:=true accept_first_global_path_only:=false
 
 
 wei@wei:~/github_code/SCAN-Planner-Ros2$ 
-ros2 bag play /home/wei/bag/navigation_data/   --start-offset 15   --topics /plan /lio_odom_hf /livox/lidar
+ros2 bag play /home/wei/bag/up_and_down/   --start-offset 15   --topics /plan /lio_odom_hf /livox/lidar
 
 colcon build \
   --symlink-install \
   --cmake-args \
   -DCMAKE_BUILD_TYPE=Release
+
+
+
+
+分析工作流
+
+cd ~/github_code/SCAN-Planner-Ros2
+source /opt/ros/jazzy/setup.bash
+source install/setup.bash
+
+ros2 launch scan_planner real_go2_livox.launch.py \
+  rviz:=true \
+  enable_motion:=true \
+  accept_first_global_path_only:=false
+
+
+
+cd ~/github_code/SCAN-Planner-Ros2
+source /opt/ros/jazzy/setup.bash
+source install/setup.bash
+
+OUTPUT_DIR=~/github_code/SCAN-Planner-Ros2/src/scan_planner_analysis/output
+LATEST_LOG=$(ls -t "$OUTPUT_DIR"/*.jsonl | head -n1)
+
+ros2 run scan_planner_analysis plot_velocity \
+  --input "$LATEST_LOG" \
+  --output "${LATEST_LOG%.jsonl}.png"
+
+
+xdg-open "${LATEST_LOG%.jsonl}.png"

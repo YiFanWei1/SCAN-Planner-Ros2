@@ -1,0 +1,68 @@
+SCAN-Planner stairwell failure analysis
+Date: 2026-08-11
+Bag: /home/wei/bag/up_and_down, offset 15 s, topics /plan /lio_odom_hf /livox/lidar
+
+Runs
+----
+1. Baseline fixed reference-Z plane:
+   diagnostics/stairs_launch.log
+2. A* reference-Z vertical band +/-3 voxels, max edge Z step 1 voxel:
+   diagnostics/stairs_zband3_launch.log
+
+Whole-run comparison
+--------------------
+Metric                                      Baseline    Z band +/-3
+AStarSummary                                      96              80
+AStar plan=failed                                 83              75
+Local replan failed                               65              70
+Robot inside obstacle                            113               6
+Failed to generate rebound direction             106              12
+Final trajectory unsafe/infeasible                16              38
+Emergency stop                                    23              27
+SEARCH_TIMEOUT                                      0               0
+Median A* diagnostic elapsed                   3 ms           44 ms
+Maximum A* diagnostic elapsed                  6 ms           70 ms
+
+Stair-height A* failures (baseline)
+--------------------------------
+Start-Z band       Samples  Plan failed  Median iter  Median collision rejects  Median outside-map
+below -9 m              29           23         4950                       813                   0
+-9 to -6 m              10           10         4426                      1022                   0
+-6 to -3 m              29           27         6887                      1194                   0
+-3 to -0.5 m             1            1         7358                      2131                   0
+
+Stair-height A* failures (Z band +/-3)
+--------------------------------------
+Start-Z band       Samples  Plan failed  Median iter  Median collision rejects  Median outside-map
+below -9 m              26           23        49513                     18966                   0
+-9 to -6 m               7            7        45767                     17807                   0
+-6 to -3 m               9            9        45711                     23919                   0
+-3 to -0.5 m             7            7        49337                     15716                   0
+
+Classification of local-replan failures while abs(start_z) > 0.5 m
+------------------------------------------------------------------
+Cause                                      Baseline    Z band +/-3
+A* plan failed                                   19              20
+Optimizer failure without adjacent summary       10              14
+Backend unsafe/dynamically infeasible              3               8
+Local target collision                             4               3
+Rebound/start occupied                              0               2
+Total                                              36              47
+
+Reference start-Z projection
+----------------------------
+Median correction on stair failures:
+  baseline: +0.2815 m
+  Z band:   +0.2860 m
+
+Conclusions supported by the measurements
+-----------------------------------------
+1. Input/map-range failure is not the primary cause. Median outside-map rejects are zero in every stair-height band.
+2. A* exhausts all reachable nodes because inflated stair/landing voxels disconnect the searched reference-height manifold. Every parsed stair A* failure is OPEN_SET_EMPTY, not SEARCH_TIMEOUT.
+3. Fixed-plane A* also places early control points in occupied space. Adding a vertical band reduces "robot inside obstacle" from 113 to 6 and rebound-direction failures from 106 to 12.
+4. A vertical band alone is insufficient. It increases the final unsafe/infeasible count from 16 to 38 because a collision-free voxel path may contain vertical motion that the B-spline smoothing/dynamic constraints cannot safely reproduce.
+5. The approximately +0.28 m start-Z correction is present in both runs. It is a contributing alignment sensitivity, but it does not explain the different outcomes between the two A* variants.
+
+Primary root cause
+------------------
+The planner uses an aerial-style inflated 3-D occupancy representation for a ground robot on stairs, but its front end searches either one linear Z plane or a narrow unconstrained Z band. Neither representation models a traversable stair surface and the front/rear body supports at different terrain heights. The front end therefore sees false topological blockage; when the vertical band finds a geometric detour, the backend often rejects its vertical profile.

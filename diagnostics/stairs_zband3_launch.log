@@ -1,0 +1,510 @@
+[INFO] [launch]: All log files can be found below /home/wei/.ros/log/2026-08-11-16-32-35-745075-wei-205150
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [real_go2_input_adapter-1]: process started with pid [205154]
+[INFO] [terrain_path_visualizer-2]: process started with pid [205155]
+[INFO] [scan_planner_node-3]: process started with pid [205156]
+[INFO] [closed_loop_controller-4]: process started with pid [205157]
+[INFO] [cmd_vel_safety_gate-5]: process started with pid [205158]
+[INFO] [static_transform_publisher-6]: process started with pid [205159]
+[static_transform_publisher-6] [INFO] [1786437155.842718916] [map_to_camera_init_tf]: Spinning until stopped - publishing transform
+[static_transform_publisher-6] translation: ('0.000000', '0.000000', '0.000000')
+[static_transform_publisher-6] rotation: ('0.000000', '0.000000', '0.000000', '1.000000')
+[static_transform_publisher-6] from 'map' to 'camera_init'
+[cmd_vel_safety_gate-5] [WARN] [1786437155.844756598] [cmd_vel_safety_gate]: Velocity safety gate ready; motion is ENABLED
+[cmd_vel_safety_gate-5] [INFO] [1786437155.854880892] [cmd_vel_safety_gate]: Safety gate state: odometry_timeout
+[scan_planner_node-3] hit: 1.7346
+[scan_planner_node-3] miss: -0.847298
+[scan_planner_node-3] min log: -1.99243
+[scan_planner_node-3] max: 3.89182
+[scan_planner_node-3] thresh log: 1.38629
+[cmd_vel_safety_gate-5] [INFO] [1786437155.984941596] [cmd_vel_safety_gate]: Safety gate state: trajectory_timeout
+[cmd_vel_safety_gate-5] [INFO] [1786437156.442525907] [cmd_vel_safety_gate]: Safety gate state: odometry_timeout
+[cmd_vel_safety_gate-5] [INFO] [1786437156.444861968] [cmd_vel_safety_gate]: Safety gate state: trajectory_timeout
+[cmd_vel_safety_gate-5] [INFO] [1786437156.949474518] [cmd_vel_safety_gate]: Safety gate state: odometry_timeout
+[cmd_vel_safety_gate-5] [INFO] [1786437156.954845730] [cmd_vel_safety_gate]: Safety gate state: trajectory_timeout
+[cmd_vel_safety_gate-5] [INFO] [1786437157.540307980] [cmd_vel_safety_gate]: Safety gate state: odometry_timeout
+[cmd_vel_safety_gate-5] [INFO] [1786437157.753218073] [cmd_vel_safety_gate]: Safety gate state: trajectory_timeout
+[cmd_vel_safety_gate-5] [INFO] [1786437157.819195737] [cmd_vel_safety_gate]: Safety gate state: odometry_timeout
+[cmd_vel_safety_gate-5] [INFO] [1786437157.819802120] [cmd_vel_safety_gate]: Safety gate state: trajectory_timeout
+[scan_planner_node-3] [WARN] [1786437157.911293109] [scan_planner_node]: Waiting for occupancy map initialization (1 fused cloud updates)
+[cmd_vel_safety_gate-5] [INFO] [1786437157.974875192] [cmd_vel_safety_gate]: Safety gate state: active
+[cmd_vel_safety_gate-5] [INFO] [1786437158.524967971] [cmd_vel_safety_gate]: Safety gate state: command_timeout
+[cmd_vel_safety_gate-5] [INFO] [1786437158.525117888] [cmd_vel_safety_gate]: Safety gate state: active
+[cmd_vel_safety_gate-5] [INFO] [1786437158.844714612] [cmd_vel_safety_gate]: Safety gate state: odometry_timeout
+[cmd_vel_safety_gate-5] [INFO] [1786437158.844921647] [cmd_vel_safety_gate]: Safety gate state: active
+[cmd_vel_safety_gate-5] [INFO] [1786437159.183305707] [cmd_vel_safety_gate]: Safety gate state: command_timeout
+[cmd_vel_safety_gate-5] [INFO] [1786437159.356121409] [cmd_vel_safety_gate]: Safety gate state: active
+[cmd_vel_safety_gate-5] [INFO] [1786437159.356311854] [cmd_vel_safety_gate]: Safety gate state: odometry_timeout
+[cmd_vel_safety_gate-5] [INFO] [1786437159.364824763] [cmd_vel_safety_gate]: Safety gate state: active
+[scan_planner_node-3] [ERROR] [1786437167.799535171] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=0 failures{init=0 search=4 initialization=4 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.062s iter=50206 generated=50206 rejects_collision=42481 outside_map=0 boundary=20477 start=[-24.420   8.172  -0.020] end=[-24.770   8.172  -0.020]}
+[scan_planner_node-3] [WARN] [1786437167.799574769] [scan_planner_node]: Local replan failed: start=[-23.944 8.143 -0.016], target=[-27.585 8.917 -0.035], raw_start_z=-0.305 start_z_correction=+0.289
+[scan_planner_node-3] [WARN] [1786437173.606271421] [scan_planner_node]: Local replan failed: start=[-26.981 8.716 -0.033], target=[-30.232 8.846 -0.061], raw_start_z=-0.314 start_z_correction=+0.280
+[scan_planner_node-3] [WARN] [1786437176.817344739] [scan_planner_node]: Refined trajectory is unsafe or dynamically infeasible; skipping publication
+[scan_planner_node-3] [WARN] [1786437176.817384241] [scan_planner_node]: Local replan failed: start=[-28.998 9.031 -0.049], target=[-31.045 7.050 -0.066], raw_start_z=-0.294 start_z_correction=+0.246
+[scan_planner_node-3] [WARN] [1786437177.158418344] [scan_planner_node]: Obstacle discovered; emergency stop in 0.130s
+[scan_planner_node-3] [ERROR] [1786437194.285150015] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=0 failures{init=0 search=4 initialization=4 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.043s iter=37045 generated=37045 rejects_collision=26397 outside_map=0 boundary=12433 start=[-32.083  -0.808  -0.111] end=[-31.833  -1.058  -0.111]}
+[scan_planner_node-3] [WARN] [1786437194.285197814] [scan_planner_node]: Local replan failed: start=[-32.353 -0.673 -0.114], target=[-29.560 -2.276 -0.091], raw_start_z=-0.404 start_z_correction=+0.290
+[scan_planner_node-3] [ERROR] [1786437195.399650303] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=0 failures{init=0 search=4 initialization=4 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.046s iter=40157 generated=40157 rejects_collision=18172 outside_map=0 boundary=12487 start=[-32.098  -0.846  -0.112] end=[-31.848  -0.996  -0.112]}
+[scan_planner_node-3] [WARN] [1786437195.399686123] [scan_planner_node]: Local replan failed: start=[-32.364 -0.737 -0.114], target=[-29.560 -2.276 -0.091], raw_start_z=-0.423 start_z_correction=+0.309
+[scan_planner_node-3] [WARN] [1786437197.815161552] [scan_planner_node]: Local target was adjusted to a nearby collision-free point
+[scan_planner_node-3] [WARN] [1786437199.365331089] [scan_planner_node]: Local target was adjusted to a nearby collision-free point
+[scan_planner_node-3] [WARN] [1786437200.863232875] [scan_planner_node]: Local replan failed: start=[-31.069 -1.805 -0.104], target=[-27.908 -2.036 -0.085], raw_start_z=-0.396 start_z_correction=+0.292
+[scan_planner_node-3] [ERROR] [1786437202.866678081] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=0 failures{init=0 search=4 initialization=4 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.065s iter=51360 generated=51360 rejects_collision=17669 outside_map=0 boundary=18493 start=[-29.028  -2.035  -0.062] end=[-28.078  -1.935  -0.062]}
+[scan_planner_node-3] [WARN] [1786437202.866720485] [scan_planner_node]: Local replan failed: start=[-29.871 -1.931 -0.090], target=[-27.655 -1.777 -0.044], raw_start_z=-0.413 start_z_correction=+0.323
+[scan_planner_node-3] [WARN] [1786437203.166021636] [scan_planner_node]: Refined trajectory is unsafe or dynamically infeasible; skipping publication
+[scan_planner_node-3] [ERROR] [1786437203.526779203] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=0 failures{init=0 search=4 initialization=4 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.064s iter=52123 generated=52123 rejects_collision=17724 outside_map=0 boundary=19955 start=[-28.869  -2.093  -0.069] end=[-28.469  -2.093  -0.069]}
+[scan_planner_node-3] [ERROR] [1786437203.807872341] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=0 failures{init=0 search=4 initialization=4 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.065s iter=52120 generated=52120 rejects_collision=17579 outside_map=0 boundary=19946 start=[-28.869  -2.093  -0.069] end=[-28.469  -2.093  -0.069]}
+[scan_planner_node-3] [WARN] [1786437204.106499784] [bspline_opt]: First three control points are in obstacles; t=0.118436
+[scan_planner_node-3] [WARN] [1786437204.106527560] [scan_planner_node]: Local replan failed: start=[-28.821 -2.132 -0.077], target=[-27.655 -1.777 -0.044], raw_start_z=-0.372 start_z_correction=+0.295
+[scan_planner_node-3] [WARN] [1786437204.106765291] [bspline_opt]: First three control points are in obstacles; t=0.119829
+[scan_planner_node-3] [WARN] [1786437204.278041444] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [ERROR] [1786437204.278082164] [bspline_opt]: [AStarSummary] plan=failed calls=1 success=0 failures{init=0 search=1 initialization=1 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.063s iter=51956 generated=51956 rejects_collision=18959 outside_map=0 boundary=18535 start=[-28.904  -2.131  -0.048] end=[-28.104  -1.981  -0.048]}
+[scan_planner_node-3] [WARN] [1786437204.278420120] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786437222.257616623] [scan_planner_node]: Local replan failed: start=[-27.163 0.374 -0.822], target=[-25.660 1.624 -2.292], raw_start_z=-1.087 start_z_correction=+0.265
+[scan_planner_node-3] [WARN] [1786437222.476443606] [bspline_opt]: First three control points are in obstacles; t=0.183605
+[scan_planner_node-3] [WARN] [1786437222.476783226] [bspline_opt]: First three control points are in obstacles; t=0.184014
+[scan_planner_node-3] [WARN] [1786437222.615390717] [bspline_opt]: First three control points are in obstacles; t=0.198874
+[scan_planner_node-3] [WARN] [1786437222.616851887] [scan_planner_node]: Refined trajectory is unsafe or dynamically infeasible; skipping publication
+[scan_planner_node-3] [WARN] [1786437222.760646319] [scan_planner_node]: Refined trajectory is unsafe or dynamically infeasible; skipping publication
+[scan_planner_node-3] [ERROR] [1786437222.942072942] [bspline_opt]: [AStarSummary] plan=failed calls=7 success=6 failures{init=0 search=1 initialization=1 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.060s iter=50265 generated=50265 rejects_collision=15716 outside_map=0 boundary=19055 start=[-26.605   1.362  -1.473] end=[-26.355   1.412  -1.523]}
+[scan_planner_node-3] [WARN] [1786437224.315966263] [scan_planner_node]: Local replan failed: start=[-27.259 1.193 -1.309], target=[-25.744 0.887 -2.731], raw_start_z=-1.512 start_z_correction=+0.203
+[scan_planner_node-3] [WARN] [1786437224.424160967] [scan_planner_node]: Refined trajectory is unsafe or dynamically infeasible; skipping publication
+[scan_planner_node-3] [ERROR] [1786437224.693932744] [bspline_opt]: [AStarSummary] plan=failed calls=3 success=1 failures{init=0 search=2 initialization=1 rebound=1} last{context=rebound reason=OPEN_SET_EMPTY elapsed=0.064s iter=49337 generated=49337 rejects_collision=14594 outside_map=0 boundary=16522 start=[-26.864   1.680  -1.608] end=[-26.614   1.780  -1.708]}
+[scan_planner_node-3] [WARN] [1786437224.693983865] [scan_planner_node]: Refined trajectory is unsafe or dynamically infeasible; skipping publication
+[scan_planner_node-3] [ERROR] [1786437226.024680480] [bspline_opt]: [AStarSummary] plan=failed calls=22 success=1 failures{init=0 search=21 initialization=0 rebound=21} last{context=rebound reason=OPEN_SET_EMPTY elapsed=0.060s iter=50391 generated=50391 rejects_collision=15691 outside_map=0 boundary=17472 start=[-26.592   1.711  -1.798] end=[-26.442   1.411  -1.948]}
+[scan_planner_node-3] [WARN] [1786437226.024722323] [scan_planner_node]: Local replan failed: start=[-27.164 1.440 -1.466], target=[-25.767 0.594 -2.929], raw_start_z=-1.466 start_z_correction=+0.000
+[scan_planner_node-3] [WARN] [1786437226.712365577] [scan_planner_node]: Obstacle discovered; emergency stop in 0.450s
+[scan_planner_node-3] [ERROR] [1786437230.783951633] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=0 failures{init=0 search=4 initialization=4 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.070s iter=55961 generated=55961 rejects_collision=11575 outside_map=0 boundary=20058 start=[-25.345   1.983  -2.599] end=[-25.395   1.533  -2.749]}
+[scan_planner_node-3] [WARN] [1786437230.783995000] [scan_planner_node]: Local replan failed: start=[-25.830 3.001 -1.978], target=[-26.089 -0.524 -3.661], raw_start_z=-2.295 start_z_correction=+0.316
+[scan_planner_node-3] [WARN] [1786437232.617939028] [scan_planner_node]: Obstacle discovered; emergency stop in 0.570s
+[cmd_vel_safety_gate-5] [INFO] [1786437234.499241295] [cmd_vel_safety_gate]: Safety gate state: odometry_timeout
+[cmd_vel_safety_gate-5] [INFO] [1786437234.504870801] [cmd_vel_safety_gate]: Safety gate state: active
+[cmd_vel_safety_gate-5] [INFO] [1786437237.134912134] [cmd_vel_safety_gate]: Safety gate state: odometry_timeout
+[real_go2_input_adapter-1] [WARN] [1786437243.316672734] []: Messages of type 1 arrived out of order (will print only once)
+[real_go2_input_adapter-1] [ERROR] [1786437243.316722634] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437244.322407432] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437245.326206846] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437246.326438873] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437247.326449113] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437248.327326078] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437249.332987750] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437250.333071426] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437251.349263111] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437252.378684555] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437253.382670944] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437254.386981416] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437255.387495386] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437256.392454499] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437257.392458667] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437258.396474966] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437259.396556021] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437260.396580892] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437261.396721421] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437262.402470131] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437263.402516702] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437264.406850053] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437265.408976697] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437266.412379535] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437267.416790420] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437268.427943934] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437269.433877722] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437270.478593360] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437271.482491531] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437272.482698788] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437273.486837097] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437274.486971956] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437275.492993398] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437276.496372918] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437277.496740573] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437278.508485870] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437279.509077120] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437280.512526931] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437281.522338385] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437282.529165343] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437283.529252694] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437284.532611405] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437285.543585330] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437286.545488717] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437287.546010033] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437288.572032109] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437289.572761425] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437290.576964187] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437291.582519734] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437292.582870377] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437293.588213733] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437294.592739630] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437295.597248300] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437296.608491084] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437297.613600293] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437298.616038725] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437299.617078490] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437300.623552334] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437301.626989090] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437302.630012909] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437303.633159560] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437304.643728885] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437305.647842910] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437306.676351577] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437307.676818365] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437308.676925308] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437309.677040859] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437310.682782332] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437311.683023055] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437312.688132493] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437313.688475587] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437314.692438206] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437315.692628888] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437316.693897369] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437317.696920993] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437318.702599519] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437319.702831368] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437320.706934566] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437321.707039834] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437322.707125428] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437323.709222650] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437324.712398617] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437325.712919938] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437326.722822569] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437327.727311545] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437328.732505979] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437329.777985382] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437330.782664453] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437331.782993586] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437332.783018847] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437333.783140275] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437334.787897651] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437335.793263370] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437336.794324185] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437337.796846425] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437338.803521991] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437339.807395780] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437340.813328138] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437341.817004552] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437342.817241487] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437343.817275744] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437344.817348902] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437345.822670181] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437346.822881663] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437347.824051897] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437348.829187824] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437349.829247710] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437350.832675137] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437351.833288996] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437352.880709983] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437353.882893801] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437354.883143790] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437355.887606400] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437356.887824667] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437357.893703227] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[real_go2_input_adapter-1] [ERROR] [1786437358.897490047] [real_go2_input_adapter]: non-monotonic lidar odometry timestamp
+[cmd_vel_safety_gate-5] [INFO] [1786437359.504858169] [cmd_vel_safety_gate]: Safety gate state: active
+[scan_planner_node-3] [WARN] [1786437359.885388010] [scan_planner_node]: Refined trajectory is unsafe or dynamically infeasible; skipping publication
+[scan_planner_node-3] [WARN] [1786437359.885411618] [scan_planner_node]: Local replan failed: start=[-25.724 0.760 -3.103], target=[-26.530 -0.988 -4.061], raw_start_z=-3.164 start_z_correction=+0.060
+[scan_planner_node-3] [ERROR] [1786437360.095863327] [bspline_opt]: [AStarSummary] plan=failed calls=10 success=6 failures{init=0 search=4 initialization=2 rebound=2} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.055s iter=56289 generated=56289 rejects_collision=23518 outside_map=0 boundary=17941 start=[-25.529   0.678  -3.122] end=[-25.029   0.128  -4.172]}
+[scan_planner_node-3] [WARN] [1786437360.096243764] [scan_planner_node]: Refined trajectory is unsafe or dynamically infeasible; skipping publication
+[scan_planner_node-3] [WARN] [1786437360.096991287] [scan_planner_node]: Refined trajectory is unsafe or dynamically infeasible; skipping publication
+[scan_planner_node-3] [ERROR] [1786437364.927418130] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786437364.929708666] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786437364.929721543] [scan_planner_node]: Local replan failed: start=[-25.914 -0.945 -3.877], target=[-26.530 -0.988 -4.061], raw_start_z=-4.323 start_z_correction=+0.446
+[scan_planner_node-3] [ERROR] [1786437364.929825553] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786437364.930983832] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786437373.666221378] [scan_planner_node]: Refined trajectory is unsafe or dynamically infeasible; skipping publication
+[scan_planner_node-3] [WARN] [1786437373.666247237] [scan_planner_node]: Local replan failed: start=[-27.528 -0.682 -4.214], target=[-26.512 2.367 -6.057], raw_start_z=-4.373 start_z_correction=+0.159
+[scan_planner_node-3] [ERROR] [1786437373.712447033] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=3 failures{init=0 search=1 initialization=1 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.045s iter=53149 generated=53149 rejects_collision=20814 outside_map=0 boundary=20600 start=[-27.154  -0.624  -4.376] end=[-26.454  -0.124  -4.676]}
+[scan_planner_node-3] [WARN] [1786437373.712473765] [scan_planner_node]: Refined trajectory is unsafe or dynamically infeasible; skipping publication
+[scan_planner_node-3] [WARN] [1786437375.055744934] [bspline_opt]: First three control points are in obstacles; t=0.174467
+[scan_planner_node-3] [WARN] [1786437375.055764018] [scan_planner_node]: Local replan failed: start=[-27.315 -0.204 -4.467], target=[-26.512 2.367 -6.057], raw_start_z=-4.760 start_z_correction=+0.293
+[scan_planner_node-3] [WARN] [1786437375.056112597] [bspline_opt]: First three control points are in obstacles; t=0.177650
+[scan_planner_node-3] [WARN] [1786437375.165257765] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786437376.280838249] [scan_planner_node]: Refined trajectory is unsafe or dynamically infeasible; skipping publication
+[scan_planner_node-3] [WARN] [1786437376.280872356] [scan_planner_node]: Local replan failed: start=[-27.249 0.306 -4.718], target=[-26.512 2.367 -6.057], raw_start_z=-5.072 start_z_correction=+0.354
+[scan_planner_node-3] [WARN] [1786437377.685185114] [scan_planner_node]: Local replan failed: start=[-27.182 0.650 -5.010], target=[-26.512 2.367 -6.057], raw_start_z=-5.306 start_z_correction=+0.296
+[scan_planner_node-3] [WARN] [1786437381.179180731] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786437381.179199087] [scan_planner_node]: Local replan failed: start=[-26.643 1.772 -5.865], target=[-26.512 2.367 -6.057], raw_start_z=-6.265 start_z_correction=+0.400
+[scan_planner_node-3] [WARN] [1786437381.179454485] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786437381.179457546] [scan_planner_node]: Obstacle discovered; emergency stop in 0.580s
+[scan_planner_node-3] [WARN] [1786437405.905386833] [scan_planner_node]: Refined trajectory is unsafe or dynamically infeasible; skipping publication
+[scan_planner_node-3] [WARN] [1786437405.905422632] [scan_planner_node]: Local replan failed: start=[-27.171 0.441 -8.820], target=[-27.072 1.606 -9.597], raw_start_z=-9.114 start_z_correction=+0.293
+[scan_planner_node-3] [ERROR] [1786437405.952292361] [bspline_opt]: [AStarSummary] plan=failed calls=1 success=0 failures{init=0 search=1 initialization=1 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.047s iter=55437 generated=55437 rejects_collision=16666 outside_map=0 boundary=17758 start=[-27.075   0.908  -9.155] end=[-27.225   1.358  -9.405]}
+[scan_planner_node-3] [WARN] [1786437405.952335548] [scan_planner_node]: Refined trajectory is unsafe or dynamically infeasible; skipping publication
+[scan_planner_node-3] [WARN] [1786437407.881274297] [scan_planner_node]: Local target is in collision and no nearby free target was found
+[scan_planner_node-3] [WARN] [1786437411.125155194] [scan_planner_node]: Obstacle discovered; emergency stop in 0.970s
+[scan_planner_node-3] [WARN] [1786437414.578326536] [scan_planner_node]: Refined trajectory is unsafe or dynamically infeasible; skipping publication
+[scan_planner_node-3] [WARN] [1786437414.578353165] [scan_planner_node]: Local replan failed: start=[-26.270 3.726 -10.671], target=[-25.467 2.461 -10.740], raw_start_z=-10.681 start_z_correction=+0.010
+[scan_planner_node-3] [ERROR] [1786437414.777914783] [bspline_opt]: [AStarSummary] plan=failed calls=3 success=1 failures{init=0 search=2 initialization=2 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.043s iter=51953 generated=51953 rejects_collision=10727 outside_map=0 boundary=21398 start=[-25.927   3.841 -10.667] end=[-25.677   3.791 -10.667]}
+[scan_planner_node-3] [WARN] [1786437414.777947020] [scan_planner_node]: Refined trajectory is unsafe or dynamically infeasible; skipping publication
+[scan_planner_node-3] [WARN] [1786437414.796395224] [scan_planner_node]: Refined trajectory is unsafe or dynamically infeasible; skipping publication
+[scan_planner_node-3] [WARN] [1786437420.385365536] [bspline_opt]: First three control points are in obstacles; t=0.091880
+[scan_planner_node-3] [WARN] [1786437420.385383459] [scan_planner_node]: Local replan failed: start=[-25.265 1.991 -11.126], target=[-25.967 -0.150 -12.580], raw_start_z=-11.454 start_z_correction=+0.328
+[scan_planner_node-3] [WARN] [1786437420.385670403] [bspline_opt]: First three control points are in obstacles; t=0.091901
+[scan_planner_node-3] [WARN] [1786437420.487631360] [bspline_opt]: First three control points are in obstacles; t=0.091817
+[scan_planner_node-3] [WARN] [1786437420.490561992] [bspline_opt]: First three control points are in obstacles; t=0.091878
+[scan_planner_node-3] [WARN] [1786437420.598983458] [bspline_opt]: First three control points are in obstacles; t=0.184543
+[scan_planner_node-3] [WARN] [1786437420.599345257] [bspline_opt]: First three control points are in obstacles; t=0.184519
+[scan_planner_node-3] [WARN] [1786437421.815354097] [bspline_opt]: First three control points are in obstacles; t=0.207076
+[scan_planner_node-3] [WARN] [1786437421.815376034] [scan_planner_node]: Local replan failed: start=[-25.427 1.380 -11.496], target=[-25.967 -0.150 -12.580], raw_start_z=-11.932 start_z_correction=+0.435
+[scan_planner_node-3] [ERROR] [1786437421.863714365] [bspline_opt]: [AStarSummary] plan=failed calls=5 success=4 failures{init=0 search=1 initialization=1 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.043s iter=52359 generated=52359 rejects_collision=21605 outside_map=0 boundary=16025 start=[-25.229   1.247 -11.609] end=[-25.279   1.097 -11.859]}
+[scan_planner_node-3] [WARN] [1786437422.935242138] [scan_planner_node]: Refined trajectory is unsafe or dynamically infeasible; skipping publication
+[scan_planner_node-3] [WARN] [1786437422.935263605] [scan_planner_node]: Local replan failed: start=[-25.646 0.920 -11.965], target=[-25.967 -0.150 -12.580], raw_start_z=-12.289 start_z_correction=+0.324
+[scan_planner_node-3] [WARN] [1786437422.935387286] [scan_planner_node]: Refined trajectory is unsafe or dynamically infeasible; skipping publication
+[scan_planner_node-3] [WARN] [1786437423.585219771] [scan_planner_node]: Refined trajectory is unsafe or dynamically infeasible; skipping publication
+[scan_planner_node-3] [WARN] [1786437423.585322146] [scan_planner_node]: Refined trajectory is unsafe or dynamically infeasible; skipping publication
+[scan_planner_node-3] [ERROR] [1786437426.346376698] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=0 failures{init=0 search=4 initialization=4 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.043s iter=47973 generated=47973 rejects_collision=17976 outside_map=0 boundary=19616 start=[-25.812  -1.009 -12.478] end=[-26.162  -1.259 -12.478]}
+[scan_planner_node-3] [WARN] [1786437426.346414689] [scan_planner_node]: Local replan failed: start=[-25.789 -0.476 -12.524], target=[-26.629 -1.650 -12.435], raw_start_z=-12.733 start_z_correction=+0.209
+[scan_planner_node-3] [ERROR] [1786437426.389235014] [bspline_opt]: [AStarSummary] plan=failed calls=1 success=0 failures{init=0 search=1 initialization=0 rebound=1} last{context=rebound reason=OPEN_SET_EMPTY elapsed=0.043s iter=46468 generated=46468 rejects_collision=16666 outside_map=0 boundary=16427 start=[-25.808  -0.994 -12.481] end=[-26.108  -1.294 -12.481]}
+[scan_planner_node-3] [WARN] [1786437427.355150891] [scan_planner_node]: Local target was adjusted to a nearby collision-free point
+[scan_planner_node-3] [WARN] [1786437440.435152429] [scan_planner_node]: Local target was adjusted to a nearby collision-free point
+[scan_planner_node-3] [WARN] [1786437442.841536534] [scan_planner_node]: Local replan failed: start=[-31.574 -2.035 -12.588], target=[-32.311 0.943 -12.490], raw_start_z=-12.846 start_z_correction=+0.258
+[scan_planner_node-3] [ERROR] [1786437442.974152438] [bspline_opt]: [AStarSummary] plan=failed calls=9 success=6 failures{init=0 search=3 initialization=0 rebound=3} last{context=rebound reason=OPEN_SET_EMPTY elapsed=0.045s iter=50396 generated=50396 rejects_collision=23265 outside_map=0 boundary=19337 start=[-31.475  -1.353 -12.558] end=[-31.875  -0.603 -12.558]}
+[scan_planner_node-3] [ERROR] [1786437443.069756688] [bspline_opt]: [AStarSummary] plan=failed calls=7 success=5 failures{init=0 search=2 initialization=2 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.048s iter=52600 generated=52600 rejects_collision=19476 outside_map=0 boundary=17577 start=[-31.850  -0.594 -12.523] end=[-31.850  -0.544 -12.523]}
+[scan_planner_node-3] [ERROR] [1786437443.265583544] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=0 failures{init=0 search=4 initialization=4 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.048s iter=51554 generated=51554 rejects_collision=18087 outside_map=0 boundary=20033 start=[-31.407  -1.296 -12.557] end=[-31.657  -1.046 -12.557]}
+[scan_planner_node-3] [ERROR] [1786437443.313098668] [bspline_opt]: [AStarSummary] plan=failed calls=6 success=5 failures{init=0 search=1 initialization=1 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.046s iter=51488 generated=51488 rejects_collision=18456 outside_map=0 boundary=19433 start=[-31.706  -1.038 -12.552] end=[-31.706  -0.988 -12.552]}
+[scan_planner_node-3] [WARN] [1786437444.435289125] [scan_planner_node]: Local replan failed: start=[-31.880 -1.981 -12.594], target=[-32.194 1.273 -12.493], raw_start_z=-12.874 start_z_correction=+0.280
+[scan_planner_node-3] [WARN] [1786437445.685280277] [scan_planner_node]: Local replan failed: start=[-31.874 -1.982 -12.594], target=[-32.194 1.273 -12.493], raw_start_z=-12.878 start_z_correction=+0.284
+[scan_planner_node-3] [WARN] [1786437445.787041086] [scan_planner_node]: Refined trajectory is unsafe or dynamically infeasible; skipping publication
+[scan_planner_node-3] [ERROR] [1786437446.424219899] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=3 failures{init=0 search=1 initialization=1 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.045s iter=51828 generated=51828 rejects_collision=24097 outside_map=0 boundary=17255 start=[-32.570  -0.877 -12.548] end=[-32.420  -0.377 -12.548]}
+[scan_planner_node-3] [WARN] [1786437446.687161511] [scan_planner_node]: Local replan failed: start=[-31.874 -1.985 -12.594], target=[-32.194 1.273 -12.493], raw_start_z=-12.594 start_z_correction=+0.000
+[scan_planner_node-3] [WARN] [1786437447.805250770] [scan_planner_node]: Local replan failed: start=[-31.873 -1.987 -12.594], target=[-32.194 1.273 -12.493], raw_start_z=-12.876 start_z_correction=+0.282
+[scan_planner_node-3] [ERROR] [1786437448.008926314] [bspline_opt]: [AStarSummary] plan=failed calls=5 success=3 failures{init=0 search=2 initialization=2 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.047s iter=53283 generated=53283 rejects_collision=16212 outside_map=0 boundary=18078 start=[-32.608  -0.283 -12.532] end=[-32.558   0.167 -12.532]}
+[scan_planner_node-3] [WARN] [1786437449.125362992] [scan_planner_node]: Local replan failed: start=[-31.876 -1.971 -12.594], target=[-32.194 1.273 -12.493], raw_start_z=-12.880 start_z_correction=+0.286
+[scan_planner_node-3] [WARN] [1786437450.778744890] [scan_planner_node]: Local replan failed: start=[-31.903 -2.031 -12.594], target=[-32.194 1.273 -12.493], raw_start_z=-12.871 start_z_correction=+0.277
+[scan_planner_node-3] [WARN] [1786437452.245240469] [scan_planner_node]: Local replan failed: start=[-32.034 -2.034 -12.594], target=[-32.194 1.273 -12.493], raw_start_z=-12.878 start_z_correction=+0.284
+[scan_planner_node-3] [WARN] [1786437452.347009476] [bspline_opt]: [AStarSummary] plan=success calls=3 success=2 failures{init=0 search=1 initialization=0 rebound=1} last{context=rebound reason=OPEN_SET_EMPTY elapsed=0.000s iter=8 generated=8 rejects_collision=84 outside_map=0 boundary=0 start=[-32.699  -0.769 -12.544] end=[-32.599  -0.269 -12.544]}
+[scan_planner_node-3] [WARN] [1786437452.626261748] [bspline_opt]: [AStarSummary] plan=success calls=2 success=1 failures{init=0 search=1 initialization=0 rebound=1} last{context=rebound reason=OPEN_SET_EMPTY elapsed=0.041s iter=48767 generated=48767 rejects_collision=23620 outside_map=0 boundary=17210 start=[-32.792  -0.933 -12.562] end=[-32.842  -0.683 -12.562]}
+[scan_planner_node-3] [WARN] [1786437453.795202692] [scan_planner_node]: Local replan failed: start=[-32.102 -1.896 -12.596], target=[-32.194 1.273 -12.493], raw_start_z=-12.896 start_z_correction=+0.300
+[scan_planner_node-3] [WARN] [1786437454.815383604] [scan_planner_node]: Local replan failed: start=[-32.105 -1.814 -12.596], target=[-32.194 1.273 -12.493], raw_start_z=-12.886 start_z_correction=+0.290
+[scan_planner_node-3] [WARN] [1786437455.135100563] [scan_planner_node]: Local target was adjusted to a nearby collision-free point
+[scan_planner_node-3] [WARN] [1786437466.265216018] [bspline_opt]: First three control points are in obstacles; t=0.091678
+[scan_planner_node-3] [WARN] [1786437466.265234836] [scan_planner_node]: Local replan failed: start=[-32.118 -1.845 -12.596], target=[-32.194 1.273 -12.493], raw_start_z=-12.882 start_z_correction=+0.286
+[scan_planner_node-3] [WARN] [1786437466.265880747] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786437466.265906292] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786437466.265917148] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786437466.265920785] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786437466.365920739] [bspline_opt]: First three control points are in obstacles; t=0.091680
+[scan_planner_node-3] [WARN] [1786437468.856997561] [bspline_opt]: First three control points are in obstacles; t=0.091679
+[scan_planner_node-3] [WARN] [1786437468.857015598] [scan_planner_node]: Local replan failed: start=[-32.118 -1.844 -12.596], target=[-32.194 1.273 -12.493], raw_start_z=-12.880 start_z_correction=+0.284
+[scan_planner_node-3] [WARN] [1786437468.963095526] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786437468.963122940] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [ERROR] [1786437468.963145134] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=2 failures{init=0 search=2 initialization=2 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.055s iter=58134 generated=58134 rejects_collision=15200 outside_map=0 boundary=20324 start=[-32.172  -0.440 -12.539] end=[-32.072  -0.190 -12.539]}
+[scan_planner_node-3] [WARN] [1786437468.965179178] [bspline_opt]: First three control points are in obstacles; t=0.091679
+[scan_planner_node-3] [ERROR] [1786437477.004191919] [bspline_opt]: [AStarSummary] plan=failed calls=8 success=4 failures{init=0 search=4 initialization=4 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.046s iter=52173 generated=52173 rejects_collision=20655 outside_map=0 boundary=21968 start=[-31.416  -2.109 -12.578] end=[-31.266  -2.159 -12.578]}
+[scan_planner_node-3] [WARN] [1786437477.004227400] [scan_planner_node]: Local replan failed: start=[-32.114 -1.856 -12.592], target=[-28.523 -2.381 -12.529], raw_start_z=-12.884 start_z_correction=+0.291
+[scan_planner_node-3] [WARN] [1786437481.825230736] [scan_planner_node]: Local target was adjusted to a nearby collision-free point
+[scan_planner_node-3] [ERROR] [1786437485.177718941] [bspline_opt]: [AStarSummary] plan=failed calls=3 success=2 failures{init=0 search=1 initialization=1 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.042s iter=50259 generated=50259 rejects_collision=24284 outside_map=0 boundary=17597 start=[-26.637  -1.530 -12.485] end=[-26.487  -1.380 -12.485]}
+[scan_planner_node-3] [WARN] [1786437485.177752059] [scan_planner_node]: Refined trajectory is unsafe or dynamically infeasible; skipping publication
+[scan_planner_node-3] [WARN] [1786437485.177771247] [scan_planner_node]: Local replan failed: start=[-27.662 -2.460 -12.535], target=[-26.133 -0.054 -12.440], raw_start_z=-12.806 start_z_correction=+0.271
+[scan_planner_node-3] [WARN] [1786437486.625455299] [bspline_opt]: Trajectory terminal point is in an obstacle; skip this plan
+[scan_planner_node-3] [WARN] [1786437486.625477756] [scan_planner_node]: Local replan failed: start=[-26.907 -2.206 -12.469], target=[-26.133 -0.054 -12.440], raw_start_z=-12.790 start_z_correction=+0.321
+[scan_planner_node-3] [ERROR] [1786437486.776964967] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=0 failures{init=0 search=4 initialization=4 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.039s iter=45131 generated=45131 rejects_collision=30327 outside_map=0 boundary=16774 start=[-26.658  -2.040 -12.465] end=[-26.608  -1.890 -12.465]}
+[scan_planner_node-3] [WARN] [1786437486.777349798] [bspline_opt]: Trajectory terminal point is in an obstacle; skip this plan
+[scan_planner_node-3] [ERROR] [1786437486.941046553] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=0 failures{init=0 search=4 initialization=4 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.042s iter=44737 generated=44737 rejects_collision=33485 outside_map=0 boundary=16561 start=[-26.679  -2.079 -12.464] end=[-26.429  -1.529 -12.464]}
+[scan_planner_node-3] [WARN] [1786437490.265706764] [scan_planner_node]: Refined trajectory is unsafe or dynamically infeasible; skipping publication
+[scan_planner_node-3] [WARN] [1786437490.265728924] [scan_planner_node]: Local replan failed: start=[-26.041 -0.439 -12.440], target=[-25.467 2.481 -10.729], raw_start_z=-12.831 start_z_correction=+0.391
+[scan_planner_node-3] [ERROR] [1786437490.358956236] [bspline_opt]: [AStarSummary] plan=failed calls=7 success=5 failures{init=0 search=2 initialization=2 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.046s iter=51018 generated=51018 rejects_collision=24129 outside_map=0 boundary=17672 start=[-25.137  -1.557 -12.861] end=[-25.487   0.193 -11.911]}
+[scan_planner_node-3] [WARN] [1786437496.685196621] [scan_planner_node]: Local replan failed: start=[-25.694 1.184 -11.568], target=[-26.272 3.206 -10.666], raw_start_z=-11.997 start_z_correction=+0.429
+[scan_planner_node-3] [WARN] [1786437496.685466465] [scan_planner_node]: Refined trajectory is unsafe or dynamically infeasible; skipping publication
+[scan_planner_node-3] [WARN] [1786437497.217552250] [scan_planner_node]: Refined trajectory is unsafe or dynamically infeasible; skipping publication
+[scan_planner_node-3] [WARN] [1786437497.745752660] [scan_planner_node]: Local replan failed: start=[-25.556 1.515 -11.471], target=[-26.272 3.206 -10.666], raw_start_z=-11.741 start_z_correction=+0.270
+[scan_planner_node-3] [ERROR] [1786437498.044097855] [bspline_opt]: [AStarSummary] plan=failed calls=11 success=9 failures{init=0 search=2 initialization=0 rebound=2} last{context=rebound reason=OPEN_SET_EMPTY elapsed=0.039s iter=45904 generated=45904 rejects_collision=27841 outside_map=0 boundary=20178 start=[-26.062   1.022 -11.414] end=[-26.462   2.872 -10.814]}
+[scan_planner_node-3] [ERROR] [1786437498.316938010] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=0 failures{init=0 search=4 initialization=4 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.038s iter=44145 generated=44145 rejects_collision=17584 outside_map=0 boundary=18593 start=[-25.660   1.758 -11.211] end=[-25.810   1.808 -11.161]}
+[scan_planner_node-3] [ERROR] [1786437499.520422676] [bspline_opt]: [AStarSummary] plan=failed calls=5 success=0 failures{init=0 search=5 initialization=4 rebound=1} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.038s iter=43198 generated=43198 rejects_collision=16954 outside_map=0 boundary=19986 start=[-25.602   2.395 -10.923] end=[-25.852   2.745 -10.873]}
+[scan_planner_node-3] [WARN] [1786437499.520461148] [scan_planner_node]: Local replan failed: start=[-25.377 2.069 -11.111], target=[-26.272 3.206 -10.666], raw_start_z=-11.462 start_z_correction=+0.351
+[scan_planner_node-3] [ERROR] [1786437499.714972858] [bspline_opt]: [AStarSummary] plan=failed calls=5 success=0 failures{init=0 search=5 initialization=4 rebound=1} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.039s iter=43198 generated=43198 rejects_collision=17007 outside_map=0 boundary=19986 start=[-25.602   2.395 -10.923] end=[-25.852   2.745 -10.873]}
+[scan_planner_node-3] [WARN] [1786437501.432875156] [bspline_opt]: [AStarSummary] plan=success calls=1 success=0 failures{init=0 search=1 initialization=1 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.038s iter=41274 generated=41274 rejects_collision=18073 outside_map=0 boundary=19584 start=[-25.445   2.852 -10.689] end=[-25.595   2.902 -10.689]}
+[scan_planner_node-3] [WARN] [1786437508.945214019] [scan_planner_node]: Refined trajectory is unsafe or dynamically infeasible; skipping publication
+[scan_planner_node-3] [WARN] [1786437508.945243884] [scan_planner_node]: Local replan failed: start=[-26.587 3.168 -10.545], target=[-26.767 2.168 -9.998], raw_start_z=-10.781 start_z_correction=+0.236
+[scan_planner_node-3] [WARN] [1786437518.715181196] [scan_planner_node]: Local replan failed: start=[-26.991 0.523 -8.941], target=[-27.167 0.169 -8.438], raw_start_z=-9.375 start_z_correction=+0.434
+[scan_planner_node-3] [WARN] [1786437518.715315888] [scan_planner_node]: Refined trajectory is unsafe or dynamically infeasible; skipping publication
+[scan_planner_node-3] [WARN] [1786437518.725177337] [scan_planner_node]: Reference start-Z projection rejected: odom/start_z=-9.372 reference_z=-8.438 correction=+0.934 exceeds/violates 0.600 m guard
+[scan_planner_node-3] [WARN] [1786437518.935097657] [scan_planner_node]: Local target was adjusted to a nearby collision-free point
+[scan_planner_node-3] [ERROR] [1786437519.238664474] [bspline_opt]: [AStarSummary] plan=failed calls=6 success=4 failures{init=0 search=2 initialization=2 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.040s iter=44876 generated=44876 rejects_collision=18056 outside_map=0 boundary=19451 start=[-26.794   0.162  -8.885] end=[-26.794  -0.038  -8.785]}
+[scan_planner_node-3] [WARN] [1786437519.238964111] [scan_planner_node]: Refined trajectory is unsafe or dynamically infeasible; skipping publication
+[scan_planner_node-3] [ERROR] [1786437519.444546144] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=0 failures{init=0 search=4 initialization=4 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.045s iter=47587 generated=47587 rejects_collision=24747 outside_map=0 boundary=19606 start=[-26.834   0.352  -9.055] end=[-26.384  -0.598  -8.305]}
+[scan_planner_node-3] [ERROR] [1786437519.627909903] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=0 failures{init=0 search=4 initialization=4 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.046s iter=47587 generated=47587 rejects_collision=25021 outside_map=0 boundary=19606 start=[-26.834   0.352  -9.055] end=[-26.384  -0.598  -8.305]}
+[scan_planner_node-3] [ERROR] [1786437519.799097287] [bspline_opt]: [AStarSummary] plan=failed calls=8 success=4 failures{init=0 search=4 initialization=4 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.042s iter=45441 generated=45441 rejects_collision=21149 outside_map=0 boundary=19220 start=[-26.729   0.292  -8.944] end=[-26.679  -0.258  -8.594]}
+[scan_planner_node-3] [WARN] [1786437519.799130142] [scan_planner_node]: Local replan failed: start=[-27.025 0.405 -9.191], target=[-26.440 -0.962 -8.120], raw_start_z=-9.191 start_z_correction=+0.000
+[scan_planner_node-3] [WARN] [1786437519.812483854] [bspline_opt]: First three control points are in obstacles; t=0.241122
+[scan_planner_node-3] [WARN] [1786437519.812609794] [bspline_opt]: First three control points are in obstacles; t=0.241224
+[scan_planner_node-3] [WARN] [1786437519.915241143] [bspline_opt]: First three control points are in obstacles; t=0.122358
+[scan_planner_node-3] [WARN] [1786437519.915831240] [bspline_opt]: First three control points are in obstacles; t=0.122294
+[scan_planner_node-3] [WARN] [1786437520.015260085] [bspline_opt]: First three control points are in obstacles; t=0.124610
+[scan_planner_node-3] [WARN] [1786437520.015396054] [bspline_opt]: First three control points are in obstacles; t=0.124624
+[scan_planner_node-3] [WARN] [1786437520.115280708] [bspline_opt]: First three control points are in obstacles; t=0.232233
+[scan_planner_node-3] [WARN] [1786437520.115440532] [bspline_opt]: First three control points are in obstacles; t=0.233482
+[scan_planner_node-3] [ERROR] [1786437520.297177311] [bspline_opt]: [AStarSummary] plan=failed calls=3 success=1 failures{init=0 search=2 initialization=2 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.042s iter=45767 generated=45767 rejects_collision=17575 outside_map=0 boundary=19065 start=[-26.846   0.109  -8.342] end=[-26.796  -0.041  -8.342]}
+[scan_planner_node-3] [ERROR] [1786437520.508884060] [bspline_opt]: [AStarSummary] plan=failed calls=5 success=0 failures{init=0 search=5 initialization=4 rebound=1} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.042s iter=45767 generated=45767 rejects_collision=17575 outside_map=0 boundary=19065 start=[-26.847   0.112  -8.348] end=[-26.797  -0.038  -8.348]}
+[scan_planner_node-3] [ERROR] [1786437520.592338005] [bspline_opt]: [AStarSummary] plan=failed calls=3 success=1 failures{init=0 search=2 initialization=2 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.042s iter=45767 generated=45767 rejects_collision=17575 outside_map=0 boundary=19065 start=[-26.846   0.109  -8.342] end=[-26.796  -0.041  -8.342]}
+[scan_planner_node-3] [ERROR] [1786437520.790570730] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=0 failures{init=0 search=4 initialization=4 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.043s iter=46979 generated=46979 rejects_collision=17807 outside_map=0 boundary=20107 start=[-26.941  -0.048  -8.427] end=[-26.591  -0.298  -8.277]}
+[scan_planner_node-3] [ERROR] [1786437520.964351607] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=0 failures{init=0 search=4 initialization=4 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.043s iter=46979 generated=46979 rejects_collision=17824 outside_map=0 boundary=20107 start=[-26.941  -0.048  -8.427] end=[-26.591  -0.298  -8.277]}
+[scan_planner_node-3] [WARN] [1786437520.964390925] [scan_planner_node]: Local replan failed: start=[-27.082 -0.093 -8.438], target=[-26.440 -0.962 -8.120], raw_start_z=-8.751 start_z_correction=+0.313
+[scan_planner_node-3] [WARN] [1786437520.964583279] [scan_planner_node]: Refined trajectory is unsafe or dynamically infeasible; skipping publication
+[scan_planner_node-3] [WARN] [1786437521.084364472] [scan_planner_node]: Obstacle discovered; emergency stop in 0.400s
+[scan_planner_node-3] [WARN] [1786437521.125116880] [scan_planner_node]: Obstacle discovered; emergency stop in 0.360s
+[scan_planner_node-3] [WARN] [1786437521.185312816] [scan_planner_node]: Obstacle discovered; emergency stop in 0.300s
+[scan_planner_node-3] [WARN] [1786437521.225133084] [scan_planner_node]: Obstacle discovered; emergency stop in 0.260s
+[scan_planner_node-3] [WARN] [1786437529.665153093] [scan_planner_node]: Local target is in collision and no nearby free target was found
+[scan_planner_node-3] [WARN] [1786437529.665217249] [bspline_opt]: Trajectory terminal point is in an obstacle; skip this plan
+[scan_planner_node-3] [WARN] [1786437529.665221286] [scan_planner_node]: Local replan failed: start=[-26.189 -1.433 -8.130], target=[-26.445 -0.967 -8.122], raw_start_z=-8.445 start_z_correction=+0.315
+[scan_planner_node-3] [WARN] [1786437529.665290093] [bspline_opt]: Trajectory terminal point is in an obstacle; skip this plan
+[scan_planner_node-3] [WARN] [1786437529.777996841] [bspline_opt]: Trajectory terminal point is in an obstacle; skip this plan
+[scan_planner_node-3] [WARN] [1786437529.778081406] [bspline_opt]: Trajectory terminal point is in an obstacle; skip this plan
+[scan_planner_node-3] [WARN] [1786437529.879070295] [bspline_opt]: Trajectory terminal point is in an obstacle; skip this plan
+[scan_planner_node-3] [WARN] [1786437529.879182980] [bspline_opt]: Trajectory terminal point is in an obstacle; skip this plan
+[scan_planner_node-3] [WARN] [1786437529.983685436] [bspline_opt]: Trajectory terminal point is in an obstacle; skip this plan
+[scan_planner_node-3] [WARN] [1786437529.983826874] [bspline_opt]: Trajectory terminal point is in an obstacle; skip this plan
+[scan_planner_node-3] [WARN] [1786437529.983834157] [scan_planner_node]: Obstacle discovered; emergency stop in 0.110s
+[scan_planner_node-3] [WARN] [1786437530.026188535] [scan_planner_node]: Obstacle discovered; emergency stop in 0.060s
+[scan_planner_node-3] [WARN] [1786437530.080035714] [scan_planner_node]: Obstacle discovered; emergency stop in 0.010s
+[scan_planner_node-3] [WARN] [1786437530.125151922] [bspline_opt]: Trajectory terminal point is in an obstacle; skip this plan
+[scan_planner_node-3] [WARN] [1786437530.125242695] [bspline_opt]: Trajectory terminal point is in an obstacle; skip this plan
+[scan_planner_node-3] [WARN] [1786437530.125246165] [scan_planner_node]: Obstacle discovered; emergency stop in 0.000s
+[scan_planner_node-3] [WARN] [1786437530.178167692] [scan_planner_node]: Obstacle discovered; emergency stop in 0.000s
+[scan_planner_node-3] [WARN] [1786437530.225187130] [bspline_opt]: Trajectory terminal point is in an obstacle; skip this plan
+[scan_planner_node-3] [WARN] [1786437530.236325606] [scan_planner_node]: Dynamic feasibility failed: acceleration at t=1.635 is 3.203 > 3.000
+[scan_planner_node-3] [WARN] [1786437530.236369721] [scan_planner_node]: Refined trajectory is unsafe or dynamically infeasible; skipping publication
+[scan_planner_node-3] [WARN] [1786437530.236376019] [scan_planner_node]: Obstacle discovered; emergency stop in 0.000s
+[scan_planner_node-3] [WARN] [1786437530.277169718] [scan_planner_node]: Obstacle discovered; emergency stop in 0.000s
+[scan_planner_node-3] [WARN] [1786437530.325133637] [scan_planner_node]: Obstacle discovered; emergency stop in 0.000s
+[scan_planner_node-3] [WARN] [1786437530.377287657] [bspline_opt]: Trajectory terminal point is in an obstacle; skip this plan
+[scan_planner_node-3] [WARN] [1786437530.377375940] [bspline_opt]: Trajectory terminal point is in an obstacle; skip this plan
+[scan_planner_node-3] [WARN] [1786437530.377379752] [scan_planner_node]: Obstacle discovered; emergency stop in 0.000s
+[scan_planner_node-3] [WARN] [1786437530.425128142] [scan_planner_node]: Obstacle discovered; emergency stop in 0.000s
+[scan_planner_node-3] [WARN] [1786437530.478051159] [bspline_opt]: Trajectory terminal point is in an obstacle; skip this plan
+[scan_planner_node-3] [WARN] [1786437530.478191369] [scan_planner_node]: Obstacle discovered; emergency stop in 0.000s
+[scan_planner_node-3] [WARN] [1786437530.525140036] [scan_planner_node]: Obstacle discovered; emergency stop in 0.000s
+[cmd_vel_safety_gate-5] [INFO] [1786437532.574854747] [cmd_vel_safety_gate]: Safety gate state: trajectory_timeout
+[cmd_vel_safety_gate-5] [INFO] [1786437547.794792905] [cmd_vel_safety_gate]: Safety gate state: active
+[scan_planner_node-3] [WARN] [1786437556.045105648] [scan_planner_node]: Reference start-Z projection rejected: odom/start_z=-4.936 reference_z=-4.239 correction=+0.697 exceeds/violates 0.600 m guard
+[scan_planner_node-3] [ERROR] [1786437556.085743366] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=3 failures{init=0 search=1 initialization=1 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.039s iter=45711 generated=45711 rejects_collision=24591 outside_map=0 boundary=17898 start=[-27.054   0.066  -4.983] end=[-26.954  -0.384  -4.483]}
+[scan_planner_node-3] [WARN] [1786437556.085778080] [scan_planner_node]: Local replan failed: start=[-27.332 0.057 -4.936], target=[-26.532 -0.988 -4.061], raw_start_z=-4.936 start_z_correction=+0.000
+[scan_planner_node-3] [ERROR] [1786437556.229418444] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=2 failures{init=0 search=2 initialization=2 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.042s iter=45518 generated=45518 rejects_collision=26713 outside_map=0 boundary=17804 start=[-27.114  -0.027  -4.979] end=[-26.864  -0.477  -4.379]}
+[scan_planner_node-3] [ERROR] [1786437556.412037958] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=0 failures{init=0 search=4 initialization=4 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.046s iter=48021 generated=48021 rejects_collision=23919 outside_map=0 boundary=18335 start=[-27.180   0.010  -5.101] end=[-26.930  -0.340  -4.501]}
+[scan_planner_node-3] [ERROR] [1786437556.500190085] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=2 failures{init=0 search=2 initialization=2 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.044s iter=45518 generated=45518 rejects_collision=25068 outside_map=0 boundary=17804 start=[-27.114  -0.027  -4.979] end=[-26.864  -0.477  -4.379]}
+[scan_planner_node-3] [ERROR] [1786437556.689374993] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=0 failures{init=0 search=4 initialization=4 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.047s iter=48267 generated=48267 rejects_collision=29581 outside_map=0 boundary=17422 start=[-27.171   0.030  -5.111] end=[-26.821  -0.420  -4.361]}
+[scan_planner_node-3] [ERROR] [1786437556.854374914] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=0 failures{init=0 search=4 initialization=4 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.038s iter=42753 generated=42753 rejects_collision=21648 outside_map=0 boundary=18193 start=[-27.058  -0.222  -4.593] end=[-26.658  -0.622  -4.293]}
+[scan_planner_node-3] [ERROR] [1786437557.009478748] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=0 failures{init=0 search=4 initialization=4 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.038s iter=42078 generated=42078 rejects_collision=22095 outside_map=0 boundary=18337 start=[-27.075  -0.190  -4.608] end=[-26.725  -0.540  -4.358]}
+[scan_planner_node-3] [WARN] [1786437557.009708930] [scan_planner_node]: Refined trajectory is unsafe or dynamically infeasible; skipping publication
+[scan_planner_node-3] [WARN] [1786437557.082183792] [scan_planner_node]: Obstacle discovered; emergency stop in 0.820s
+[scan_planner_node-3] [WARN] [1786437564.177944820] [scan_planner_node]: Local target is in collision and no nearby free target was found
+[scan_planner_node-3] [WARN] [1786437564.178031727] [bspline_opt]: Trajectory terminal point is in an obstacle; skip this plan
+[scan_planner_node-3] [WARN] [1786437564.178035883] [scan_planner_node]: Local replan failed: start=[-25.972 -1.471 -4.050], target=[-26.433 -0.955 -4.026], raw_start_z=-4.344 start_z_correction=+0.294
+[scan_planner_node-3] [WARN] [1786437564.178110992] [bspline_opt]: Trajectory terminal point is in an obstacle; skip this plan
+[scan_planner_node-3] [WARN] [1786437564.178113671] [scan_planner_node]: Obstacle discovered; emergency stop in 0.350s
+[scan_planner_node-3] [WARN] [1786437564.278476122] [bspline_opt]: Trajectory terminal point is in an obstacle; skip this plan
+[scan_planner_node-3] [WARN] [1786437564.385170937] [bspline_opt]: Trajectory terminal point is in an obstacle; skip this plan
+[scan_planner_node-3] [WARN] [1786437564.485178753] [bspline_opt]: Trajectory terminal point is in an obstacle; skip this plan
+[scan_planner_node-3] [WARN] [1786437564.585222277] [bspline_opt]: Trajectory terminal point is in an obstacle; skip this plan
+[scan_planner_node-3] [WARN] [1786437564.685457932] [bspline_opt]: Trajectory terminal point is in an obstacle; skip this plan
+[scan_planner_node-3] [WARN] [1786437564.795218868] [bspline_opt]: Trajectory terminal point is in an obstacle; skip this plan
+[scan_planner_node-3] [WARN] [1786437565.078246102] [bspline_opt]: Trajectory terminal point is in an obstacle; skip this plan
+[scan_planner_node-3] [WARN] [1786437565.078323448] [bspline_opt]: Trajectory terminal point is in an obstacle; skip this plan
+[scan_planner_node-3] [WARN] [1786437565.078326462] [scan_planner_node]: Obstacle discovered; emergency stop in 0.810s
+[scan_planner_node-3] [WARN] [1786437565.185134929] [scan_planner_node]: Local target is in collision and no nearby free target was found
+[scan_planner_node-3] [WARN] [1786437565.185195912] [bspline_opt]: Trajectory terminal point is in an obstacle; skip this plan
+[scan_planner_node-3] [WARN] [1786437565.185199804] [scan_planner_node]: Local replan failed: start=[-26.030 -1.365 -4.035], target=[-26.433 -0.955 -4.026], raw_start_z=-4.335 start_z_correction=+0.300
+[scan_planner_node-3] [WARN] [1786437565.378130527] [scan_planner_node]: Obstacle discovered; emergency stop in 0.880s
+[scan_planner_node-3] [WARN] [1786437571.955096496] [scan_planner_node]: Reference start-Z projection rejected: odom/start_z=-2.850 reference_z=-2.153 correction=+0.696 exceeds/violates 0.600 m guard
+[scan_planner_node-3] [WARN] [1786437571.955198018] [scan_planner_node]: Local replan failed: start=[-25.655 1.399 -2.850], target=[-26.455 2.312 -1.916], raw_start_z=-2.850 start_z_correction=+0.000
+[scan_planner_node-3] [WARN] [1786437572.065911775] [scan_planner_node]: Refined trajectory is unsafe or dynamically infeasible; skipping publication
+[scan_planner_node-3] [ERROR] [1786437572.531700249] [bspline_opt]: [AStarSummary] plan=failed calls=2 success=0 failures{init=0 search=2 initialization=0 rebound=2} last{context=rebound reason=OPEN_SET_EMPTY elapsed=0.023s iter=27632 generated=27632 rejects_collision=18948 outside_map=0 boundary=8857 start=[-25.771   1.844  -2.097] end=[-26.171   2.144  -1.997]}
+[scan_planner_node-3] [WARN] [1786437573.282713989] [scan_planner_node]: Local replan failed: start=[-25.650 1.987 -2.110], target=[-26.455 2.312 -1.916], raw_start_z=-2.356 start_z_correction=+0.247
+[scan_planner_node-3] [ERROR] [1786437580.569143901] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=0 failures{init=0 search=4 initialization=4 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.042s iter=45192 generated=45192 rejects_collision=23313 outside_map=0 boundary=21323 start=[-26.523   2.312  -1.855] end=[-25.823   1.912  -1.355]}
+[scan_planner_node-3] [WARN] [1786437580.569180377] [scan_planner_node]: Local replan failed: start=[-26.774 2.399 -1.931], target=[-27.300 -0.431 -0.217], raw_start_z=-2.286 start_z_correction=+0.354
+[scan_planner_node-3] [ERROR] [1786437580.739726795] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=0 failures{init=0 search=4 initialization=4 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.043s iter=45192 generated=45192 rejects_collision=23511 outside_map=0 boundary=21323 start=[-26.523   2.312  -1.855] end=[-25.823   1.912  -1.355]}
+[scan_planner_node-3] [WARN] [1786437580.740199426] [scan_planner_node]: Refined trajectory is unsafe or dynamically infeasible; skipping publication
+[scan_planner_node-3] [WARN] [1786437584.845222844] [scan_planner_node]: Refined trajectory is unsafe or dynamically infeasible; skipping publication
+[scan_planner_node-3] [WARN] [1786437584.845248517] [scan_planner_node]: Local replan failed: start=[-27.463 -0.583 -0.156], target=[-27.467 -1.044 -0.075], raw_start_z=-0.427 start_z_correction=+0.271
+[scan_planner_node-3] [WARN] [1786437584.845352964] [scan_planner_node]: Refined trajectory is unsafe or dynamically infeasible; skipping publication
+[scan_planner_node-3] [ERROR] [1786437585.467289680] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=0 failures{init=0 search=4 initialization=4 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.047s iter=50187 generated=50187 rejects_collision=20169 outside_map=0 boundary=15636 start=[-27.677  -0.898  -0.079] end=[-28.727  -1.848  -0.079]}
+[scan_planner_node-3] [ERROR] [1786437585.472525513] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [ERROR] [1786437585.535646229] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=3 failures{init=0 search=1 initialization=0 rebound=1} last{context=rebound reason=OPEN_SET_EMPTY elapsed=0.052s iter=53604 generated=53604 rejects_collision=16433 outside_map=0 boundary=19841 start=[-27.907  -2.239  -0.081] end=[-28.907  -2.589  -0.081]}
+[scan_planner_node-3] [ERROR] [1786437585.971680010] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=0 failures{init=0 search=4 initialization=4 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.046s iter=50193 generated=50193 rejects_collision=18736 outside_map=0 boundary=17836 start=[-27.710  -1.361  -0.081] end=[-28.760  -1.911  -0.081]}
+[scan_planner_node-3] [WARN] [1786437585.971712080] [scan_planner_node]: Local replan failed: start=[-27.594 -1.250 -0.079], target=[-30.468 -2.170 -0.089], raw_start_z=-0.079 start_z_correction=+0.000
+[scan_planner_node-3] [ERROR] [1786437586.134850700] [bspline_opt]: [AStarSummary] plan=failed calls=11 success=10 failures{init=0 search=1 initialization=1 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.018s iter=21931 generated=21931 rejects_collision=10906 outside_map=0 boundary=4403 start=[-27.677  -1.141  -0.081] end=[-28.727  -0.791  -0.081]}
+[scan_planner_node-3] [ERROR] [1786437586.247506426] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=0 failures{init=0 search=4 initialization=4 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.017s iter=18803 generated=18803 rejects_collision=10705 outside_map=0 boundary=4382 start=[-27.765  -1.429  -0.082] end=[-28.815  -1.879  -0.082]}
+[scan_planner_node-3] [ERROR] [1786437586.309913012] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=0 failures{init=0 search=4 initialization=4 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.016s iter=17780 generated=17780 rejects_collision=9368 outside_map=0 boundary=4652 start=[-27.805  -1.439  -0.082] end=[-28.905  -2.039  -0.082]}
+[scan_planner_node-3] [ERROR] [1786437586.378090108] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=0 failures{init=0 search=4 initialization=4 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.017s iter=18861 generated=18861 rejects_collision=10772 outside_map=0 boundary=4511 start=[-27.785  -1.421  -0.082] end=[-28.835  -1.871  -0.082]}
+[scan_planner_node-3] [WARN] [1786437587.051392935] [scan_planner_node]: Local replan failed: start=[-27.584 -1.363 -0.080], target=[-30.644 -2.179 -0.093], raw_start_z=-0.321 start_z_correction=+0.241
+[scan_planner_node-3] [ERROR] [1786437587.267000335] [bspline_opt]: [AStarSummary] plan=failed calls=9 success=7 failures{init=0 search=2 initialization=2 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.054s iter=59498 generated=59498 rejects_collision=10352 outside_map=0 boundary=16920 start=[-27.983  -0.577  -0.081] end=[-28.133  -0.527  -0.081]}
+[scan_planner_node-3] [ERROR] [1786437587.388743215] [bspline_opt]: [AStarSummary] plan=failed calls=9 success=7 failures{init=0 search=2 initialization=2 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.057s iter=59498 generated=59498 rejects_collision=10338 outside_map=0 boundary=16920 start=[-27.983  -0.577  -0.081] end=[-28.133  -0.527  -0.081]}
+[scan_planner_node-3] [WARN] [1786437587.391469740] [scan_planner_node]: Replan failed 20 times; emergency stop, then retry retained target after 1.00s
+[scan_planner_node-3] [WARN] [1786437588.395165101] [scan_planner_node]: Failure cooldown elapsed; retrying the retained target from current odometry
+[scan_planner_node-3] [WARN] [1786437589.319710118] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [ERROR] [1786437589.319744974] [bspline_opt]: [AStarSummary] plan=failed calls=1 success=0 failures{init=0 search=1 initialization=1 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.042s iter=48992 generated=48992 rejects_collision=14078 outside_map=0 boundary=16248 start=[-27.028  -1.085  -0.080] end=[-27.778  -1.385  -0.080]}
+[scan_planner_node-3] [WARN] [1786437589.319761452] [scan_planner_node]: Local replan failed: start=[-27.578 -1.336 -0.080], target=[-30.644 -2.179 -0.093], raw_start_z=-0.361 start_z_correction=+0.282
+[scan_planner_node-3] [ERROR] [1786437589.322222501] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786437589.324684567] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786437589.324695741] [scan_planner_node]: Obstacle discovered; emergency stop in 0.000s
+[scan_planner_node-3] [WARN] [1786437589.388336640] [scan_planner_node]: Refined trajectory is unsafe or dynamically infeasible; skipping publication
+[scan_planner_node-3] [WARN] [1786437589.498904482] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [ERROR] [1786437589.596789614] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786437589.597607019] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786437589.706228144] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786437589.816716301] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [ERROR] [1786437589.931966185] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786437589.934780259] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786437590.036794920] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786437590.142494543] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786437590.246138146] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786437593.565585028] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786437593.565601774] [scan_planner_node]: Local replan failed: start=[-27.627 -1.615 -0.077], target=[-30.825 -2.191 -0.098], raw_start_z=-0.374 start_z_correction=+0.297
+[scan_planner_node-3] [ERROR] [1786437593.612409814] [bspline_opt]: [AStarSummary] plan=failed calls=5 success=4 failures{init=0 search=1 initialization=1 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.044s iter=49357 generated=49357 rejects_collision=26100 outside_map=0 boundary=17754 start=[-28.003  -2.071  -0.082] end=[-28.353  -1.971  -0.082]}
+[scan_planner_node-3] [WARN] [1786437602.384522868] [scan_planner_node]: Local replan failed: start=[-32.701 -1.693 -0.129], target=[-32.275 1.993 -0.089], raw_start_z=-0.433 start_z_correction=+0.304
+[scan_planner_node-3] [ERROR] [1786437603.615792961] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=0 failures{init=0 search=4 initialization=4 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.044s iter=46682 generated=46682 rejects_collision=18000 outside_map=0 boundary=18881 start=[-32.247  -1.007  -0.113] end=[-31.897  -0.057  -0.113]}
+[scan_planner_node-3] [WARN] [1786437603.615827067] [scan_planner_node]: Local replan failed: start=[-32.707 -1.175 -0.120], target=[-32.376 2.437 -0.097], raw_start_z=-0.433 start_z_correction=+0.312
+[scan_planner_node-3] [ERROR] [1786437604.086078378] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=0 failures{init=0 search=4 initialization=4 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.047s iter=47659 generated=47659 rejects_collision=18316 outside_map=0 boundary=19718 start=[-32.233  -0.679  -0.125] end=[-31.083   0.821  -0.025]}
+[scan_planner_node-3] [ERROR] [1786437607.327717557] [bspline_opt]: [AStarSummary] plan=failed calls=8 success=0 failures{init=0 search=8 initialization=4 rebound=4} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.043s iter=47054 generated=47054 rejects_collision=14827 outside_map=0 boundary=16170 start=[-31.819   1.245  -0.092] end=[-31.469   2.195  -0.092]}
+[scan_planner_node-3] [WARN] [1786437607.327770815] [scan_planner_node]: Local replan failed: start=[-32.391 1.274 -0.097], target=[-31.782 4.582 -0.075], raw_start_z=-0.397 start_z_correction=+0.299
+[scan_planner_node-3] [WARN] [1786437607.372185216] [bspline_opt]: [AStarSummary] plan=success calls=2 success=1 failures{init=0 search=1 initialization=1 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.044s iter=47331 generated=47331 rejects_collision=14686 outside_map=0 boundary=16104 start=[-31.718   1.401  -0.090] end=[-31.468   2.251  -0.090]}
+[scan_planner_node-3] [WARN] [1786437610.382622807] [scan_planner_node]: Local replan failed: start=[-32.016 3.851 -0.090], target=[-31.046 7.042 -0.063], raw_start_z=-0.371 start_z_correction=+0.281
+[scan_planner_node-3] [ERROR] [1786437611.351619900] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=0 failures{init=0 search=4 initialization=4 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.043s iter=46972 generated=46972 rejects_collision=21829 outside_map=0 boundary=14925 start=[-30.972   4.692  -0.073] end=[-30.922   4.942  -0.073]}
+[scan_planner_node-3] [WARN] [1786437612.387355202] [bspline_opt]: [AStarSummary] plan=success calls=4 success=2 failures{init=0 search=2 initialization=1 rebound=1} last{context=rebound reason=OPEN_SET_EMPTY elapsed=0.000s iter=1 generated=1 rejects_collision=24 outside_map=0 boundary=0 start=[-30.589   6.079  -0.061] end=[-30.689   6.529  -0.061]}
+[scan_planner_node-3] [ERROR] [1786437614.027313397] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=0 failures{init=0 search=4 initialization=4 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.048s iter=52147 generated=52147 rejects_collision=15047 outside_map=0 boundary=19631 start=[-30.724   6.501  -0.063] end=[-30.474   7.551  -0.063]}
+[scan_planner_node-3] [WARN] [1786437614.027347037] [scan_planner_node]: Local replan failed: start=[-31.558 6.559 -0.070], target=[-29.663 9.261 -0.042], raw_start_z=-0.364 start_z_correction=+0.294
+[scan_planner_node-3] [ERROR] [1786437614.479131076] [bspline_opt]: [AStarSummary] plan=failed calls=9 success=0 failures{init=0 search=9 initialization=4 rebound=5} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.050s iter=52559 generated=52559 rejects_collision=13883 outside_map=0 boundary=19553 start=[-30.731   6.567  -0.061] end=[-30.481   7.517  -0.061]}
+[scan_planner_node-3] [ERROR] [1786437614.680404977] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=0 failures{init=0 search=4 initialization=4 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.051s iter=52147 generated=52147 rejects_collision=14759 outside_map=0 boundary=19631 start=[-30.724   6.501  -0.063] end=[-30.474   7.551  -0.063]}
+[scan_planner_node-3] [WARN] [1786437615.095216827] [scan_planner_node]: Local replan failed: start=[-31.432 7.520 -0.055], target=[-28.451 9.120 -0.047], raw_start_z=-0.355 start_z_correction=+0.300
+[scan_planner_node-3] [WARN] [1786437616.445295011] [scan_planner_node]: Local replan failed: start=[-31.294 8.557 -0.048], target=[-27.734 9.033 -0.025], raw_start_z=-0.351 start_z_correction=+0.303
+[scan_planner_node-3] [WARN] [1786437619.835609567] [bspline_opt]: First three control points are in obstacles; t=0.088477
+[scan_planner_node-3] [WARN] [1786437619.835626371] [scan_planner_node]: Local replan failed: start=[-29.539 9.449 -0.042], target=[-26.149 8.617 -0.030], raw_start_z=-0.332 start_z_correction=+0.289
+[scan_planner_node-3] [WARN] [1786437619.835773903] [bspline_opt]: First three control points are in obstacles; t=0.088475
+[scan_planner_node-3] [WARN] [1786437620.278007245] [bspline_opt]: First three control points are in obstacles; t=0.089930
+[scan_planner_node-3] [ERROR] [1786437620.278041057] [bspline_opt]: [AStarSummary] plan=failed calls=1 success=0 failures{init=0 search=1 initialization=1 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.043s iter=50080 generated=50080 rejects_collision=24167 outside_map=0 boundary=20876 start=[-29.324   9.422  -0.042] end=[-28.924   9.422  -0.042]}
+[scan_planner_node-3] [WARN] [1786437620.321853196] [bspline_opt]: First three control points are in obstacles; t=0.089881
+[scan_planner_node-3] [ERROR] [1786437620.321879697] [bspline_opt]: [AStarSummary] plan=failed calls=1 success=0 failures{init=0 search=1 initialization=1 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.044s iter=49928 generated=49928 rejects_collision=22460 outside_map=0 boundary=20879 start=[-29.320   9.421  -0.042] end=[-28.920   9.421  -0.042]}
+[scan_planner_node-3] [WARN] [1786437620.682362600] [scan_planner_node]: Obstacle discovered; emergency stop in 0.950s
+[cmd_vel_safety_gate-5] [INFO] [1786437630.184893825] [cmd_vel_safety_gate]: Safety gate state: trajectory_timeout
+[scan_planner_node-3] [WARN] [1786437664.305346410] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786437664.305368626] [scan_planner_node]: Local replan failed: start=[-1.936 -0.258 -0.002], target=[-0.367 0.112 -0.021], raw_start_z=-0.316 start_z_correction=+0.314
+[scan_planner_node-3] [WARN] [1786437664.667913034] [bspline_opt]: A-star path has fewer than 2 points; drop collision segment
+[scan_planner_node-3] [WARN] [1786437664.667936849] [bspline_opt]: A-star path has fewer than 2 points; drop collision segment
+[scan_planner_node-3] [WARN] [1786437664.667945629] [bspline_opt]: A-star path has fewer than 2 points; drop collision segment
+[scan_planner_node-3] [WARN] [1786437664.668324117] [bspline_opt]: First three control points are in obstacles; t=0.113511
+[scan_planner_node-3] [ERROR] [1786437664.668344065] [bspline_opt]: [AStarSummary] plan=failed calls=7 success=6 failures{init=0 search=1 initialization=1 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.042s iter=47250 generated=47250 rejects_collision=25538 outside_map=0 boundary=17112 start=[-1.868 -0.303 -0.002] end=[-1.618 -1.803 -0.002]}
+[scan_planner_node-3] [WARN] [1786437664.735166952] [bspline_opt]: A-star path has fewer than 2 points
+[scan_planner_node-3] [WARN] [1786437664.735207906] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786437664.735220883] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786437664.735231542] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786437664.735241716] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786437664.735251260] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786437664.735261104] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786437664.735270413] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786437664.735279540] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786437664.735287575] [bspline_opt]: A-star path has fewer than 2 points; drop collision segment
+[scan_planner_node-3] [WARN] [1786437664.735295722] [bspline_opt]: A-star path has fewer than 2 points; drop collision segment
+[scan_planner_node-3] [WARN] [1786437664.735303275] [bspline_opt]: A-star path has fewer than 2 points; drop collision segment
+[scan_planner_node-3] [WARN] [1786437664.735310802] [bspline_opt]: A-star path has fewer than 2 points; drop collision segment
+[scan_planner_node-3] [WARN] [1786437664.735345999] [bspline_opt]: A-star path has fewer than 2 points; drop collision segment
+[scan_planner_node-3] [WARN] [1786437664.735355318] [bspline_opt]: A-star path has fewer than 2 points; drop collision segment
+[scan_planner_node-3] [WARN] [1786437664.735368827] [bspline_opt]: A-star path has fewer than 2 points; drop collision segment
+[scan_planner_node-3] [WARN] [1786437664.735376530] [bspline_opt]: A-star path has fewer than 2 points; drop collision segment
+[scan_planner_node-3] [WARN] [1786437664.735384132] [bspline_opt]: A-star path has fewer than 2 points; drop collision segment
+[scan_planner_node-3] [WARN] [1786437664.735391632] [bspline_opt]: A-star path has fewer than 2 points; drop collision segment
+[scan_planner_node-3] [WARN] [1786437664.735399052] [bspline_opt]: A-star path has fewer than 2 points; drop collision segment
+[scan_planner_node-3] [WARN] [1786437664.735406550] [bspline_opt]: A-star path has fewer than 2 points; drop collision segment
+[scan_planner_node-3] [WARN] [1786437664.735414135] [bspline_opt]: A-star path has fewer than 2 points; drop collision segment
+[scan_planner_node-3] [WARN] [1786437664.836298939] [scan_planner_node]: Refined trajectory is unsafe or dynamically infeasible; skipping publication
+[cmd_vel_safety_gate-5] [INFO] [1786437665.054854517] [cmd_vel_safety_gate]: Safety gate state: active
+[scan_planner_node-3] [ERROR] [1786437669.925316788] [bspline_opt]: [AStarSummary] plan=failed calls=3 success=0 failures{init=0 search=3 initialization=3 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.047s iter=52101 generated=52101 rejects_collision=19637 outside_map=0 boundary=19691 start=[-1.042 -0.168 -0.014] end=[-0.892 -0.118 -0.014]}
+[scan_planner_node-3] [WARN] [1786437669.925363193] [scan_planner_node]: Local replan failed: start=[-1.513 -0.370 -0.009], target=[-0.367 0.112 -0.021], raw_start_z=-0.573 start_z_correction=+0.564
+[cmd_vel_safety_gate-5] [INFO] [1786437670.864867865] [cmd_vel_safety_gate]: Safety gate state: odometry_timeout

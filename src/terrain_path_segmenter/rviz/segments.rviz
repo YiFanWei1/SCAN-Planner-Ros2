@@ -10,7 +10,7 @@ Panels:
         - /Marker2
         - /Marker2/Topic1
       Splitter Ratio: 0.5
-    Tree Height: 366
+    Tree Height: 378
   - Class: rviz_common/Views
     Expanded:
       - /Current View1
@@ -78,6 +78,39 @@ Visualization Manager:
         Value: /terrain_path/segments
       Value: false
     - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 0.125
+        Min Value: -0.9750000238418579
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz_default_plugins/PointCloud2
+      Color: 255; 255; 255
+      Color Transformer: AxisColor
+      Decay Time: 0
+      Enabled: false
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Max Intensity: 4096
+      Min Color: 0; 0; 0
+      Min Intensity: 0
+      Name: PointCloud2
+      Position Transformer: XYZ
+      Selectable: true
+      Size (Pixels): 2
+      Size (m): 0.009999999776482582
+      Style: Points
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Best Effort
+        Value: /grid_map/occupancy_inflate
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: false
+    - Alpha: 1
       Buffer Length: 1
       Class: rviz_default_plugins/Path
       Color: 255; 255; 0
@@ -133,39 +166,6 @@ Visualization Manager:
         Reliability Policy: Reliable
         Value: /planning/bspline_path
       Value: false
-    - Alpha: 1
-      Autocompute Intensity Bounds: true
-      Autocompute Value Bounds:
-        Max Value: 0.125
-        Min Value: -0.9750000238418579
-        Value: true
-      Axis: Z
-      Channel Name: intensity
-      Class: rviz_default_plugins/PointCloud2
-      Color: 255; 255; 255
-      Color Transformer: AxisColor
-      Decay Time: 0
-      Enabled: false
-      Invert Rainbow: false
-      Max Color: 255; 255; 255
-      Max Intensity: 4096
-      Min Color: 0; 0; 0
-      Min Intensity: 0
-      Name: PointCloud2
-      Position Transformer: XYZ
-      Selectable: true
-      Size (Pixels): 2
-      Size (m): 0.009999999776482582
-      Style: Points
-      Topic:
-        Depth: 5
-        Durability Policy: Volatile
-        History Policy: Keep Last
-        Reliability Policy: Best Effort
-        Value: /grid_map/occupancy_inflate
-      Use Fixed Frame: true
-      Use rainbow: true
-      Value: false
     - Class: rviz_default_plugins/TF
       Enabled: false
       Filter (blacklist): ""
@@ -183,10 +183,10 @@ Visualization Manager:
       Update Interval: 0
       Value: false
     - Class: rviz_default_plugins/Marker
-      Enabled: true
+      Enabled: false
       Name: Go2 Collision Envelope
       Namespaces:
-        self_inflation: true
+        {}
       Topic:
         Depth: 5
         Durability Policy: Transient Local
@@ -194,7 +194,7 @@ Visualization Manager:
         History Policy: Keep Last
         Reliability Policy: Reliable
         Value: /self_inflation
-      Value: true
+      Value: false
     - Class: rviz_default_plugins/Marker
       Enabled: false
       Name: Marker
@@ -276,7 +276,7 @@ Visualization Manager:
         Value: /lio_odom_hf
       Value: true
     - Class: rviz_default_plugins/MarkerArray
-      Enabled: true
+      Enabled: false
       Name: MarkerArray
       Namespaces:
         {}
@@ -286,12 +286,12 @@ Visualization Manager:
         History Policy: Keep Last
         Reliability Policy: Reliable
         Value: /self_inflation_array
-      Value: true
+      Value: false
     - Class: rviz_default_plugins/Marker
-      Enabled: true
+      Enabled: false
       Name: Marker
       Namespaces:
-        self_inflation: true
+        {}
       Topic:
         Depth: 50
         Durability Policy: Volatile
@@ -299,7 +299,7 @@ Visualization Manager:
         History Policy: Keep Last
         Reliability Policy: Reliable
         Value: /self_inflation
-      Value: true
+      Value: false
   Enabled: true
   Global Options:
     Background Color: 30; 30; 30
@@ -318,35 +318,35 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 3.9841747283935547
+      Distance: 8.827237129211426
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -1.2783395051956177
-        Y: 0.700392484664917
-        Z: 1.0489174127578735
+        X: 1.2652508020401
+        Y: 0.35770317912101746
+        Z: -0.8466936945915222
       Focal Shape Fixed Size: false
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.4647964239120483
+      Pitch: 1.3897969722747803
       Target Frame: sliding_map
       Value: Orbit (rviz_default_plugins)
-      Yaw: 0.037211548537015915
+      Yaw: 5.870389461517334
     Saved: ~
 Window Geometry:
   Displays:
     collapsed: false
-  Height: 769
+  Height: 784
   Hide Left Dock: false
   Hide Right Dock: false
-  QMainWindow State: 000000ff00000000fd000000010000000000000156000002a3fc0200000002fb000000100044006900730070006c006100790073010000003f000001f4000000cc00fffffffb0000000a005600690065007700730100000239000000a9000000a900ffffff000003ae000002a300000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd000000010000000000000156000002b2fc0200000002fb000000100044006900730070006c006100790073010000003f00000200000000cc00fffffffb0000000a005600690065007700730100000245000000ac000000a900ffffff000003ae000002b200000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Views:
     collapsed: false
   Width: 1290
-  X: 266
-  Y: 105
+  X: 688
+  Y: 102
