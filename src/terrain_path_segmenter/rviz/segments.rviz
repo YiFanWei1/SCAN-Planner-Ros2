@@ -6,8 +6,11 @@ Panels:
       Expanded:
         - /Global Options1
         - /TF1/Frames1
+        - /MarkerArray1/Topic1
+        - /Marker2
+        - /Marker2/Topic1
       Splitter Ratio: 0.5
-    Tree Height: 332
+    Tree Height: 366
   - Class: rviz_common/Views
     Expanded:
       - /Current View1
@@ -133,8 +136,8 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: -6.275000095367432
-        Min Value: -8.875
+        Max Value: 0.125
+        Min Value: -0.9750000238418579
         Value: true
       Axis: Z
       Channel Name: intensity
@@ -179,6 +182,19 @@ Visualization Manager:
         {}
       Update Interval: 0
       Value: false
+    - Class: rviz_default_plugins/Marker
+      Enabled: true
+      Name: Go2 Collision Envelope
+      Namespaces:
+        self_inflation: true
+      Topic:
+        Depth: 5
+        Durability Policy: Transient Local
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /self_inflation
+      Value: true
     - Class: rviz_default_plugins/Marker
       Enabled: false
       Name: Marker
@@ -259,6 +275,31 @@ Visualization Manager:
         Reliability Policy: Reliable
         Value: /lio_odom_hf
       Value: true
+    - Class: rviz_default_plugins/MarkerArray
+      Enabled: true
+      Name: MarkerArray
+      Namespaces:
+        {}
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /self_inflation_array
+      Value: true
+    - Class: rviz_default_plugins/Marker
+      Enabled: true
+      Name: Marker
+      Namespaces:
+        self_inflation: true
+      Topic:
+        Depth: 50
+        Durability Policy: Volatile
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /self_inflation
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 30; 30; 30
@@ -277,25 +318,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 10.614439010620117
+      Distance: 3.9841747283935547
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -4.750567436218262
-        Y: 2.7547683715820312
-        Z: 0.5676968693733215
+        X: -1.2783395051956177
+        Y: 0.700392484664917
+        Z: 1.0489174127578735
       Focal Shape Fixed Size: false
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.5347956418991089
-      Target Frame: a
+      Pitch: 1.4647964239120483
+      Target Frame: sliding_map
       Value: Orbit (rviz_default_plugins)
-      Yaw: 1.0703867673873901
+      Yaw: 0.037211548537015915
     Saved: ~
 Window Geometry:
   Displays:
@@ -303,9 +344,9 @@ Window Geometry:
   Height: 769
   Hide Left Dock: false
   Hide Right Dock: false
-  QMainWindow State: 000000ff00000000fd000000010000000000000156000002a3fc0200000002fb000000100044006900730070006c006100790073010000003f000001d2000000cc00fffffffb0000000a005600690065007700730100000217000000cb000000a900ffffff000003ae000002a300000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd000000010000000000000156000002a3fc0200000002fb000000100044006900730070006c006100790073010000003f000001f4000000cc00fffffffb0000000a005600690065007700730100000239000000a9000000a900ffffff000003ae000002a300000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Views:
     collapsed: false
   Width: 1290
-  X: 630
-  Y: 37
+  X: 266
+  Y: 105

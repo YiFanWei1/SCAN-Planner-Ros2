@@ -93,48 +93,77 @@ vector<GridNodePtr> AStar::retrievePath(GridNodePtr current)
 
 bool AStar::ConvertToIndexAndAdjustStartEndPoints(Vector3d start_pt, Vector3d end_pt, Vector3i &start_idx, Vector3i &end_idx)
 {
-    if (!Coord2Index(start_pt, start_idx) || !Coord2Index(end_pt, end_idx))
+    adjusted_start_ = start_pt;
+    adjusted_end_ = end_pt;
+    initial_start_occ_ = initial_end_occ_ = 0;
+    start_adjust_steps_ = end_adjust_steps_ = 0;
+    init_failure_reason_ = "none";
+
+    if (!Coord2Index(start_pt, start_idx))
+    {
+        init_failure_reason_ = "requested start outside A-star pool";
         return false;
+    }
+    if (!Coord2Index(end_pt, end_idx))
+    {
+        init_failure_reason_ = "requested end outside A-star pool";
+        return false;
+    }
 
     Eigen::Vector3d start_to_end = end_pt - start_pt;
     if (start_to_end.norm() < 1e-6)
+    {
+        init_failure_reason_ = "start and end are coincident";
         return false;
+    }
     const double path_yaw = std::atan2(start_to_end(1), start_to_end(0));
     start_to_end.normalize();
 
     int occ = checkOccupancy(Index2Coord(start_idx), path_yaw);
+    initial_start_occ_ = occ;
     if (occ)
     {
         //ROS_WARN("Start point is insdide an obstacle.");
         do
         {
             start_pt -= start_to_end * step_size_;
+            ++start_adjust_steps_;
+            adjusted_start_ = start_pt;
             if (!Coord2Index(start_pt, start_idx))
+            {
+                init_failure_reason_ = "occupied start could not be moved to a free point before pool boundary";
                 return false;
+            }
 
             occ = checkOccupancy(Index2Coord(start_idx), path_yaw);
             if (occ == -1)
             {
-                RCLCPP_WARN(rclcpp::get_logger("path_searching"), "[Astar] Start point outside the map region.");
+                init_failure_reason_ = "start adjustment left the sliding occupancy map";
                 return false;
             }
         } while (occ);
     }
 
     occ = checkOccupancy(Index2Coord(end_idx), path_yaw);
+    initial_end_occ_ = occ;
     if (occ)
     {
         //ROS_WARN("End point is insdide an obstacle.");
         do
         {
             end_pt += start_to_end * step_size_;
+            ++end_adjust_steps_;
+            adjusted_end_ = end_pt;
             if (!Coord2Index(end_pt, end_idx))
+            {
+                init_failure_reason_ = "occupied end could not be moved to a free point before pool boundary";
                 return false;
+            }
 
             occ = checkOccupancy(Index2Coord(end_idx), path_yaw);
             if (occ == -1)
             {
-                RCLCPP_WARN(rclcpp::get_logger("path_searching"), "[Astar] End point outside the map region.");
+                init_failure_reason_ = "end adjustment left the sliding occupancy map";
                 return false;
             }
         } while (occ);
@@ -147,6 +176,9 @@ ASTAR_RET AStar::AstarSearch(const double step_size, Vector3d start_pt, Vector3d
 {
     const auto time_1 = std::chrono::steady_clock::now();
     ++rounds_;
+    gridPath_.clear();
+    requested_start_ = start_pt;
+    requested_end_ = end_pt;
 
     step_size_ = step_size;
     inv_step_size_ = 1 / step_size;
@@ -156,7 +188,16 @@ ASTAR_RET AStar::AstarSearch(const double step_size, Vector3d start_pt, Vector3d
     if (!ConvertToIndexAndAdjustStartEndPoints(start_pt, end_pt, start_idx, end_idx))
     {
         RCLCPP_ERROR(rclcpp::get_logger("path_searching"),
-                     "Unable to handle the initial or end point, force return!");
+                     "[AStarDiag] INIT_ERR reason='%s' requested_start=[%.3f %.3f %.3f] "
+                     "requested_end=[%.3f %.3f %.3f] adjusted_start=[%.3f %.3f %.3f] "
+                     "adjusted_end=[%.3f %.3f %.3f] initial_occ(start,end)=[%d,%d] "
+                     "adjust_steps(start,end)=[%d,%d]",
+                     init_failure_reason_.c_str(),
+                     requested_start_(0), requested_start_(1), requested_start_(2),
+                     requested_end_(0), requested_end_(1), requested_end_(2),
+                     adjusted_start_(0), adjusted_start_(1), adjusted_start_(2),
+                     adjusted_end_(0), adjusted_end_(1), adjusted_end_(2),
+                     initial_start_occ_, initial_end_occ_, start_adjust_steps_, end_adjust_steps_);
         return ASTAR_RET::INIT_ERR;
     }
 
@@ -204,6 +245,12 @@ ASTAR_RET AStar::AstarSearch(const double step_size, Vector3d start_pt, Vector3d
     double tentative_gScore;
 
     int num_iter = 0;
+    int boundary_rejects = 0;
+    int collision_rejects = 0;
+    int outside_map_rejects = 0;
+    int closed_rejects = 0;
+    int generated_nodes = 1;
+    size_t max_open_size = openSet_.size();
     while (!openSet_.empty())
     {
         num_iter++;
@@ -237,6 +284,7 @@ ASTAR_RET AStar::AstarSearch(const double step_size, Vector3d start_pt, Vector3d
 
                 if (neighborIdx(0) < 1 || neighborIdx(0) >= POOL_SIZE_(0) - 1 || neighborIdx(1) < 1 || neighborIdx(1) >= POOL_SIZE_(1) - 1 || neighborIdx(2) < 1 || neighborIdx(2) >= POOL_SIZE_(2) - 1)
                 {
+                    ++boundary_rejects;
                     continue;
                 }
 
@@ -247,14 +295,19 @@ ASTAR_RET AStar::AstarSearch(const double step_size, Vector3d start_pt, Vector3d
 
                 if (flag_explored && neighborPtr->state == GridNode::CLOSEDSET)
                 {
+                    ++closed_rejects;
                     continue; //in closed set.
                 }
 
                 neighborPtr->rounds = rounds_;
 
                 const double neighbor_yaw = std::atan2(static_cast<double>(dy), static_cast<double>(dx));
-                if (checkOccupancy(Index2Coord(neighborPtr->index), neighbor_yaw))
+                const int neighbor_occ = checkOccupancy(Index2Coord(neighborPtr->index), neighbor_yaw);
+                if (neighbor_occ)
                 {
+                    ++collision_rejects;
+                    if (neighbor_occ < 0)
+                        ++outside_map_rejects;
                     continue;
                 }
 
@@ -270,6 +323,8 @@ ASTAR_RET AStar::AstarSearch(const double step_size, Vector3d start_pt, Vector3d
                     neighborPtr->gScore = tentative_gScore;
                     neighborPtr->fScore = tentative_gScore + getHeu(neighborPtr, endPtr);
                     openSet_.push(neighborPtr); //put neighbor in open set and record it.
+                    ++generated_nodes;
+                    max_open_size = std::max(max_open_size, openSet_.size());
                 }
                 else if (tentative_gScore < neighborPtr->gScore)
                 { //in open set and need update
@@ -281,8 +336,18 @@ ASTAR_RET AStar::AstarSearch(const double step_size, Vector3d start_pt, Vector3d
         const auto time_2 = std::chrono::steady_clock::now();
         if (std::chrono::duration<double>(time_2 - time_1).count() > 0.2)
         {
-            RCLCPP_WARN(rclcpp::get_logger("path_searching"),
-                        "Failed in A-star path search: 0.2 second time limit exceeded");
+            const double elapsed = std::chrono::duration<double>(time_2 - time_1).count();
+            RCLCPP_ERROR(rclcpp::get_logger("path_searching"),
+                         "[AStarDiag] SEARCH_TIMEOUT elapsed=%.3fs iter=%d generated=%d max_open=%zu "
+                         "rejects{collision=%d outside_map=%d boundary=%d closed=%d} "
+                         "search_start=[%.3f %.3f %.3f] search_end=[%.3f %.3f %.3f] "
+                         "z_delta=%.3f pool=[%d %d %d] resolution=%.3f",
+                         elapsed, num_iter, generated_nodes, max_open_size,
+                         collision_rejects, outside_map_rejects, boundary_rejects, closed_rejects,
+                         search_start(0), search_start(1), search_start(2),
+                         search_end(0), search_end(1), search_end(2),
+                         search_end(2) - search_start(2),
+                         POOL_SIZE_(0), POOL_SIZE_(1), POOL_SIZE_(2), step_size_);
             return ASTAR_RET::SEARCH_ERR;
         }
     }
@@ -290,9 +355,18 @@ ASTAR_RET AStar::AstarSearch(const double step_size, Vector3d start_pt, Vector3d
     const auto time_2 = std::chrono::steady_clock::now();
 
     const double elapsed = std::chrono::duration<double>(time_2 - time_1).count();
-    if (elapsed > 0.1)
-        RCLCPP_WARN(rclcpp::get_logger("path_searching"),
-                    "A-star path search took %.3fs, iter=%d", elapsed, num_iter);
+    RCLCPP_ERROR(rclcpp::get_logger("path_searching"),
+                 "[AStarDiag] OPEN_SET_EMPTY elapsed=%.3fs iter=%d generated=%d max_open=%zu "
+                 "rejects{collision=%d outside_map=%d boundary=%d closed=%d} "
+                 "search_start=[%.3f %.3f %.3f] search_end=[%.3f %.3f %.3f] "
+                 "indices_start=[%d %d %d] indices_end=[%d %d %d] z_delta=%.3f",
+                 elapsed, num_iter, generated_nodes, max_open_size,
+                 collision_rejects, outside_map_rejects, boundary_rejects, closed_rejects,
+                 search_start(0), search_start(1), search_start(2),
+                 search_end(0), search_end(1), search_end(2),
+                 start_idx(0), start_idx(1), start_idx(2),
+                 end_idx(0), end_idx(1), end_idx(2),
+                 search_end(2) - search_start(2));
 
     return ASTAR_RET::SEARCH_ERR;
 }

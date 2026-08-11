@@ -188,3 +188,8 @@ ros2 launch scan_planner real_go2_livox.launch.py   rviz:=true   enable_motion:=
 
 wei@wei:~/github_code/SCAN-Planner-Ros2$ 
 ros2 bag play /home/wei/bag/navigation_data/   --start-offset 15   --topics /plan /lio_odom_hf /livox/lidar
+
+colcon build \
+  --symlink-install \
+  --cmake-args \
+  -DCMAKE_BUILD_TYPE=Release

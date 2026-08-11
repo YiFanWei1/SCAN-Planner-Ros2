@@ -82,6 +82,15 @@ private:
 
 	int rounds_{0};
 
+	// Per-search diagnostics, emitted only when A* fails.
+	Eigen::Vector3d requested_start_{Eigen::Vector3d::Zero()};
+	Eigen::Vector3d requested_end_{Eigen::Vector3d::Zero()};
+	Eigen::Vector3d adjusted_start_{Eigen::Vector3d::Zero()};
+	Eigen::Vector3d adjusted_end_{Eigen::Vector3d::Zero()};
+	int initial_start_occ_{0}, initial_end_occ_{0};
+	int start_adjust_steps_{0}, end_adjust_steps_{0};
+	std::string init_failure_reason_{"none"};
+
 public:
 	typedef std::shared_ptr<AStar> Ptr;
 
@@ -112,7 +121,12 @@ inline bool AStar::Coord2Index(const Eigen::Vector3d &pt, Eigen::Vector3i &idx) 
 	if (idx(0) < 0 || idx(0) >= POOL_SIZE_(0) || idx(1) < 0 || idx(1) >= POOL_SIZE_(1) || idx(2) < 0 || idx(2) >= POOL_SIZE_(2))
 	{
 		RCLCPP_ERROR(rclcpp::get_logger("path_searching"),
-		             "Ran out of pool, index=%d %d %d", idx(0), idx(1), idx(2));
+		             "[AStarDiag] point outside search pool: point=[%.3f %.3f %.3f] "
+		             "index=[%d %d %d] valid=[0..%d,0..%d,0..%d] "
+		             "center=[%.3f %.3f %.3f] resolution=%.3f",
+		             pt(0), pt(1), pt(2), idx(0), idx(1), idx(2),
+		             POOL_SIZE_(0) - 1, POOL_SIZE_(1) - 1, POOL_SIZE_(2) - 1,
+		             center_(0), center_(1), center_(2), step_size_);
 		return false;
 	}
 

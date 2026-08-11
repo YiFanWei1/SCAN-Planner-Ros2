@@ -97,6 +97,7 @@ struct MappingParameters {
   string sensor_type_;
   bool cloud_is_world_;
   bool need_extrinsic_;
+  int map_ready_min_cloud_updates_;
   Eigen::Matrix4d lidar_extrinsic_;
   Eigen::Matrix4d depth_extrinsic_;
 
@@ -149,6 +150,7 @@ struct MappingData {
   std::vector<int64_t> last_hit_time_ns_, last_decay_time_ns_;
   std::unordered_set<int> active_occupied_voxels_;
   int64_t last_cloud_time_ns_;
+  int completed_occupancy_updates_;
 
   // range of updating grid
 
@@ -206,6 +208,8 @@ public:
   bool hasDepthObservation();
   bool hasCloudObservation();
   double getLastCloudAge();
+  bool occupancyMapReady() const;
+  int completedOccupancyUpdates() const;
   bool odomValid();
   void getRegion(Eigen::Vector3d& ori, Eigen::Vector3d& size);
   inline double getResolution();

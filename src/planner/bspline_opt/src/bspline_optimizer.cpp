@@ -148,7 +148,13 @@ namespace scan_planner
       }
       else
       {
-        RCLCPP_ERROR(rclcpp::get_logger("bspline_opt"), "A-star failed; aborting optimization");
+        RCLCPP_ERROR(rclcpp::get_logger("bspline_opt"),
+                     "[AStarDiag] optimizer initialization segment %zu/%zu failed: "
+                     "ret=%s ctrl_ids=[%d,%d] start=[%.3f %.3f %.3f] end=[%.3f %.3f %.3f]",
+                     i + 1, segment_ids.size(),
+                     ret == ASTAR_RET::INIT_ERR ? "INIT_ERR" : "SEARCH_ERR",
+                     segment_ids[i].first, segment_ids[i].second,
+                     in(0), in(1), in(2), out(0), out(1), out(2));
         return a_star_paths;
       }
     }
@@ -818,9 +824,15 @@ namespace scan_planner
           RCLCPP_WARN(rclcpp::get_logger("bspline_opt"),
                       "A-star failed on a collision segment; merge it with the next segment");
         }
-        else
+        else if (ret != ASTAR_RET::SUCCESS)
         {
-          RCLCPP_ERROR(rclcpp::get_logger("bspline_opt"), "A-star error");
+          RCLCPP_ERROR(rclcpp::get_logger("bspline_opt"),
+                       "[AStarDiag] rebound collision segment %zu/%zu failed: "
+                       "ret=%s ctrl_ids=[%d,%d] start=[%.3f %.3f %.3f] end=[%.3f %.3f %.3f]",
+                       i + 1, segment_ids.size(),
+                       ret == ASTAR_RET::INIT_ERR ? "INIT_ERR" : "SEARCH_ERR",
+                       segment_ids[i].first, segment_ids[i].second,
+                       in(0), in(1), in(2), out(0), out(1), out(2));
           segment_ids.erase(segment_ids.begin() + i);
           i--;
         }

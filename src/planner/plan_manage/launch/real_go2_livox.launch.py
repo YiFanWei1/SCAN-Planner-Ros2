@@ -110,6 +110,18 @@ def generate_launch_description():
         ],
     )
 
+    analysis = Node(
+        package="scan_planner_analysis",
+        executable="telemetry_recorder",
+        name="scan_planner_telemetry_recorder",
+        output="screen",
+        parameters=[{
+            "use_sim_time": False,
+            "output_file": LaunchConfiguration("analysis_output"),
+        }],
+        condition=IfCondition(LaunchConfiguration("analysis")),
+    )
+
     map_to_camera_init_tf = Node(
         package="tf2_ros",
         executable="static_transform_publisher",
@@ -145,11 +157,14 @@ def generate_launch_description():
         DeclareLaunchArgument("minimum_segment_length", default_value="0.5"),
         DeclareLaunchArgument("accept_first_global_path_only", default_value="false"),
         DeclareLaunchArgument("segment_reached_tolerance", default_value="0.30"),
+        DeclareLaunchArgument("analysis", default_value="true"),
+        DeclareLaunchArgument("analysis_output", default_value=""),
         adapter,
         segmenter,
         planner,
         controller,
         gate,
+        analysis,
         map_to_camera_init_tf,
         rviz,
     ])

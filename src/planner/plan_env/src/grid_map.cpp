@@ -84,6 +84,10 @@ void GridMap::initMap(rclcpp::Node *node)
   load_parameter(node_, "grid_map.sensor_type", mp_.sensor_type_, string("lidar"));
   load_parameter(node_, "grid_map.cloud_is_world", mp_.cloud_is_world_, true);
   load_parameter(node_, "grid_map.need_extrinsic", mp_.need_extrinsic_, true);
+  load_parameter(node_, "grid_map.map_ready_min_cloud_updates",
+                 mp_.map_ready_min_cloud_updates_, 2);
+  if (mp_.map_ready_min_cloud_updates_ < 1)
+    throw std::invalid_argument("grid_map.map_ready_min_cloud_updates must be at least 1");
 
   mp_.lidar_extrinsic_ <<
       1.0, 0.0, 0.0, -0.01100,
@@ -149,6 +153,7 @@ void GridMap::initMap(rclcpp::Node *node)
   md_.last_decay_time_ns_ = vector<int64_t>(buffer_size, 0);
   md_.active_occupied_voxels_.clear();
   md_.last_cloud_time_ns_ = 0;
+  md_.completed_occupancy_updates_ = 0;
 
   md_.raycast_num_ = 0;
 
@@ -815,6 +820,11 @@ void GridMap::updateOccupancyCallback()
     projectDepthImage();
   // t2 = ros::Time::now();
   raycastProcess();
+  // Mark readiness only after raycasting has populated both the occupancy and
+  // inflation buffers. Merely receiving a cloud is not sufficient: planning
+  // can otherwise race the 50 ms fusion timer and treat the initial empty
+  // buffer as collision-free.
+  ++md_.completed_occupancy_updates_;
   // t3 = ros::Time::now();
 
   // t4 = ros::Time::now();
@@ -1331,14 +1341,24 @@ bool GridMap::odomValid() { return md_.has_ray_pose_; }
 
 bool GridMap::hasDepthObservation() { return md_.has_first_depth_; }
 
-// bool GridMap::hasCloudObservation() { return md_.has_cloud_; }
+bool GridMap::hasCloudObservation() { return md_.has_cloud_; }
 
-// double GridMap::getLastCloudAge()
-// {
-//   if (md_.last_cloud_time_ns_ <= 0)
-//     return std::numeric_limits<double>::infinity();
-//   return std::max(0.0, (node_->get_clock()->now().nanoseconds() - md_.last_cloud_time_ns_) * 1e-9);
-// }
+double GridMap::getLastCloudAge()
+{
+  if (md_.last_cloud_time_ns_ <= 0)
+    return std::numeric_limits<double>::infinity();
+  return std::max(0.0, (node_->get_clock()->now().nanoseconds() - md_.last_cloud_time_ns_) * 1e-9);
+}
+
+bool GridMap::occupancyMapReady() const
+{
+  return md_.completed_occupancy_updates_ >= mp_.map_ready_min_cloud_updates_;
+}
+
+int GridMap::completedOccupancyUpdates() const
+{
+  return md_.completed_occupancy_updates_;
+}
 
 Eigen::Vector3d GridMap::getOrigin() { return mp_.map_origin_; }
 
