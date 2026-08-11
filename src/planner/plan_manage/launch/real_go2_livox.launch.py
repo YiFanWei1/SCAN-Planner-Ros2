@@ -118,6 +118,7 @@ def generate_launch_description():
         parameters=[{
             "use_sim_time": False,
             "output_file": LaunchConfiguration("analysis_output"),
+            "output_directory": LaunchConfiguration("analysis_output_directory"),
         }],
         condition=IfCondition(LaunchConfiguration("analysis")),
     )
@@ -159,6 +160,11 @@ def generate_launch_description():
         DeclareLaunchArgument("segment_reached_tolerance", default_value="0.30"),
         DeclareLaunchArgument("analysis", default_value="true"),
         DeclareLaunchArgument("analysis_output", default_value=""),
+        DeclareLaunchArgument(
+            "analysis_output_directory",
+            default_value=(
+                "/home/wei/github_code/SCAN-Planner-Ros2/"
+                "src/scan_planner_analysis/output")),
         adapter,
         segmenter,
         planner,
