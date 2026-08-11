@@ -13,6 +13,11 @@ scan_planner_node:
     fsm.failure_retry_cooldown: 1.0
     fsm.reference_path_min_distance: 0.15
     fsm.clear_map_on_new_path: false
+    # Keep XY and dynamics tied to live odometry, but start each reference-path
+    # replan at the raised terrain-path Z instead of drawing an artificial ramp
+    # from raw odometry Z. Reject large corrections to avoid wrong-floor snaps.
+    fsm.project_reference_start_z: true
+    fsm.reference_start_z_max_correction: 0.60
     # Final dynamic-feasibility threshold is manager.max_acc (0.5) plus this
     # tolerance, giving 3.0 m/s^2 for the fast stair bag test.
     optimization.acc_tolerance: 2.5

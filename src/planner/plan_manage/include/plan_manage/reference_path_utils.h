@@ -11,6 +11,26 @@
 namespace scan_planner
 {
 
+inline bool alignStartZToReference(
+    Eigen::Vector3d &start,
+    const Eigen::Vector3d &reference,
+    double max_correction,
+    double *applied_correction = nullptr)
+{
+  if (applied_correction) *applied_correction = 0.0;
+  if (!start.allFinite() || !reference.allFinite() ||
+      !std::isfinite(max_correction) || max_correction < 0.0)
+    return false;
+
+  const double correction = reference.z() - start.z();
+  if (std::abs(correction) > max_correction)
+    return false;
+
+  start.z() = reference.z();
+  if (applied_correction) *applied_correction = correction;
+  return true;
+}
+
 inline bool prepareReferenceWaypoints(
     const nav_msgs::msg::Path &path,
     double body_height,

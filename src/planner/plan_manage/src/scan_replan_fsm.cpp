@@ -95,6 +95,10 @@ namespace scan_planner
     self_double_cylinder_radius_ = load_parameter<double>(node_, "grid_map.double_cylinder_radius", 0.0);
     self_double_cylinder_offset_ = load_parameter<double>(node_, "grid_map.double_cylinder_offset", 0.0);
     body_height_ = load_parameter<double>(node_, "grid_map.body_height", 0.0);
+    project_reference_start_z_ =
+        load_parameter<bool>(node_, "fsm.project_reference_start_z", false);
+    reference_start_z_max_correction_ = std::max(
+        0.0, load_parameter<double>(node_, "fsm.reference_start_z_max_correction", 0.6));
     self_inflation_frame_id_ = load_parameter<std::string>(node_, "grid_map.frame_id", "world");
 
     // 预设航点参数以 [x0,y0,z0,x1,y1,z1,...] 的扁平数组表示。
@@ -1112,9 +1116,11 @@ namespace scan_planner
 
     if (!plan_success)
       RCLCPP_WARN_THROTTLE(node_->get_logger(), *node_->get_clock(), 1000,
-                           "Local replan failed: start=[%.3f %.3f %.3f], target=[%.3f %.3f %.3f]",
+                           "Local replan failed: start=[%.3f %.3f %.3f], target=[%.3f %.3f %.3f], "
+                           "raw_start_z=%.3f start_z_correction=%+.3f",
                            start_pt_(0), start_pt_(1), start_pt_(2),
-                           local_target_pt_(0), local_target_pt_(1), local_target_pt_(2));
+                           local_target_pt_(0), local_target_pt_(1), local_target_pt_(2),
+                           last_raw_start_z_, last_start_z_correction_);
 
     if (plan_success)
     {
@@ -1203,17 +1209,41 @@ namespace scan_planner
     double t_step = max_vel > 1e-6 ? planning_horizon_ / 20.0 / max_vel : 0.01;
     t_step = std::max(t_step, 0.01);
 
-    // 第一遍遍历：找到 start_pt_ 在全局轨迹上的最近采样点，作为当前进度投影。
+    // 第一遍遍历：找到实时里程计在全局轨迹上的最近采样点，作为当前进度投影。
+    // 这里始终使用未修正的 odom 查询，避免一次规划失败后的随机重试因已经
+    // 吸附过的 start Z 跳到 XY 重叠的另一楼层分支。
+    const Eigen::Vector3d projection_query =
+        navi_mode_ == NAVI_MODE::REFERENCE_PATH ? odom_pos_ : start_pt_;
     double t_proj = 0.0;
     double min_dist_to_start = 9999.0;
     for (double t = 0.0; t < duration; t += t_step)
     {
       Eigen::Vector3d pos_t = planner_manager_->global_data_.getPosition(t);
-      double dist_to_start = (pos_t - start_pt_).norm();
+      double dist_to_start = (pos_t - projection_query).norm();
       if (dist_to_start < min_dist_to_start)
       {
         min_dist_to_start = dist_to_start;
         t_proj = t;
+      }
+    }
+
+    last_raw_start_z_ = start_pt_.z();
+    last_start_z_correction_ = 0.0;
+    if (navi_mode_ == NAVI_MODE::REFERENCE_PATH && project_reference_start_z_)
+    {
+      const Eigen::Vector3d projected_reference =
+          planner_manager_->global_data_.getPosition(t_proj);
+      const double requested_correction = projected_reference.z() - start_pt_.z();
+      if (!alignStartZToReference(start_pt_, projected_reference,
+                                  reference_start_z_max_correction_,
+                                  &last_start_z_correction_))
+      {
+        RCLCPP_WARN_THROTTLE(
+            node_->get_logger(), *node_->get_clock(), 2000,
+            "Reference start-Z projection rejected: odom/start_z=%.3f reference_z=%.3f "
+            "correction=%+.3f exceeds/violates %.3f m guard",
+            last_raw_start_z_, projected_reference.z(), requested_correction,
+            reference_start_z_max_correction_);
       }
     }
 

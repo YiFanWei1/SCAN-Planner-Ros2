@@ -70,7 +70,12 @@ def generate_launch_description():
         executable="scan_planner_node",
         name="scan_planner_node",
         output="screen",
-        parameters=[planner_config, real_config],
+        parameters=[planner_config, real_config, {
+            "fsm.project_reference_start_z": LaunchConfiguration(
+                "project_reference_start_z"),
+            "fsm.reference_start_z_max_correction": LaunchConfiguration(
+                "reference_start_z_max_correction"),
+        }],
         remappings=[
             ("body_pose", "/scan_planner/body_pose"),
             ("sensor_pose", "/scan_planner/sensor_pose"),
@@ -155,6 +160,8 @@ def generate_launch_description():
     return LaunchDescription([
         DeclareLaunchArgument("rviz", default_value="true"),
         DeclareLaunchArgument("enable_motion", default_value="false"),
+        DeclareLaunchArgument("project_reference_start_z", default_value="true"),
+        DeclareLaunchArgument("reference_start_z_max_correction", default_value="0.60"),
         DeclareLaunchArgument("max_linear_z_error", default_value="0.04"),
         DeclareLaunchArgument("slope_merge_threshold", default_value="0.04"),
         DeclareLaunchArgument("minimum_segment_length", default_value="0.5"),

@@ -69,4 +69,32 @@ TEST(ReferencePathUtils, RejectsNonFiniteCoordinates)
   EXPECT_TRUE(waypoints.empty());
 }
 
+TEST(ReferencePathUtils, AlignsOnlyStartHeightWithinGuard)
+{
+  Eigen::Vector3d start(1.0, 2.0, -0.30);
+  const Eigen::Vector3d reference(9.0, 8.0, 0.10);
+  double correction = 0.0;
+
+  ASSERT_TRUE(scan_planner::alignStartZToReference(start, reference, 0.60, &correction));
+  EXPECT_DOUBLE_EQ(start.x(), 1.0);
+  EXPECT_DOUBLE_EQ(start.y(), 2.0);
+  EXPECT_DOUBLE_EQ(start.z(), 0.10);
+  EXPECT_DOUBLE_EQ(correction, 0.40);
+}
+
+TEST(ReferencePathUtils, RejectsUnsafeOrNonFiniteStartHeightCorrection)
+{
+  Eigen::Vector3d start(1.0, 2.0, -0.30);
+  double correction = 123.0;
+  EXPECT_FALSE(scan_planner::alignStartZToReference(
+      start, Eigen::Vector3d(1.0, 2.0, 1.0), 0.60, &correction));
+  EXPECT_DOUBLE_EQ(start.z(), -0.30);
+  EXPECT_DOUBLE_EQ(correction, 0.0);
+
+  const double nan = std::numeric_limits<double>::quiet_NaN();
+  EXPECT_FALSE(scan_planner::alignStartZToReference(
+      start, Eigen::Vector3d(1.0, 2.0, nan), 0.60));
+  EXPECT_DOUBLE_EQ(start.z(), -0.30);
+}
+
 }  // namespace
