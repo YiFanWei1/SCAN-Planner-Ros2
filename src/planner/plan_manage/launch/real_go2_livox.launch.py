@@ -157,7 +157,10 @@ def generate_launch_description():
         DeclareLaunchArgument("slope_merge_threshold", default_value="0.04"),
         DeclareLaunchArgument("minimum_segment_length", default_value="0.5"),
         DeclareLaunchArgument("accept_first_global_path_only", default_value="false"),
-        DeclareLaunchArgument("segment_reached_tolerance", default_value="0.30"),
+        # Switch slightly earlier than before while staying below the 0.50 m
+        # minimum segment length, so a newly activated short segment is not
+        # skipped immediately.
+        DeclareLaunchArgument("segment_reached_tolerance", default_value="0.40"),
         DeclareLaunchArgument("analysis", default_value="true"),
         DeclareLaunchArgument("analysis_output", default_value=""),
         DeclareLaunchArgument(
