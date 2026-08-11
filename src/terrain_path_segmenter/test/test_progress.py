@@ -2,7 +2,32 @@ import pytest
 
 from terrain_path_segmenter.segmentation import (
     PathProjection, active_segment_for_progress, cumulative_xy_distance,
+    is_reverse_navigation_path, path_direction_similarity,
     project_onto_path, segment_handoff_reason)
+
+
+def test_same_direction_rolling_path_is_not_a_reverse_task():
+    previous = [(0.0, 0.0, 0.0), (5.0, 1.0, -2.0)]
+    rolling = [(1.0, 0.2, -0.4), (7.0, 1.4, -2.8)]
+
+    assert path_direction_similarity(previous, rolling) > 0.99
+    assert not is_reverse_navigation_path(previous, rolling)
+
+
+def test_upstairs_return_path_is_a_reverse_task():
+    downstairs = [(0.0, 0.0, 0.0), (-30.0, 12.0, -13.0)]
+    upstairs = [(-30.0, 12.0, -13.0), (0.0, 0.0, 0.0)]
+
+    assert path_direction_similarity(downstairs, upstairs) == pytest.approx(-1.0)
+    assert is_reverse_navigation_path(downstairs, upstairs)
+
+
+def test_sideways_path_does_not_accidentally_replace_first_task():
+    previous = [(0.0, 0.0, 0.0), (5.0, 0.0, 0.0)]
+    sideways = [(5.0, 0.0, 0.0), (5.0, 5.0, 0.0)]
+
+    assert path_direction_similarity(previous, sideways) == pytest.approx(0.0)
+    assert not is_reverse_navigation_path(previous, sideways)
 
 
 def test_path_revision_inherits_segment_from_current_projection():

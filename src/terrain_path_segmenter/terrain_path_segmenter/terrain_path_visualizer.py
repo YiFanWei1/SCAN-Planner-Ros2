@@ -16,6 +16,7 @@ from visualization_msgs.msg import Marker, MarkerArray
 
 from terrain_path_segmenter.segmentation import (
     active_segment_for_progress, cumulative_xy_distance,
+    is_reverse_navigation_path, path_direction_similarity,
     project_onto_path, segment_handoff_reason, segment_path)
 
 
@@ -36,6 +37,7 @@ class TerrainPathVisualizer(Node):
         self.declare_parameter("minimum_segment_length", 0.5)
         self.declare_parameter("segment_reached_tolerance", 0.25)
         self.declare_parameter("accept_first_path_only", False)
+        self.declare_parameter("reverse_path_direction_cosine", -0.25)
         self.declare_parameter("visual_z_offset", 0.05)
         self.declare_parameter("line_width", 0.07)
         self.declare_parameter("progress_projection_z_weight", 2.0)
@@ -55,6 +57,8 @@ class TerrainPathVisualizer(Node):
             "segment_reached_tolerance").value
         self.accept_first_path_only = self.get_parameter(
             "accept_first_path_only").value
+        self.reverse_path_direction_cosine = self.get_parameter(
+            "reverse_path_direction_cosine").value
         self.z_offset = self.get_parameter("visual_z_offset").value
         self.line_width = self.get_parameter("line_width").value
         self.projection_z_weight = self.get_parameter(
@@ -138,18 +142,42 @@ class TerrainPathVisualizer(Node):
         return probe.point[2]
 
     def path_callback(self, message):
-        if self.accept_first_path_only and self.path is not None:
-            self.ignored_path_updates += 1
-            if self.ignored_path_updates == 1 or self.ignored_path_updates % 50 == 0:
-                self.get_logger().debug(
-                    "Ignoring global path update because first-path-only mode "
-                    f"is active (ignored={self.ignored_path_updates})")
-            return
         if len(message.poses) < 2:
             self.get_logger().warning("Ignoring path with fewer than two poses")
             return
         points = [(pose.pose.position.x, pose.pose.position.y,
                    pose.pose.position.z) for pose in message.poses]
+        reverse_task = False
+        if self.accept_first_path_only and self.path is not None:
+            reverse_direction = is_reverse_navigation_path(
+                self.points, points, self.reverse_path_direction_cosine)
+            reverse_task = reverse_direction
+            if reverse_direction and self.last_odom is not None:
+                position = self.odom_position(self.last_odom)
+                candidate_projection = project_onto_path(
+                    points, position,
+                    terrain_z_hint=self.terrain_z_hint(position),
+                    z_weight=self.projection_z_weight)
+                reverse_task = (
+                    candidate_projection.xy_distance <=
+                    self.progress_pass_max_xy_distance and
+                    candidate_projection.z_error <=
+                    self.progress_floor_tolerance)
+            if not reverse_task:
+                self.ignored_path_updates += 1
+                if (self.ignored_path_updates == 1 or
+                        self.ignored_path_updates % 50 == 0):
+                    self.get_logger().debug(
+                        "Ignoring same-direction or wrong-floor global path "
+                        "update because first-path-only mode is active "
+                        f"(ignored={self.ignored_path_updates})")
+                return
+
+            similarity = path_direction_similarity(self.points, points)
+            self.get_logger().info(
+                "Accepted reverse-direction global path as a new navigation "
+                f"task (direction cosine={similarity:.3f})")
+            self.ignored_path_updates = 0
         try:
             ranges = segment_path(
                 points, self.max_error, self.slope_threshold,

@@ -50,6 +50,8 @@ def generate_launch_description():
             "minimum_segment_length": LaunchConfiguration("minimum_segment_length"),
             "accept_first_path_only": LaunchConfiguration(
                 "accept_first_global_path_only"),
+            "reverse_path_direction_cosine": LaunchConfiguration(
+                "reverse_path_direction_cosine"),
             "segment_reached_tolerance": LaunchConfiguration(
                 "segment_reached_tolerance"),
         }],
@@ -157,6 +159,10 @@ def generate_launch_description():
         DeclareLaunchArgument("slope_merge_threshold", default_value="0.04"),
         DeclareLaunchArgument("minimum_segment_length", default_value="0.5"),
         DeclareLaunchArgument("accept_first_global_path_only", default_value="false"),
+        # In first-path-only mode, accept a clearly reversed route as a new
+        # navigation task while continuing to ignore same-direction rolling
+        # updates from the global planner.
+        DeclareLaunchArgument("reverse_path_direction_cosine", default_value="-0.25"),
         # Switch slightly earlier than before while staying below the 0.50 m
         # minimum segment length, so a newly activated short segment is not
         # skipped immediately.

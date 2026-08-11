@@ -25,6 +25,48 @@ def cumulative_xy_distance(points):
     return distances
 
 
+def path_direction_similarity(first_points, second_points):
+    """Return the cosine between the start-to-end directions of two paths.
+
+    A value near one means that both paths describe the same navigation
+    direction, while a value near minus one identifies a return trip.  ``None``
+    is returned for a path whose endpoints are effectively coincident because
+    its direction is undefined.
+    """
+    if len(first_points) < 2 or len(second_points) < 2:
+        return None
+
+    directions = []
+    for points in (first_points, second_points):
+        direction = tuple(points[-1][axis] - points[0][axis]
+                          for axis in range(3))
+        length = math.sqrt(sum(value * value for value in direction))
+        if length <= 1e-6:
+            return None
+        directions.append(tuple(value / length for value in direction))
+
+    return sum(first * second
+               for first, second in zip(directions[0], directions[1]))
+
+
+def is_reverse_navigation_path(previous_points, candidate_points,
+                               maximum_direction_cosine=-0.25):
+    """Return whether ``candidate_points`` starts a reverse-direction task.
+
+    ``accept_first_path_only`` is used to reject rolling replans belonging to
+    one task.  A real return trip must nevertheless be accepted.  Requiring a
+    clearly negative direction cosine distinguishes that return trip from
+    ordinary forward extensions and small endpoint motion.
+    """
+    if (not math.isfinite(maximum_direction_cosine) or
+            maximum_direction_cosine < -1.0 or
+            maximum_direction_cosine > 1.0):
+        raise ValueError("maximum_direction_cosine must be within [-1, 1]")
+    similarity = path_direction_similarity(previous_points, candidate_points)
+    return (similarity is not None and
+            similarity <= maximum_direction_cosine)
+
+
 def project_onto_path(points, position, terrain_z_hint=None, z_weight=2.0,
                       min_progress=0.0, max_progress=None):
     """Project a position onto a path while disambiguating overlapping floors.
