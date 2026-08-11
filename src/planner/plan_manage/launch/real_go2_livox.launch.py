@@ -162,9 +162,13 @@ def generate_launch_description():
         DeclareLaunchArgument("enable_motion", default_value="false"),
         DeclareLaunchArgument("project_reference_start_z", default_value="true"),
         DeclareLaunchArgument("reference_start_z_max_correction", default_value="0.60"),
-        DeclareLaunchArgument("max_linear_z_error", default_value="0.04"),
-        DeclareLaunchArgument("slope_merge_threshold", default_value="0.04"),
-        DeclareLaunchArgument("minimum_segment_length", default_value="0.5"),
+        # Real global paths contain centimetre-level stair-height ripple.  The
+        # previous 0.04/0.04/0.50 settings often split one physical flight
+        # into several targets.  These values merge that ripple while keeping
+        # the roughly 1 m landings as separate terrain sections.
+        DeclareLaunchArgument("max_linear_z_error", default_value="0.06"),
+        DeclareLaunchArgument("slope_merge_threshold", default_value="0.06"),
+        DeclareLaunchArgument("minimum_segment_length", default_value="0.80"),
         DeclareLaunchArgument("accept_first_global_path_only", default_value="false"),
         # In first-path-only mode, accept a clearly reversed route as a new
         # navigation task while continuing to ignore same-direction rolling
