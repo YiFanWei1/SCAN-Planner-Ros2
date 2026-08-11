@@ -23,9 +23,7 @@ def generate_launch_description():
         executable="real_go2_input_adapter",
         name="real_go2_input_adapter",
         output="screen",
-        parameters=[real_config, {
-            "odom_pose_frame": LaunchConfiguration("odom_pose_frame"),
-        }],
+        parameters=[real_config],
         remappings=[
             ("lidar_odom", "/lio_odom_hf"),
             ("cloud", "/livox/lidar"),
@@ -155,7 +153,6 @@ def generate_launch_description():
     return LaunchDescription([
         DeclareLaunchArgument("rviz", default_value="true"),
         DeclareLaunchArgument("enable_motion", default_value="false"),
-        DeclareLaunchArgument("odom_pose_frame", default_value="lidar"),
         DeclareLaunchArgument("max_linear_z_error", default_value="0.04"),
         DeclareLaunchArgument("slope_merge_threshold", default_value="0.04"),
         DeclareLaunchArgument("minimum_segment_length", default_value="0.5"),

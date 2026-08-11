@@ -24,9 +24,9 @@ scan_planner_node:
     # Prevent the first trajectory from racing the lidar fusion timer. SCAN
     # starts planning only after two valid clouds have updated occupancy.
     grid_map.map_ready_min_cloud_updates: 2
-    # /plan stores terrain height; lift it to the Go2 base_link centre.
-    # Keep this independent from the segmenter, which must preserve source Z.
-    grid_map.body_height: 0.30
+    # Experimental doubled path lift requested for bag comparison. The normal
+    # physical base_link height is about 0.30 m; the segmenter still preserves source Z.
+    grid_map.body_height: 0.60
     # Restore the normal Go2 double-cylinder collision envelope.
     grid_map.double_cylinder_radius: 0.25
     grid_map.double_cylinder_offset: 0.18
@@ -66,10 +66,6 @@ real_go2_input_adapter:
   ros__parameters:
     use_sim_time: false
     world_frame: camera_init
-    # Pose semantics of /lio_odom_hf. Keep "lidar" for the live interface
-    # described by the robot integration; recorded bags that already contain
-    # a base_link pose must launch with odom_pose_frame:=base_link.
-    odom_pose_frame: lidar
     lidar_to_base_x: -0.15
     lidar_to_base_y: 0.0
     lidar_to_base_z: -0.21
