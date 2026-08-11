@@ -19,6 +19,7 @@ install(DIRECTORY launch rviz
 if(BUILD_TESTING)
   find_package(ament_cmake_pytest REQUIRED)
   ament_add_pytest_test(test_segmentation test/test_segmentation.py)
+  ament_add_pytest_test(test_progress test/test_progress.py)
 endif()
 
 ament_package()

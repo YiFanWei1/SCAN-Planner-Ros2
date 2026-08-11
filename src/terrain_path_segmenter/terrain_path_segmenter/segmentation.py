@@ -1,6 +1,18 @@
-"""Pure path segmentation algorithms, independent of ROS messages."""
+"""Pure path segmentation and progress algorithms, independent of ROS."""
 
 import math
+from typing import NamedTuple
+
+
+class PathProjection(NamedTuple):
+    """Closest point on an XYZ path under an XY/terrain-height metric."""
+
+    segment_index: int
+    ratio: float
+    progress: float
+    point: tuple
+    xy_distance: float
+    z_error: float
 
 
 def cumulative_xy_distance(points):
@@ -11,6 +23,126 @@ def cumulative_xy_distance(points):
             distances[-1] + math.hypot(second[0] - first[0],
                                        second[1] - first[1]))
     return distances
+
+
+def project_onto_path(points, position, terrain_z_hint=None, z_weight=2.0,
+                      min_progress=0.0, max_progress=None):
+    """Project a position onto a path while disambiguating overlapping floors.
+
+    ``position`` is normally the body odometry position.  Since a global path
+    may describe terrain rather than body-center height, callers can provide a
+    ``terrain_z_hint`` obtained from the previous path projection.  This makes
+    an XY-overlapping stair flight on another floor more expensive without
+    assuming a fixed robot body height.
+
+    The returned progress is horizontal arc length.  Restricting its range is
+    useful for continuous odometry updates: it prevents a self-intersection
+    farther down the route from being selected in a single update.
+    """
+    if not points:
+        raise ValueError("cannot project onto an empty path")
+    if len(position) != 3 or not all(math.isfinite(v) for v in position):
+        raise ValueError("position must be a finite XYZ triple")
+    if z_weight < 0.0 or not math.isfinite(z_weight):
+        raise ValueError("z_weight must be finite and non-negative")
+
+    distances = cumulative_xy_distance(points)
+    total_length = distances[-1]
+    lower = max(0.0, min(float(min_progress), total_length))
+    upper = total_length if max_progress is None else max(
+        lower, min(float(max_progress), total_length))
+    if not math.isfinite(lower) or not math.isfinite(upper):
+        raise ValueError("progress limits must be finite")
+    if terrain_z_hint is not None and not math.isfinite(terrain_z_hint):
+        raise ValueError("terrain_z_hint must be finite")
+
+    best = None
+    best_key = None
+    for index, (first, second) in enumerate(zip(points, points[1:])):
+        segment_start = distances[index]
+        segment_end = distances[index + 1]
+        segment_length = segment_end - segment_start
+        if segment_end < lower - 1e-9 or segment_start > upper + 1e-9:
+            continue
+        if segment_length <= 1e-9:
+            continue
+
+        dx = second[0] - first[0]
+        dy = second[1] - first[1]
+        ratio = ((position[0] - first[0]) * dx +
+                 (position[1] - first[1]) * dy) / (segment_length ** 2)
+        minimum_ratio = max(0.0, (lower - segment_start) / segment_length)
+        maximum_ratio = min(1.0, (upper - segment_start) / segment_length)
+        ratio = max(minimum_ratio, min(maximum_ratio, ratio))
+        point = tuple(first[axis] + ratio * (second[axis] - first[axis])
+                      for axis in range(3))
+        xy_distance = math.hypot(position[0] - point[0],
+                                 position[1] - point[1])
+        z_error = (0.0 if terrain_z_hint is None else
+                   abs(terrain_z_hint - point[2]))
+        score = xy_distance ** 2 + (z_weight * z_error) ** 2
+        progress = segment_start + ratio * segment_length
+
+        # Earlier progress wins an exact tie.  Fresh navigation paths normally
+        # begin at the robot, so this also avoids jumping to a later same-floor
+        # self-intersection when no prior progress exists on the new revision.
+        key = (score, progress)
+        if best_key is None or key < best_key:
+            best_key = key
+            best = PathProjection(index, ratio, progress, point,
+                                  xy_distance, z_error)
+
+    if best is not None:
+        return best
+
+    # A path made only of repeated XY points has zero horizontal length.  It is
+    # not useful for progress tracking, but returning its first point keeps the
+    # caller deterministic and lets normal path validation handle it.
+    point = tuple(points[0])
+    xy_distance = math.hypot(position[0] - point[0],
+                             position[1] - point[1])
+    z_error = (0.0 if terrain_z_hint is None else
+               abs(terrain_z_hint - point[2]))
+    return PathProjection(0, 0.0, 0.0, point, xy_distance, z_error)
+
+
+def active_segment_for_progress(ranges, distances, progress):
+    """Return the section whose endpoint is still ahead of ``progress``."""
+    if not ranges:
+        raise ValueError("segment ranges cannot be empty")
+    for index, (_, end) in enumerate(ranges[:-1]):
+        if progress < distances[end] - 1e-6:
+            return index
+    return len(ranges) - 1
+
+
+def segment_handoff_reason(position, terrain_z_hint, projection,
+                           goal, goal_progress, reached_tolerance,
+                           floor_tolerance=0.75,
+                           passed_progress_margin=0.02,
+                           passed_max_xy_distance=1.0):
+    """Return why a segment should advance, or ``None`` if it should not.
+
+    Handoff is accepted either inside the traditional XY goal circle or after
+    the robot's path projection has passed the endpoint.  Both checks are
+    gated by terrain height when a hint is available, preventing a pose on an
+    XY-overlapping floor from completing the wrong stair segment.
+    """
+    if (reached_tolerance < 0.0 or floor_tolerance < 0.0 or
+            passed_progress_margin < 0.0 or passed_max_xy_distance < 0.0):
+        raise ValueError("handoff tolerances must be non-negative")
+    z_compatible = (terrain_z_hint is None or
+                    abs(terrain_z_hint - goal[2]) <= floor_tolerance)
+    distance = math.hypot(position[0] - goal[0], position[1] - goal[1])
+    if z_compatible and distance <= reached_tolerance:
+        return "goal_tolerance"
+    projection_matches_floor = (terrain_z_hint is None or
+                                projection.z_error <= floor_tolerance)
+    if (projection_matches_floor and
+            projection.xy_distance <= passed_max_xy_distance and
+            projection.progress >= goal_progress + passed_progress_margin):
+        return "passed_endpoint"
+    return None
 
 
 def line_error(points, distances, start, end):

@@ -81,6 +81,13 @@ real_go2_input_adapter:
     path_endpoint_threshold: 0.30
     path_geometry_threshold: 0.20
     path_compare_horizon: 5.0
+    # /plan stores terrain height while body_pose is the planning body center.
+    # Keep this equal to grid_map.body_height so 3-D path projection selects
+    # the correct stair floor before trimming away points behind the robot.
+    path_body_height_offset: 0.40
+    path_projection_vertical_weight: 1.0
+    path_projection_max_xy_distance: 2.0
+    path_projection_max_z_error: 1.0
 
 cmd_vel_safety_gate:
   ros__parameters:

@@ -44,9 +44,19 @@ public:
     path_endpoint_threshold_ = declare_parameter<double>("path_endpoint_threshold", 0.30);
     path_geometry_threshold_ = declare_parameter<double>("path_geometry_threshold", 0.20);
     path_compare_horizon_ = declare_parameter<double>("path_compare_horizon", 5.0);
+    path_body_height_offset_ = declare_parameter<double>("path_body_height_offset", 0.30);
+    path_projection_vertical_weight_ =
+        declare_parameter<double>("path_projection_vertical_weight", 1.0);
+    path_projection_max_xy_distance_ =
+        declare_parameter<double>("path_projection_max_xy_distance", 2.0);
+    path_projection_max_z_error_ =
+        declare_parameter<double>("path_projection_max_z_error", 1.0);
     world_frame_ = declare_parameter<std::string>("world_frame", "camera_init");
     if (sync_tolerance_ <= 0.0 || path_update_rate_ <= 0.0 || validation_window_ <= 0.0)
       throw std::invalid_argument("sync, validation window and path rate must be positive");
+    if (path_body_height_offset_ < 0.0 || path_projection_vertical_weight_ <= 0.0 ||
+        path_projection_max_xy_distance_ <= 0.0 || path_projection_max_z_error_ <= 0.0)
+      throw std::invalid_argument("path projection parameters are invalid");
 
     body_pose_pub_ = create_publisher<nav_msgs::msg::Odometry>("body_pose", rclcpp::SensorDataQoS());
     sensor_pose_pub_ = create_publisher<nav_msgs::msg::Odometry>("sensor_pose", rclcpp::SensorDataQoS());
@@ -176,8 +186,12 @@ private:
     }
     const auto body_pose = makeBodyPose(*msg);
     body_pose_pub_->publish(body_pose);
-    current_body_xy_ = Eigen::Vector2d(body_pose.pose.pose.position.x,
-                                       body_pose.pose.pose.position.y);
+    {
+      std::lock_guard<std::mutex> lock(path_mutex_);
+      current_body_position_ = Eigen::Vector3d(
+          body_pose.pose.pose.position.x, body_pose.pose.pose.position.y,
+          body_pose.pose.pose.position.z);
+    }
     have_valid_odom_ = true;
   }
 
@@ -216,40 +230,41 @@ private:
     pending_path_ = *msg;
   }
 
-  bool materiallyChanged(const nav_msgs::msg::Path &candidate) const
+  bool materiallyChanged(const nav_msgs::msg::Path &candidate_forward) const
   {
     if (!published_path_)
       return true;
     const auto &old_end = published_path_->poses.back().pose.position;
-    const auto &new_end = candidate.poses.back().pose.position;
-    if (std::hypot(new_end.x - old_end.x, new_end.y - old_end.y) >= path_endpoint_threshold_)
+    const auto &new_end = candidate_forward.poses.back().pose.position;
+    const Eigen::Vector3d endpoint_delta(
+        new_end.x - old_end.x, new_end.y - old_end.y, new_end.z - old_end.z);
+    if (endpoint_delta.norm() >= path_endpoint_threshold_)
       return true;
     const auto old_forward = trimFromCurrentPosition(*published_path_);
-    const auto new_forward = trimFromCurrentPosition(candidate);
-    return pathGeometryRms(old_forward, new_forward, path_compare_horizon_, 0.20) >=
+    if (!old_forward || old_forward->poses.size() < 2)
+      return true;
+    return pathGeometryRms3D(
+               *old_forward, candidate_forward, path_compare_horizon_, 0.20,
+               path_projection_vertical_weight_) >=
            path_geometry_threshold_;
   }
 
-  nav_msgs::msg::Path trimFromCurrentPosition(const nav_msgs::msg::Path &path) const
+  std::optional<nav_msgs::msg::Path> trimFromCurrentPosition(
+      const nav_msgs::msg::Path &path,
+      PathProjection3D *projection_result = nullptr) const
   {
-    if (!current_body_xy_ || path.poses.empty())
-      return path;
-    size_t nearest = 0;
-    double nearest_squared = std::numeric_limits<double>::infinity();
-    for (size_t i = 0; i < path.poses.size(); ++i)
-    {
-      const Eigen::Vector2d point(path.poses[i].pose.position.x,
-                                  path.poses[i].pose.position.y);
-      const double squared = (point - *current_body_xy_).squaredNorm();
-      if (squared < nearest_squared)
-      {
-        nearest_squared = squared;
-        nearest = i;
-      }
-    }
-    nav_msgs::msg::Path result = path;
-    result.poses.assign(path.poses.begin() + static_cast<std::ptrdiff_t>(nearest),
-                        path.poses.end());
+    if (!current_body_position_ || path.poses.size() < 2)
+      return std::nullopt;
+    Eigen::Vector3d path_query = *current_body_position_;
+    path_query.z() -= path_body_height_offset_;
+    const auto projection = projectPointOntoPath3D(
+        path, path_query, path_projection_vertical_weight_);
+    if (!projection || projection->xy_distance > path_projection_max_xy_distance_ ||
+        projection->z_distance > path_projection_max_z_error_)
+      return std::nullopt;
+    auto result = trimPathFromProjection(path, *projection);
+    if (projection_result)
+      *projection_result = *projection;
     return result;
   }
 
@@ -260,9 +275,23 @@ private:
     if ((now() - last_path_publish_time_).seconds() < 1.0 / path_update_rate_)
       return;
     std::lock_guard<std::mutex> lock(path_mutex_);
-    if (!pending_path_ || !materiallyChanged(*pending_path_))
+    if (!pending_path_)
       return;
-    nav_msgs::msg::Path output = *pending_path_;
+    PathProjection3D projection;
+    auto candidate_forward = trimFromCurrentPosition(*pending_path_, &projection);
+    if (!candidate_forward || candidate_forward->poses.size() < 2)
+    {
+      RCLCPP_WARN_THROTTLE(
+          get_logger(), *get_clock(), 1000,
+          "Not forwarding /plan: no valid same-floor forward projection near the robot");
+      return;
+    }
+    if (!materiallyChanged(*candidate_forward))
+    {
+      pending_path_.reset();
+      return;
+    }
+    nav_msgs::msg::Path output = std::move(*candidate_forward);
     // The real setup assumes map -> camera_init is identity. Normalize the
     // path frame here so RViz and SCAN do not require an otherwise redundant
     // TF edge when a navigation stack labels /plan as "map".
@@ -273,8 +302,12 @@ private:
     published_path_ = output;
     pending_path_.reset();
     last_path_publish_time_ = now();
-    RCLCPP_DEBUG(get_logger(), "Forwarded global path with %zu points, length %.2f m",
-                 output.poses.size(), pathLength(output));
+    RCLCPP_DEBUG(
+        get_logger(),
+        "Forwarded forward /plan with %zu points, length %.2f m; projection segment=%zu "
+        "ratio=%.3f xy_error=%.3f z_error=%.3f",
+        output.poses.size(), pathLength(output), projection.segment_index,
+        projection.segment_ratio, projection.xy_distance, projection.z_distance);
   }
 
   void publishStatus(const std::string &text)
@@ -292,13 +325,15 @@ private:
   double max_vertical_displacement_;
   double path_update_rate_, path_endpoint_threshold_, path_geometry_threshold_;
   double path_compare_horizon_;
+  double path_body_height_offset_, path_projection_vertical_weight_;
+  double path_projection_max_xy_distance_, path_projection_max_z_error_;
   std::string world_frame_, last_status_;
   bool have_valid_odom_{false}, input_valid_{true};
   std::mutex state_mutex_, path_mutex_;
   std::optional<rclcpp::Time> last_input_stamp_, last_valid_stamp_;
   Eigen::Vector3d last_valid_position_{Eigen::Vector3d::Zero()};
   std::optional<Eigen::Vector3d> initial_position_;
-  std::optional<Eigen::Vector2d> current_body_xy_;
+  std::optional<Eigen::Vector3d> current_body_position_;
   std::optional<nav_msgs::msg::Path> pending_path_, published_path_;
   rclcpp::Time last_path_publish_time_{0, 0, RCL_ROS_TIME};
 

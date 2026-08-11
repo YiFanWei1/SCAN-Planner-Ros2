@@ -3,18 +3,20 @@
 
 import colorsys
 import copy
-import math
 
 import rclpy
 from geometry_msgs.msg import Point, PoseStamped
 from nav_msgs.msg import Odometry, Path
+from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
 from rclpy.qos import (DurabilityPolicy, QoSProfile, ReliabilityPolicy,
                        qos_profile_sensor_data)
 from std_msgs.msg import ColorRGBA
 from visualization_msgs.msg import Marker, MarkerArray
 
-from terrain_path_segmenter.segmentation import segment_path
+from terrain_path_segmenter.segmentation import (
+    active_segment_for_progress, cumulative_xy_distance,
+    project_onto_path, segment_handoff_reason, segment_path)
 
 
 def color_for_index(index, alpha=1.0):
@@ -36,6 +38,13 @@ class TerrainPathVisualizer(Node):
         self.declare_parameter("accept_first_path_only", False)
         self.declare_parameter("visual_z_offset", 0.05)
         self.declare_parameter("line_width", 0.07)
+        self.declare_parameter("progress_projection_z_weight", 2.0)
+        self.declare_parameter("progress_backtrack_tolerance", 0.30)
+        self.declare_parameter("progress_max_forward_distance", 4.0)
+        self.declare_parameter("progress_floor_tolerance", 0.75)
+        self.declare_parameter("progress_pass_margin", 0.02)
+        self.declare_parameter("progress_pass_max_xy_distance", 1.0)
+        self.declare_parameter("initial_projection_horizon", 3.0)
 
         self.max_error = self.get_parameter("max_linear_z_error").value
         self.slope_threshold = self.get_parameter(
@@ -48,6 +57,20 @@ class TerrainPathVisualizer(Node):
             "accept_first_path_only").value
         self.z_offset = self.get_parameter("visual_z_offset").value
         self.line_width = self.get_parameter("line_width").value
+        self.projection_z_weight = self.get_parameter(
+            "progress_projection_z_weight").value
+        self.progress_backtrack_tolerance = self.get_parameter(
+            "progress_backtrack_tolerance").value
+        self.progress_max_forward_distance = self.get_parameter(
+            "progress_max_forward_distance").value
+        self.progress_floor_tolerance = self.get_parameter(
+            "progress_floor_tolerance").value
+        self.progress_pass_margin = self.get_parameter(
+            "progress_pass_margin").value
+        self.progress_pass_max_xy_distance = self.get_parameter(
+            "progress_pass_max_xy_distance").value
+        self.initial_projection_horizon = self.get_parameter(
+            "initial_projection_horizon").value
 
         transient_qos = QoSProfile(depth=1)
         transient_qos.reliability = ReliabilityPolicy.RELIABLE
@@ -70,13 +93,49 @@ class TerrainPathVisualizer(Node):
             qos_profile_sensor_data)
 
         self.path = None
+        self.points = []
+        self.distances = []
         self.ranges = []
         self.current_index = 0
+        self.path_progress = 0.0
+        self.body_to_path_z_offset = None
+        self.last_projection = None
+        self.path_revision = 0
         self.last_odom = None
         self.ignored_path_updates = 0
         self.get_logger().debug(
             "Waiting for a global path; accept_first_path_only=%s" %
             self.accept_first_path_only)
+
+    @staticmethod
+    def odom_position(message):
+        position = message.pose.pose.position
+        return (position.x, position.y, position.z)
+
+    def terrain_z_hint(self, position):
+        if self.body_to_path_z_offset is None:
+            return None
+        return position[2] - self.body_to_path_z_offset
+
+    def project_current_position(self, position):
+        """Project odometry near the previously accepted route progress."""
+        minimum = max(0.0, self.path_progress -
+                      self.progress_backtrack_tolerance)
+        maximum = min(self.distances[-1], self.path_progress +
+                      self.progress_max_forward_distance)
+        return project_onto_path(
+            self.points, position,
+            terrain_z_hint=self.terrain_z_hint(position),
+            z_weight=self.projection_z_weight,
+            min_progress=minimum, max_progress=maximum)
+
+    def initialize_height_offset(self, points, position):
+        """Estimate the body/path height offset near a fresh path's start."""
+        probe = project_onto_path(
+            points, position, z_weight=0.0,
+            max_progress=self.initial_projection_horizon)
+        self.body_to_path_z_offset = position[2] - probe.point[2]
+        return probe.point[2]
 
     def path_callback(self, message):
         if self.accept_first_path_only and self.path is not None:
@@ -98,32 +157,95 @@ class TerrainPathVisualizer(Node):
         except ValueError as error:
             self.get_logger().error(f"Cannot segment path: {error}")
             return
+        previous_index = self.current_index
+        terrain_hint = None
+        position = None
+        if self.last_odom is not None:
+            position = self.odom_position(self.last_odom)
+            if self.path is not None and self.points and self.distances:
+                previous_projection = self.project_current_position(position)
+                self.path_progress = max(
+                    self.path_progress, previous_projection.progress)
+                terrain_hint = previous_projection.point[2]
+                if self.body_to_path_z_offset is None:
+                    self.body_to_path_z_offset = (
+                        position[2] - previous_projection.point[2])
+            elif self.body_to_path_z_offset is not None:
+                terrain_hint = self.terrain_z_hint(position)
+            else:
+                terrain_hint = self.initialize_height_offset(points, position)
+
+        distances = cumulative_xy_distance(points)
+        projection = None
+        inherited_progress = 0.0
+        inherited_index = 0
+        if position is not None:
+            projection = project_onto_path(
+                points, position, terrain_z_hint=terrain_hint,
+                z_weight=self.projection_z_weight)
+            inherited_progress = projection.progress
+            inherited_index = active_segment_for_progress(
+                ranges, distances, inherited_progress)
+            measured_offset = position[2] - projection.point[2]
+            if (self.body_to_path_z_offset is None or
+                    projection.z_error <= self.progress_floor_tolerance):
+                self.body_to_path_z_offset = measured_offset
+
         self.path = copy.deepcopy(message)
+        self.points = points
+        self.distances = distances
         self.ranges = ranges
-        self.current_index = 0
+        self.path_progress = inherited_progress
+        self.current_index = inherited_index
+        self.last_projection = projection
+        self.path_revision += 1
         self.processed_path_pub.publish(self.path)
         self.publish_visualization()
         self.get_logger().debug(
-            f"Segmented {len(points)} path points into {len(ranges)} sections")
+            f"Path revision {self.path_revision}: segmented {len(points)} "
+            f"points into {len(ranges)} sections; inherited progress="
+            f"{self.path_progress:.2f}m, active={self.current_index + 1}/"
+            f"{len(self.ranges)}, previous_active={previous_index + 1}")
 
     def odom_callback(self, message):
         self.last_odom = message
         if self.path is None or not self.ranges:
             return
+        position = self.odom_position(message)
+        projection = self.project_current_position(position)
+        self.last_projection = projection
+        self.path_progress = max(self.path_progress, projection.progress)
+        terrain_hint = self.terrain_z_hint(position)
+
+        # Slowly follow small body/path height-offset changes (suspension,
+        # pitch and odometry noise) without allowing a wrong-floor projection
+        # to redefine the offset in one sample.
+        if (projection.xy_distance <= 1.0 and
+                projection.z_error <= self.progress_floor_tolerance):
+            measured_offset = position[2] - projection.point[2]
+            self.body_to_path_z_offset = (
+                measured_offset if self.body_to_path_z_offset is None else
+                0.98 * self.body_to_path_z_offset + 0.02 * measured_offset)
+
+        advanced = False
         while self.current_index + 1 < len(self.ranges):
             goal_index = self.ranges[self.current_index][1]
-            goal = self.path.poses[goal_index].pose.position
-            position = message.pose.pose.position
-            # The global path may represent terrain height while odometry is
-            # reported at body height, so section handoff is evaluated in XY.
-            distance = math.hypot(position.x - goal.x,
-                                  position.y - goal.y)
-            if distance > self.reached_tolerance:
+            goal_message = self.path.poses[goal_index].pose.position
+            goal = (goal_message.x, goal_message.y, goal_message.z)
+            reason = segment_handoff_reason(
+                position, terrain_hint, projection, goal,
+                self.distances[goal_index], self.reached_tolerance,
+                self.progress_floor_tolerance, self.progress_pass_margin,
+                self.progress_pass_max_xy_distance)
+            if reason is None:
                 break
             self.current_index += 1
+            advanced = True
             self.get_logger().debug(
-                f"Visualization advanced to segment {self.current_index + 1}/"
-                f"{len(self.ranges)}")
+                f"Advanced to segment {self.current_index + 1}/"
+                f"{len(self.ranges)} by {reason}; progress="
+                f"{self.path_progress:.2f}m")
+        if advanced:
             self.publish_visualization()
 
     def make_path(self, start, end):
@@ -223,7 +345,7 @@ def main(args=None):
     node = TerrainPathVisualizer()
     try:
         rclpy.spin(node)
-    except KeyboardInterrupt:
+    except (KeyboardInterrupt, ExternalShutdownException):
         pass
     finally:
         node.destroy_node()
