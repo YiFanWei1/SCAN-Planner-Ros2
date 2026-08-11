@@ -6,7 +6,7 @@ from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch.conditions import IfCondition
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import IfElseSubstitution, LaunchConfiguration
 from launch_ros.actions import Node
 
 
@@ -17,6 +17,11 @@ def generate_launch_description():
     controller_config = os.path.join(share, "config", "controllers.yaml")
     real_config = os.path.join(share, "config", "real_go2_livox.yaml")
     rviz_config = os.path.join(terrain_share, "rviz", "segments.rviz")
+    planner_path_topic = IfElseSubstitution(
+        condition=LaunchConfiguration("use_path_segmentation"),
+        if_value="/scan_planner/initial_path",
+        else_value="/scan_planner/global_path_filtered",
+    )
 
     adapter = Node(
         package="scan_planner",
@@ -63,6 +68,7 @@ def generate_launch_description():
             ("current_path", "/scan_planner/initial_path"),
             ("current_goal", "/terrain_path/current_goal"),
         ],
+        condition=IfCondition(LaunchConfiguration("use_path_segmentation")),
     )
 
     planner = Node(
@@ -80,7 +86,7 @@ def generate_launch_description():
             ("body_pose", "/scan_planner/body_pose"),
             ("sensor_pose", "/scan_planner/sensor_pose"),
             ("cloud", "/scan_planner/cloud"),
-            ("initial_path", "/scan_planner/initial_path"),
+            ("initial_path", planner_path_topic),
         ],
     )
 
@@ -152,7 +158,7 @@ def generate_launch_description():
         parameters=[{"use_sim_time": False}],
         remappings=[
             ("/quad_0/cloud", "/scan_planner/cloud"),
-            ("/quad_0/path", "/scan_planner/initial_path"),
+            ("/quad_0/path", planner_path_topic),
         ],
         condition=IfCondition(LaunchConfiguration("rviz")),
     )
@@ -162,22 +168,19 @@ def generate_launch_description():
         DeclareLaunchArgument("enable_motion", default_value="false"),
         DeclareLaunchArgument("project_reference_start_z", default_value="true"),
         DeclareLaunchArgument("reference_start_z_max_correction", default_value="0.60"),
-        # Real global paths contain centimetre-level stair-height ripple.  The
-        # previous 0.04/0.04/0.50 settings often split one physical flight
-        # into several targets.  These values merge that ripple while keeping
-        # the roughly 1 m landings as separate terrain sections.
-        DeclareLaunchArgument("max_linear_z_error", default_value="0.06"),
-        DeclareLaunchArgument("slope_merge_threshold", default_value="0.06"),
-        DeclareLaunchArgument("minimum_segment_length", default_value="0.80"),
+        # Disable this to feed the adapter's complete filtered global path
+        # directly to SCAN instead of sending one terrain segment at a time.
+        DeclareLaunchArgument("use_path_segmentation", default_value="true"),
+        # Keep the real launch aligned with terrain_path_segmenter's defaults.
+        DeclareLaunchArgument("max_linear_z_error", default_value="0.04"),
+        DeclareLaunchArgument("slope_merge_threshold", default_value="0.04"),
+        DeclareLaunchArgument("minimum_segment_length", default_value="0.50"),
         DeclareLaunchArgument("accept_first_global_path_only", default_value="false"),
         # In first-path-only mode, accept a clearly reversed route as a new
         # navigation task while continuing to ignore same-direction rolling
         # updates from the global planner.
         DeclareLaunchArgument("reverse_path_direction_cosine", default_value="-0.25"),
-        # Switch slightly earlier than before while staying below the 0.50 m
-        # minimum segment length, so a newly activated short segment is not
-        # skipped immediately.
-        DeclareLaunchArgument("segment_reached_tolerance", default_value="0.40"),
+        DeclareLaunchArgument("segment_reached_tolerance", default_value="0.25"),
         DeclareLaunchArgument("analysis", default_value="true"),
         DeclareLaunchArgument("analysis_output", default_value=""),
         DeclareLaunchArgument(
