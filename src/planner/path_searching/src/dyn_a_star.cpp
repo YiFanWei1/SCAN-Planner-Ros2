@@ -175,6 +175,9 @@ bool AStar::ConvertToIndexAndAdjustStartEndPoints(Vector3d start_pt, Vector3d en
 ASTAR_RET AStar::AstarSearch(const double step_size, Vector3d start_pt, Vector3d end_pt)
 {
     const auto time_1 = std::chrono::steady_clock::now();
+    last_diagnostics_ = AStarSearchDiagnostics{};
+    last_diagnostics_.requested_start = start_pt;
+    last_diagnostics_.requested_end = end_pt;
     ++rounds_;
     gridPath_.clear();
     requested_start_ = start_pt;
@@ -187,22 +190,27 @@ ASTAR_RET AStar::AstarSearch(const double step_size, Vector3d start_pt, Vector3d
     Vector3i start_idx, end_idx;
     if (!ConvertToIndexAndAdjustStartEndPoints(start_pt, end_pt, start_idx, end_idx))
     {
-        RCLCPP_ERROR(rclcpp::get_logger("path_searching"),
-                     "[AStarDiag] INIT_ERR reason='%s' requested_start=[%.3f %.3f %.3f] "
-                     "requested_end=[%.3f %.3f %.3f] adjusted_start=[%.3f %.3f %.3f] "
-                     "adjusted_end=[%.3f %.3f %.3f] initial_occ(start,end)=[%d,%d] "
-                     "adjust_steps(start,end)=[%d,%d]",
-                     init_failure_reason_.c_str(),
-                     requested_start_(0), requested_start_(1), requested_start_(2),
-                     requested_end_(0), requested_end_(1), requested_end_(2),
-                     adjusted_start_(0), adjusted_start_(1), adjusted_start_(2),
-                     adjusted_end_(0), adjusted_end_(1), adjusted_end_(2),
-                     initial_start_occ_, initial_end_occ_, start_adjust_steps_, end_adjust_steps_);
+        last_diagnostics_.result = ASTAR_RET::INIT_ERR;
+        last_diagnostics_.reason = init_failure_reason_;
+        last_diagnostics_.elapsed_seconds =
+            std::chrono::duration<double>(std::chrono::steady_clock::now() - time_1).count();
+        last_diagnostics_.adjusted_start = adjusted_start_;
+        last_diagnostics_.adjusted_end = adjusted_end_;
+        last_diagnostics_.initial_start_occ = initial_start_occ_;
+        last_diagnostics_.initial_end_occ = initial_end_occ_;
+        last_diagnostics_.start_adjust_steps = start_adjust_steps_;
+        last_diagnostics_.end_adjust_steps = end_adjust_steps_;
         return ASTAR_RET::INIT_ERR;
     }
 
     const Eigen::Vector3d search_start = Index2Coord(start_idx);
     const Eigen::Vector3d search_end = Index2Coord(end_idx);
+    last_diagnostics_.adjusted_start = search_start;
+    last_diagnostics_.adjusted_end = search_end;
+    last_diagnostics_.initial_start_occ = initial_start_occ_;
+    last_diagnostics_.initial_end_occ = initial_end_occ_;
+    last_diagnostics_.start_adjust_steps = start_adjust_steps_;
+    last_diagnostics_.end_adjust_steps = end_adjust_steps_;
     const Eigen::Vector2d search_start_xy = search_start.head<2>();
     const Eigen::Vector2d search_xy_delta = search_end.head<2>() - search_start_xy;
     const double search_xy_len2 = search_xy_delta.squaredNorm();
@@ -267,6 +275,17 @@ ASTAR_RET AStar::AstarSearch(const double step_size, Vector3d start_pt, Vector3d
             // if((time_2 - time_1).toSec() > 0.1)
             //     ROS_WARN("Time consume in A star path finding is %f", (time_2 - time_1).toSec() );
             gridPath_ = retrievePath(current);
+            last_diagnostics_.result = ASTAR_RET::SUCCESS;
+            last_diagnostics_.reason = "success";
+            last_diagnostics_.elapsed_seconds =
+                std::chrono::duration<double>(std::chrono::steady_clock::now() - time_1).count();
+            last_diagnostics_.iterations = num_iter;
+            last_diagnostics_.generated_nodes = generated_nodes;
+            last_diagnostics_.max_open_size = max_open_size;
+            last_diagnostics_.collision_rejects = collision_rejects;
+            last_diagnostics_.outside_map_rejects = outside_map_rejects;
+            last_diagnostics_.boundary_rejects = boundary_rejects;
+            last_diagnostics_.closed_rejects = closed_rejects;
             return ASTAR_RET::SUCCESS;
         }
         current->state = GridNode::CLOSEDSET; //move current node from open set to closed set.
@@ -337,17 +356,16 @@ ASTAR_RET AStar::AstarSearch(const double step_size, Vector3d start_pt, Vector3d
         if (std::chrono::duration<double>(time_2 - time_1).count() > 0.2)
         {
             const double elapsed = std::chrono::duration<double>(time_2 - time_1).count();
-            RCLCPP_ERROR(rclcpp::get_logger("path_searching"),
-                         "[AStarDiag] SEARCH_TIMEOUT elapsed=%.3fs iter=%d generated=%d max_open=%zu "
-                         "rejects{collision=%d outside_map=%d boundary=%d closed=%d} "
-                         "search_start=[%.3f %.3f %.3f] search_end=[%.3f %.3f %.3f] "
-                         "z_delta=%.3f pool=[%d %d %d] resolution=%.3f",
-                         elapsed, num_iter, generated_nodes, max_open_size,
-                         collision_rejects, outside_map_rejects, boundary_rejects, closed_rejects,
-                         search_start(0), search_start(1), search_start(2),
-                         search_end(0), search_end(1), search_end(2),
-                         search_end(2) - search_start(2),
-                         POOL_SIZE_(0), POOL_SIZE_(1), POOL_SIZE_(2), step_size_);
+            last_diagnostics_.result = ASTAR_RET::SEARCH_ERR;
+            last_diagnostics_.reason = "SEARCH_TIMEOUT";
+            last_diagnostics_.elapsed_seconds = elapsed;
+            last_diagnostics_.iterations = num_iter;
+            last_diagnostics_.generated_nodes = generated_nodes;
+            last_diagnostics_.max_open_size = max_open_size;
+            last_diagnostics_.collision_rejects = collision_rejects;
+            last_diagnostics_.outside_map_rejects = outside_map_rejects;
+            last_diagnostics_.boundary_rejects = boundary_rejects;
+            last_diagnostics_.closed_rejects = closed_rejects;
             return ASTAR_RET::SEARCH_ERR;
         }
     }
@@ -355,18 +373,16 @@ ASTAR_RET AStar::AstarSearch(const double step_size, Vector3d start_pt, Vector3d
     const auto time_2 = std::chrono::steady_clock::now();
 
     const double elapsed = std::chrono::duration<double>(time_2 - time_1).count();
-    RCLCPP_ERROR(rclcpp::get_logger("path_searching"),
-                 "[AStarDiag] OPEN_SET_EMPTY elapsed=%.3fs iter=%d generated=%d max_open=%zu "
-                 "rejects{collision=%d outside_map=%d boundary=%d closed=%d} "
-                 "search_start=[%.3f %.3f %.3f] search_end=[%.3f %.3f %.3f] "
-                 "indices_start=[%d %d %d] indices_end=[%d %d %d] z_delta=%.3f",
-                 elapsed, num_iter, generated_nodes, max_open_size,
-                 collision_rejects, outside_map_rejects, boundary_rejects, closed_rejects,
-                 search_start(0), search_start(1), search_start(2),
-                 search_end(0), search_end(1), search_end(2),
-                 start_idx(0), start_idx(1), start_idx(2),
-                 end_idx(0), end_idx(1), end_idx(2),
-                 search_end(2) - search_start(2));
+    last_diagnostics_.result = ASTAR_RET::SEARCH_ERR;
+    last_diagnostics_.reason = "OPEN_SET_EMPTY";
+    last_diagnostics_.elapsed_seconds = elapsed;
+    last_diagnostics_.iterations = num_iter;
+    last_diagnostics_.generated_nodes = generated_nodes;
+    last_diagnostics_.max_open_size = max_open_size;
+    last_diagnostics_.collision_rejects = collision_rejects;
+    last_diagnostics_.outside_map_rejects = outside_map_rejects;
+    last_diagnostics_.boundary_rejects = boundary_rejects;
+    last_diagnostics_.closed_rejects = closed_rejects;
 
     return ASTAR_RET::SEARCH_ERR;
 }

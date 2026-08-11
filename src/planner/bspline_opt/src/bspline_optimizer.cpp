@@ -3,10 +3,71 @@
 #include <algorithm>
 #include <chrono>
 #include <cmath>
+#include <sstream>
 // using namespace std;
 
 namespace scan_planner
 {
+
+  void BsplineOptimizer::resetAStarAttemptDiagnostics()
+  {
+    a_star_attempt_diagnostics_ = AStarAttemptDiagnostics{};
+  }
+
+  void BsplineOptimizer::recordAStarResult(ASTAR_RET result, const char *context)
+  {
+    ++a_star_attempt_diagnostics_.calls;
+    if (result == ASTAR_RET::SUCCESS)
+    {
+      ++a_star_attempt_diagnostics_.successes;
+      return;
+    }
+
+    if (result == ASTAR_RET::INIT_ERR)
+      ++a_star_attempt_diagnostics_.init_errors;
+    else
+      ++a_star_attempt_diagnostics_.search_errors;
+    if (std::string(context) == "initialization")
+      ++a_star_attempt_diagnostics_.initialization_failures;
+    else
+      ++a_star_attempt_diagnostics_.rebound_failures;
+    a_star_attempt_diagnostics_.last_context = context;
+    a_star_attempt_diagnostics_.last_failure = a_star_->getLastDiagnostics();
+  }
+
+  void BsplineOptimizer::reportAStarAttemptDiagnostics(bool plan_success) const
+  {
+    const auto &summary = a_star_attempt_diagnostics_;
+    const int failures = summary.init_errors + summary.search_errors;
+    if (failures == 0)
+      return;
+
+    const auto &last = summary.last_failure;
+    std::ostringstream message;
+    message.setf(std::ios::fixed);
+    message.precision(3);
+    message << "[AStarSummary] plan=" << (plan_success ? "success" : "failed")
+            << " calls=" << summary.calls << " success=" << summary.successes
+            << " failures{init=" << summary.init_errors
+            << " search=" << summary.search_errors
+            << " initialization=" << summary.initialization_failures
+            << " rebound=" << summary.rebound_failures << "}"
+            << " last{context=" << summary.last_context
+            << " reason=" << last.reason
+            << " elapsed=" << last.elapsed_seconds << "s"
+            << " iter=" << last.iterations
+            << " generated=" << last.generated_nodes
+            << " rejects_collision=" << last.collision_rejects
+            << " outside_map=" << last.outside_map_rejects
+            << " boundary=" << last.boundary_rejects
+            << " start=[" << last.adjusted_start.transpose() << "]"
+            << " end=[" << last.adjusted_end.transpose() << "]}";
+
+    if (plan_success)
+      RCLCPP_WARN(rclcpp::get_logger("bspline_opt"), "%s", message.str().c_str());
+    else
+      RCLCPP_ERROR(rclcpp::get_logger("bspline_opt"), "%s", message.str().c_str());
+  }
 
   void BsplineOptimizer::setParam(rclcpp::Node *node)
   {
@@ -136,6 +197,7 @@ namespace scan_planner
       //cout << "in=" << in.transpose() << " out=" << out.transpose() << endl;
       Eigen::Vector3d in(init_points.col(segment_ids[i].first)), out(init_points.col(segment_ids[i].second));
       ASTAR_RET ret = a_star_->AstarSearch(grid_map_->getResolution(), in, out);
+      recordAStarResult(ret, "initialization");
       if (ret == ASTAR_RET::SUCCESS)
       {
         vector<Eigen::Vector3d> path = a_star_->getPath();
@@ -148,13 +210,6 @@ namespace scan_planner
       }
       else
       {
-        RCLCPP_ERROR(rclcpp::get_logger("bspline_opt"),
-                     "[AStarDiag] optimizer initialization segment %zu/%zu failed: "
-                     "ret=%s ctrl_ids=[%d,%d] start=[%.3f %.3f %.3f] end=[%.3f %.3f %.3f]",
-                     i + 1, segment_ids.size(),
-                     ret == ASTAR_RET::INIT_ERR ? "INIT_ERR" : "SEARCH_ERR",
-                     segment_ids[i].first, segment_ids[i].second,
-                     in(0), in(1), in(2), out(0), out(1), out(2));
         return a_star_paths;
       }
     }
@@ -803,6 +858,7 @@ namespace scan_planner
         /*** a star search ***/
         Eigen::Vector3d in(cps_.points.col(segment_ids[i].first)), out(cps_.points.col(segment_ids[i].second));
         ASTAR_RET ret = a_star_->AstarSearch(grid_map_->getResolution(), in, out);
+        recordAStarResult(ret, "rebound");
         if (ret == ASTAR_RET::SUCCESS)
         {
           vector<Eigen::Vector3d> path = a_star_->getPath();
@@ -821,18 +877,11 @@ namespace scan_planner
           segment_ids[i].second = segment_ids[i + 1].second;
           segment_ids.erase(segment_ids.begin() + i + 1);
           --i;
-          RCLCPP_WARN(rclcpp::get_logger("bspline_opt"),
-                      "A-star failed on a collision segment; merge it with the next segment");
+          RCLCPP_DEBUG(rclcpp::get_logger("bspline_opt"),
+                       "A-star failed on a collision segment; merge it with the next segment");
         }
         else if (ret != ASTAR_RET::SUCCESS)
         {
-          RCLCPP_ERROR(rclcpp::get_logger("bspline_opt"),
-                       "[AStarDiag] rebound collision segment %zu/%zu failed: "
-                       "ret=%s ctrl_ids=[%d,%d] start=[%.3f %.3f %.3f] end=[%.3f %.3f %.3f]",
-                       i + 1, segment_ids.size(),
-                       ret == ASTAR_RET::INIT_ERR ? "INIT_ERR" : "SEARCH_ERR",
-                       segment_ids[i].first, segment_ids[i].second,
-                       in(0), in(1), in(2), out(0), out(1), out(2));
           segment_ids.erase(segment_ids.begin() + i);
           i--;
         }

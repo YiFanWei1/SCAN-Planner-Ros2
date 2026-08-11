@@ -66,6 +66,10 @@ real_go2_input_adapter:
   ros__parameters:
     use_sim_time: false
     world_frame: camera_init
+    # Pose semantics of /lio_odom_hf. Keep "lidar" for the live interface
+    # described by the robot integration; recorded bags that already contain
+    # a base_link pose must launch with odom_pose_frame:=base_link.
+    odom_pose_frame: lidar
     lidar_to_base_x: -0.15
     lidar_to_base_y: 0.0
     lidar_to_base_z: -0.21

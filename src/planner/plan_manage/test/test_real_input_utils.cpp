@@ -22,6 +22,53 @@ TEST(RealInputUtils, LidarOffsetRotatesWithPose)
   EXPECT_NEAR(base.position.z, 0.29, 1e-9);
 }
 
+TEST(RealInputUtils, LidarOdomProducesSensorAndOffsetBodyPoses)
+{
+  geometry_msgs::msg::Pose input;
+  input.position.x = 1.0;
+  input.position.y = 2.0;
+  input.position.z = 0.5;
+  input.orientation.w = 1.0;
+  const Eigen::Vector3d offset(-0.15, 0.0, -0.21);
+
+  const auto sensor = scan_planner::sensorPoseFromOdom(
+      input, offset, scan_planner::OdomPoseFrame::LIDAR);
+  const auto body = scan_planner::bodyPoseFromOdom(
+      input, offset, scan_planner::OdomPoseFrame::LIDAR);
+  EXPECT_NEAR(sensor.position.x, 1.0, 1e-9);
+  EXPECT_NEAR(sensor.position.z, 0.5, 1e-9);
+  EXPECT_NEAR(body.position.x, 0.85, 1e-9);
+  EXPECT_NEAR(body.position.z, 0.29, 1e-9);
+}
+
+TEST(RealInputUtils, BaseOdomProducesBodyAndInverseOffsetSensorPoses)
+{
+  geometry_msgs::msg::Pose input;
+  input.position.x = 0.85;
+  input.position.y = 2.0;
+  input.position.z = 0.29;
+  input.orientation.w = 1.0;
+  const Eigen::Vector3d offset(-0.15, 0.0, -0.21);
+
+  const auto body = scan_planner::bodyPoseFromOdom(
+      input, offset, scan_planner::OdomPoseFrame::BASE_LINK);
+  const auto sensor = scan_planner::sensorPoseFromOdom(
+      input, offset, scan_planner::OdomPoseFrame::BASE_LINK);
+  EXPECT_NEAR(body.position.x, 0.85, 1e-9);
+  EXPECT_NEAR(body.position.z, 0.29, 1e-9);
+  EXPECT_NEAR(sensor.position.x, 1.0, 1e-9);
+  EXPECT_NEAR(sensor.position.z, 0.5, 1e-9);
+}
+
+TEST(RealInputUtils, RejectsUnknownOdomPoseFrame)
+{
+  EXPECT_EQ(scan_planner::parseOdomPoseFrame("lidar"),
+            scan_planner::OdomPoseFrame::LIDAR);
+  EXPECT_EQ(scan_planner::parseOdomPoseFrame("base_link"),
+            scan_planner::OdomPoseFrame::BASE_LINK);
+  EXPECT_THROW(scan_planner::parseOdomPoseFrame("body"), std::invalid_argument);
+}
+
 TEST(RealInputUtils, PathGeometryDetectsLateralChange)
 {
   nav_msgs::msg::Path a;

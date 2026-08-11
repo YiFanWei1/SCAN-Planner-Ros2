@@ -245,6 +245,7 @@ namespace scan_planner
     UniformBspline::parameterizeToBspline(ts, point_set, start_end_derivatives, ctrl_pts);
 
     vector<vector<Eigen::Vector3d>> a_star_paths;
+    bspline_optimizer_rebound_->resetAStarAttemptDiagnostics();
     a_star_paths = bspline_optimizer_rebound_->initControlPoints(ctrl_pts, true);
 
     static int vis_id = 0;
@@ -256,6 +257,7 @@ namespace scan_planner
     bool flag_step_1_success = bspline_optimizer_rebound_->BsplineOptimizeTrajRebound(ctrl_pts, ts);
     if (!flag_step_1_success)
     {
+      bspline_optimizer_rebound_->reportAStarAttemptDiagnostics(false);
       // visualization_->displayOptimalList( ctrl_pts, vis_id );
       continuous_failures_count_++;
       return false;
@@ -278,6 +280,7 @@ namespace scan_planner
 
     if (!flag_step_2_success || !checkDynamicFeasibility(pos))
     {
+      bspline_optimizer_rebound_->reportAStarAttemptDiagnostics(false);
       RCLCPP_WARN(node_->get_logger(),
                   "Refined trajectory is unsafe or dynamically infeasible; skipping publication");
       continuous_failures_count_++;
@@ -286,6 +289,7 @@ namespace scan_planner
 
     // save planned results
     updateTrajInfo(pos, node_->now());
+    bspline_optimizer_rebound_->reportAStarAttemptDiagnostics(true);
 
     // success. YoY
     continuous_failures_count_ = 0;

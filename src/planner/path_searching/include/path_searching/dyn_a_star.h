@@ -1,11 +1,13 @@
 #ifndef _DYN_A_STAR_H_
 #define _DYN_A_STAR_H_
 
+#include <cstddef>
 #include <iostream>
 #include <rclcpp/rclcpp.hpp>
 #include <Eigen/Eigen>
 #include <plan_env/grid_map.h>
 #include <queue>
+#include <string>
 
 constexpr double inf = 1 >> 20;
 struct GridNode;
@@ -16,6 +18,28 @@ enum ASTAR_RET
 	SUCCESS,
 	INIT_ERR,
 	SEARCH_ERR
+};
+
+struct AStarSearchDiagnostics
+{
+	ASTAR_RET result{SUCCESS};
+	std::string reason{"not_run"};
+	double elapsed_seconds{0.0};
+	int iterations{0};
+	int generated_nodes{0};
+	size_t max_open_size{0};
+	int collision_rejects{0};
+	int outside_map_rejects{0};
+	int boundary_rejects{0};
+	int closed_rejects{0};
+	Eigen::Vector3d requested_start{Eigen::Vector3d::Zero()};
+	Eigen::Vector3d requested_end{Eigen::Vector3d::Zero()};
+	Eigen::Vector3d adjusted_start{Eigen::Vector3d::Zero()};
+	Eigen::Vector3d adjusted_end{Eigen::Vector3d::Zero()};
+	int initial_start_occ{0};
+	int initial_end_occ{0};
+	int start_adjust_steps{0};
+	int end_adjust_steps{0};
 };
 
 struct GridNode
@@ -90,6 +114,7 @@ private:
 	int initial_start_occ_{0}, initial_end_occ_{0};
 	int start_adjust_steps_{0}, end_adjust_steps_{0};
 	std::string init_failure_reason_{"none"};
+	AStarSearchDiagnostics last_diagnostics_;
 
 public:
 	typedef std::shared_ptr<AStar> Ptr;
@@ -102,6 +127,7 @@ public:
 	ASTAR_RET AstarSearch(const double step_size, Eigen::Vector3d start_pt, Eigen::Vector3d end_pt);
 
 	std::vector<Eigen::Vector3d> getPath();
+	const AStarSearchDiagnostics &getLastDiagnostics() const { return last_diagnostics_; }
 };
 
 inline double AStar::getHeu(GridNodePtr node1, GridNodePtr node2)
@@ -120,7 +146,7 @@ inline bool AStar::Coord2Index(const Eigen::Vector3d &pt, Eigen::Vector3i &idx) 
 
 	if (idx(0) < 0 || idx(0) >= POOL_SIZE_(0) || idx(1) < 0 || idx(1) >= POOL_SIZE_(1) || idx(2) < 0 || idx(2) >= POOL_SIZE_(2))
 	{
-		RCLCPP_ERROR(rclcpp::get_logger("path_searching"),
+		RCLCPP_DEBUG(rclcpp::get_logger("path_searching"),
 		             "[AStarDiag] point outside search pool: point=[%.3f %.3f %.3f] "
 		             "index=[%d %d %d] valid=[0..%d,0..%d,0..%d] "
 		             "center=[%.3f %.3f %.3f] resolution=%.3f",

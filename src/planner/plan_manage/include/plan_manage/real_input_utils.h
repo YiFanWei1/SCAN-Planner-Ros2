@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <cmath>
 #include <limits>
+#include <stdexcept>
+#include <string>
 #include <vector>
 
 #include <Eigen/Geometry>
@@ -11,6 +13,22 @@
 
 namespace scan_planner
 {
+enum class OdomPoseFrame
+{
+  LIDAR,
+  BASE_LINK
+};
+
+inline OdomPoseFrame parseOdomPoseFrame(const std::string &value)
+{
+  if (value == "lidar")
+    return OdomPoseFrame::LIDAR;
+  if (value == "base_link")
+    return OdomPoseFrame::BASE_LINK;
+  throw std::invalid_argument(
+      "odom_pose_frame must be either 'lidar' or 'base_link'");
+}
+
 inline bool finitePose(const geometry_msgs::msg::Pose &pose)
 {
   const auto &p = pose.position;
@@ -39,6 +57,26 @@ inline geometry_msgs::msg::Pose composePose(
   pose.orientation.z = rotation.z();
   pose.orientation.w = rotation.w();
   return pose;
+}
+
+inline geometry_msgs::msg::Pose sensorPoseFromOdom(
+    const geometry_msgs::msg::Pose &input_pose,
+    const Eigen::Vector3d &lidar_to_base,
+    OdomPoseFrame input_frame)
+{
+  return input_frame == OdomPoseFrame::LIDAR
+             ? composePose(input_pose, Eigen::Vector3d::Zero())
+             : composePose(input_pose, -lidar_to_base);
+}
+
+inline geometry_msgs::msg::Pose bodyPoseFromOdom(
+    const geometry_msgs::msg::Pose &input_pose,
+    const Eigen::Vector3d &lidar_to_base,
+    OdomPoseFrame input_frame)
+{
+  return input_frame == OdomPoseFrame::LIDAR
+             ? composePose(input_pose, lidar_to_base)
+             : composePose(input_pose, Eigen::Vector3d::Zero());
 }
 
 inline double pathLength(const nav_msgs::msg::Path &path)

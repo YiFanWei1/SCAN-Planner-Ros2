@@ -34,6 +34,8 @@ public:
     lidar_to_base_ << declare_parameter<double>("lidar_to_base_x", -0.15),
         declare_parameter<double>("lidar_to_base_y", 0.0),
         declare_parameter<double>("lidar_to_base_z", -0.21);
+    odom_pose_frame_name_ = declare_parameter<std::string>("odom_pose_frame", "lidar");
+    odom_pose_frame_ = parseOdomPoseFrame(odom_pose_frame_name_);
     sync_tolerance_ = declare_parameter<double>("sync_tolerance", 0.05);
     max_horizontal_speed_ = declare_parameter<double>("max_input_horizontal_speed", 5.0);
     max_vertical_speed_ = declare_parameter<double>("max_input_vertical_speed", 2.0);
@@ -75,8 +77,10 @@ public:
                                     std::bind(&RealGo2InputAdapter::pathTimer, this));
     last_path_publish_time_ = now() - rclcpp::Duration::from_seconds(10.0);
     publishStatus("waiting_for_inputs");
-    RCLCPP_DEBUG(get_logger(), "Real Go2 input adapter ready; lidar->base=(%.3f, %.3f, %.3f)",
-                 lidar_to_base_.x(), lidar_to_base_.y(), lidar_to_base_.z());
+    RCLCPP_INFO(get_logger(),
+                "Real Go2 input adapter ready; odom_pose_frame=%s lidar->base=(%.3f, %.3f, %.3f)",
+                odom_pose_frame_name_.c_str(), lidar_to_base_.x(), lidar_to_base_.y(),
+                lidar_to_base_.z());
   }
 
 private:
@@ -146,20 +150,17 @@ private:
     nav_msgs::msg::Odometry result = lidar_odom;
     result.header.frame_id = lidar_odom.header.frame_id.empty() ? world_frame_ : lidar_odom.header.frame_id;
     result.child_frame_id = "livox_lidar";
-    Eigen::Quaterniond q(result.pose.pose.orientation.w, result.pose.pose.orientation.x,
-                         result.pose.pose.orientation.y, result.pose.pose.orientation.z);
-    q.normalize();
-    result.pose.pose.orientation.x = q.x();
-    result.pose.pose.orientation.y = q.y();
-    result.pose.pose.orientation.z = q.z();
-    result.pose.pose.orientation.w = q.w();
+    result.pose.pose = sensorPoseFromOdom(
+        lidar_odom.pose.pose, lidar_to_base_, odom_pose_frame_);
     return result;
   }
 
   nav_msgs::msg::Odometry makeBodyPose(const nav_msgs::msg::Odometry &lidar_odom) const
   {
-    nav_msgs::msg::Odometry result = makeSensorPose(lidar_odom);
-    result.pose.pose = composePose(result.pose.pose, lidar_to_base_);
+    nav_msgs::msg::Odometry result = lidar_odom;
+    result.header.frame_id = lidar_odom.header.frame_id.empty() ? world_frame_ : lidar_odom.header.frame_id;
+    result.pose.pose = bodyPoseFromOdom(
+        lidar_odom.pose.pose, lidar_to_base_, odom_pose_frame_);
     result.child_frame_id = "base_link";
     return result;
   }
@@ -288,11 +289,12 @@ private:
   }
 
   Eigen::Vector3d lidar_to_base_;
+  OdomPoseFrame odom_pose_frame_{OdomPoseFrame::LIDAR};
   double sync_tolerance_, max_horizontal_speed_, max_vertical_speed_, validation_window_;
   double max_vertical_displacement_;
   double path_update_rate_, path_endpoint_threshold_, path_geometry_threshold_;
   double path_compare_horizon_;
-  std::string world_frame_, last_status_;
+  std::string odom_pose_frame_name_, world_frame_, last_status_;
   bool have_valid_odom_{false}, input_valid_{true};
   std::mutex state_mutex_, path_mutex_;
   std::optional<rclcpp::Time> last_input_stamp_, last_valid_stamp_;

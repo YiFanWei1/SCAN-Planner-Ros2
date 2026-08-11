@@ -16,6 +16,18 @@
 namespace scan_planner
 {
 
+  struct AStarAttemptDiagnostics
+  {
+    int calls{0};
+    int successes{0};
+    int init_errors{0};
+    int search_errors{0};
+    int initialization_failures{0};
+    int rebound_failures{0};
+    std::string last_context{"none"};
+    AStarSearchDiagnostics last_failure;
+  };
+
   class ControlPoints
   {
   public:
@@ -80,6 +92,12 @@ namespace scan_planner
     std::vector<std::vector<Eigen::Vector3d>> initControlPoints(Eigen::MatrixXd &init_points, bool flag_first_init = true);
     bool BsplineOptimizeTrajRebound(Eigen::MatrixXd &optimal_points, double ts); // must be called after initControlPoints()
     bool BsplineOptimizeTrajRefine(const Eigen::MatrixXd &init_points, const double ts, Eigen::MatrixXd &optimal_points);
+    void resetAStarAttemptDiagnostics();
+    void reportAStarAttemptDiagnostics(bool plan_success) const;
+    const AStarAttemptDiagnostics &getAStarAttemptDiagnostics() const
+    {
+      return a_star_attempt_diagnostics_;
+    }
 
     inline int getOrder(void) { return order_; }
 
@@ -147,9 +165,12 @@ namespace scan_planner
     static double costFunctionRefine(void *func_data, const double *x, double *grad, const int n);
 
     bool rebound_optimize();
+    void recordAStarResult(ASTAR_RET result, const char *context);
     bool refine_optimize();
     void combineCostRebound(const double *x, double *grad, double &f_combine, const int n);
     void combineCostRefine(const double *x, double *grad, double &f_combine, const int n);
+
+    AStarAttemptDiagnostics a_star_attempt_diagnostics_;
 
     /* for benchmark evaluation only */
   public:
