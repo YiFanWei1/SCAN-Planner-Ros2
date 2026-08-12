@@ -28,10 +28,16 @@ def generate_launch_description():
         executable="real_go2_input_adapter",
         name="real_go2_input_adapter",
         output="screen",
-        parameters=[real_config],
+        parameters=[real_config, {
+            # These overrides make the adapter usable with either a raw
+            # lidar-frame cloud/pose pair or an already body-frame cloud.
+            "lidar_to_base_x": LaunchConfiguration("lidar_to_base_x"),
+            "lidar_to_base_y": LaunchConfiguration("lidar_to_base_y"),
+            "lidar_to_base_z": LaunchConfiguration("lidar_to_base_z"),
+        }],
         remappings=[
             ("lidar_odom", "/lio_odom_hf"),
-            ("cloud", "/livox/lidar"),
+            ("cloud", LaunchConfiguration("input_cloud_topic")),
             ("global_path", "/plan"),
             ("body_pose", "/scan_planner/body_pose"),
             ("sensor_pose", "/scan_planner/sensor_pose"),
@@ -177,6 +183,13 @@ def generate_launch_description():
         DeclareLaunchArgument("project_reference_start_z", default_value="true"),
         DeclareLaunchArgument("reference_start_z_max_correction", default_value="0.60"),
         DeclareLaunchArgument("odom_twist_in_body_frame", default_value="true"),
+        # Raw Livox data uses the lidar/body origin and therefore keeps the
+        # lidar-to-base offset below.  A cloud already expressed in base_link
+        # must set all three offsets to zero.
+        DeclareLaunchArgument("input_cloud_topic", default_value="/livox/lidar"),
+        DeclareLaunchArgument("lidar_to_base_x", default_value="-0.15"),
+        DeclareLaunchArgument("lidar_to_base_y", default_value="0.0"),
+        DeclareLaunchArgument("lidar_to_base_z", default_value="-0.21"),
         # Disable this to feed the adapter's complete filtered global path
         # directly to SCAN instead of sending one terrain segment at a time.
         # Keep the real launch aligned with terrain_path_segmenter's defaults.
