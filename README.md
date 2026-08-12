@@ -239,7 +239,8 @@ ros2 launch scan_planner real_go2_livox.launch.py \
   project_reference_start_velocity:=false \
   use_path_segmentation:=true \
   accept_first_global_path_only:=false \
-  require_stop_before_emergency_replan:=false
+  require_stop_before_emergency_replan:=false \
+  occupancy_decay_front_only:=true
 
 cd ~/github_code/SCAN-Planner-Ros2
 source /opt/ros/jazzy/setup.bash
@@ -266,7 +267,8 @@ ros2 launch scan_planner real_go2_livox.launch.py \
   reference_start_velocity_max:=0.75 \
   use_path_segmentation:=true \
   accept_first_global_path_only:=false \
-  require_stop_before_emergency_replan:=false
+  require_stop_before_emergency_replan:=false \
+  occupancy_decay_front_only:=true
 
 
 cd ~/github_code/SCAN-Planner-Ros2
@@ -290,7 +292,8 @@ ros2 launch scan_planner real_go2_livox.launch.py \
   project_reference_start_velocity:=false \
   use_path_segmentation:=true \
   accept_first_global_path_only:=false \
-  require_stop_before_emergency_replan:=false
+  require_stop_before_emergency_replan:=false \
+  occupancy_decay_front_only:=true
 
 source /opt/ros/jazzy/setup.bash
 ros2 bag play /home/wei/bag/full_nav_replay_with_plan \
@@ -314,7 +317,8 @@ ros2 launch scan_planner real_go2_livox.launch.py \
   reference_start_velocity_max:=0.75 \
   use_path_segmentation:=true \
   accept_first_global_path_only:=false \
-  require_stop_before_emergency_replan:=false
+  require_stop_before_emergency_replan:=false \
+  occupancy_decay_front_only:=true
 
 
 source /opt/ros/jazzy/setup.bash
