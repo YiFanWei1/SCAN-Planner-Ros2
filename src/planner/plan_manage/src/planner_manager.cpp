@@ -287,10 +287,13 @@ namespace scan_planner
       RCLCPP_WARN(node_->get_logger(),
                   "Trajectory rejected: reason=REFINE_COLLISION initial_control_points_feasible=%d "
                   "retime_ratio=%.3f solver_result=%d optimizer_iterations=%d "
+                  "start_vel=[%.3f %.3f %.3f] start_acc=[%.3f %.3f %.3f] "
                   "collision_t=%.3f/%.3f collision_pos=[%.3f %.3f %.3f] collision_yaw=%.3f "
                   "sample_step=%.4f samples_checked=%d",
                   initial_control_points_feasible, ratio,
                   diagnostics.solver_result, diagnostics.optimizer_iterations,
+                  start_vel.x(), start_vel.y(), start_vel.z(),
+                  start_acc.x(), start_acc.y(), start_acc.z(),
                   diagnostics.collision_time, diagnostics.trajectory_duration,
                   diagnostics.collision_position.x(), diagnostics.collision_position.y(),
                   diagnostics.collision_position.z(), diagnostics.collision_yaw,
@@ -299,7 +302,7 @@ namespace scan_planner
       return false;
     }
 
-    if (!checkDynamicFeasibility(pos, refinement_attempted, ratio))
+    if (!checkDynamicFeasibility(pos, refinement_attempted, ratio, start_vel, start_acc))
     {
       bspline_optimizer_rebound_->reportAStarAttemptDiagnostics(false);
       continuous_failures_count_++;
@@ -508,7 +511,9 @@ namespace scan_planner
 
   bool SCANPlannerManager::checkDynamicFeasibility(UniformBspline position_traj,
                                                    const bool refinement_attempted,
-                                                   const double initial_retime_ratio)
+                                                   const double initial_retime_ratio,
+                                                   const Eigen::Vector3d &planning_start_velocity,
+                                                   const Eigen::Vector3d &planning_start_acceleration)
   {
     UniformBspline vel_traj = position_traj.getDerivative();
     UniformBspline acc_traj = vel_traj.getDerivative();
@@ -520,9 +525,11 @@ namespace scan_planner
     double max_vel = -1.0;
     double max_vel_time = 0.0;
     Eigen::Vector3d max_vel_vector = Eigen::Vector3d::Zero();
+    Eigen::Vector3d max_vel_position = Eigen::Vector3d::Zero();
     double max_acc = -1.0;
     double max_acc_time = 0.0;
     Eigen::Vector3d max_acc_vector = Eigen::Vector3d::Zero();
+    Eigen::Vector3d max_acc_position = Eigen::Vector3d::Zero();
 
     for (double t = 0.0; t < duration + 1e-6; t += sample_dt)
     {
@@ -534,6 +541,7 @@ namespace scan_planner
         max_vel = vel_norm;
         max_vel_time = tc;
         max_vel_vector = vel;
+        max_vel_position = position_traj.evaluateDeBoorT(tc);
       }
 
       const Eigen::Vector3d acc = acc_traj.evaluateDeBoorT(tc);
@@ -543,6 +551,7 @@ namespace scan_planner
         max_acc = acc_norm;
         max_acc_time = tc;
         max_acc_vector = acc;
+        max_acc_position = position_traj.evaluateDeBoorT(tc);
       }
     }
 
@@ -555,13 +564,18 @@ namespace scan_planner
                                : (velocity_failed ? "DYNAMIC_VELOCITY" : "DYNAMIC_ACCELERATION");
       RCLCPP_WARN(node_->get_logger(),
                   "Trajectory rejected: reason=%s duration=%.3f sample_dt=%.3f refined=%d retime_ratio=%.3f "
-                  "max_vel=%.3f limit=%.3f ratio=%.3f at_t=%.3f vel=[%.3f %.3f %.3f] "
-                  "max_acc=%.3f limit=%.3f ratio=%.3f at_t=%.3f acc=[%.3f %.3f %.3f]",
+                  "start_vel=[%.3f %.3f %.3f] start_acc=[%.3f %.3f %.3f] "
+                  "max_vel=%.3f limit=%.3f ratio=%.3f at_t=%.3f vel=[%.3f %.3f %.3f] pos=[%.3f %.3f %.3f] "
+                  "max_acc=%.3f limit=%.3f ratio=%.3f at_t=%.3f acc=[%.3f %.3f %.3f] pos=[%.3f %.3f %.3f]",
                   reason, duration, sample_dt, refinement_attempted, initial_retime_ratio,
+                  planning_start_velocity.x(), planning_start_velocity.y(), planning_start_velocity.z(),
+                  planning_start_acceleration.x(), planning_start_acceleration.y(), planning_start_acceleration.z(),
                   max_vel, vel_limit, max_vel / vel_limit, max_vel_time,
                   max_vel_vector.x(), max_vel_vector.y(), max_vel_vector.z(),
+                  max_vel_position.x(), max_vel_position.y(), max_vel_position.z(),
                   max_acc, acc_limit, max_acc / acc_limit, max_acc_time,
-                  max_acc_vector.x(), max_acc_vector.y(), max_acc_vector.z());
+                  max_acc_vector.x(), max_acc_vector.y(), max_acc_vector.z(),
+                  max_acc_position.x(), max_acc_position.y(), max_acc_position.z());
       return false;
     }
 

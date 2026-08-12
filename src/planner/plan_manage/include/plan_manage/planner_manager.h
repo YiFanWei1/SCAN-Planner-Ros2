@@ -53,7 +53,9 @@ namespace scan_planner
     void updateTrajInfo(const UniformBspline &position_traj, const rclcpp::Time time_now);
     bool checkDynamicFeasibility(UniformBspline position_traj,
                                  bool refinement_attempted,
-                                 double initial_retime_ratio);
+                                 double initial_retime_ratio,
+                                 const Eigen::Vector3d &planning_start_velocity,
+                                 const Eigen::Vector3d &planning_start_acceleration);
 
     void reparamBspline(UniformBspline &bspline, vector<Eigen::Vector3d> &start_end_derivative, double ratio, Eigen::MatrixXd &ctrl_pts, double &dt,
                         double &time_inc);
