@@ -57,6 +57,9 @@ scan_planner_node:
     # occupied voxel crosses the occupancy threshold in about 1.0 s when it
     # is no longer hit, while a stopped point-cloud stream never erases map.
     grid_map.occupancy_decay_enabled: true
+    # Preserve stale occupied voxels behind the robot. Only the body-frame
+    # front half of the existing 0.8-5.0 m decay shell may decay with time.
+    grid_map.occupancy_decay_front_only: true
     grid_map.occupancy_decay_start: 0.8
     grid_map.occupancy_decay_interval: 0.1
     grid_map.occupancy_decay_min_range: 0.8

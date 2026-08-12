@@ -85,6 +85,7 @@ struct MappingParameters {
       min_occupancy_log_;                   // logit of occupancy probability
   double min_ray_length_, max_ray_length_;  // range of doing raycasting
   bool occupancy_decay_enabled_;
+  bool occupancy_decay_front_only_;
   double occupancy_decay_start_, occupancy_decay_interval_;
   double occupancy_decay_min_range_, occupancy_decay_max_range_;
   double occupancy_decay_sensor_timeout_, occupancy_decay_log_odds_;

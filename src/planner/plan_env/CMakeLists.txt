@@ -41,4 +41,12 @@ ament_export_targets(export_plan_env HAS_LIBRARY_TARGET)
 ament_export_dependencies(
   cv_bridge Eigen3 geometry_msgs message_filters nav_msgs pcl_conversions
   rclcpp sensor_msgs tf2 tf2_ros visualization_msgs)
+
+if(BUILD_TESTING)
+  find_package(ament_cmake_gtest REQUIRED)
+  ament_add_gtest(test_occupancy_decay_utils test/test_occupancy_decay_utils.cpp)
+  target_include_directories(test_occupancy_decay_utils PRIVATE include)
+  target_link_libraries(test_occupancy_decay_utils Eigen3::Eigen)
+endif()
+
 ament_package()

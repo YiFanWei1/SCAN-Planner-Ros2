@@ -1,4 +1,5 @@
 #include "plan_env/grid_map.h"
+#include "plan_env/occupancy_decay_utils.h"
 #include <cmath>
 #include <limits>
 #include <string>
@@ -62,6 +63,8 @@ void GridMap::initMap(rclcpp::Node *node)
   load_parameter(node_, "grid_map.p_occ", mp_.p_occ_, -1.0);
   load_parameter(node_, "grid_map.max_ray_length", mp_.max_ray_length_, -0.1);
   load_parameter(node_, "grid_map.occupancy_decay_enabled", mp_.occupancy_decay_enabled_, false);
+  load_parameter(node_, "grid_map.occupancy_decay_front_only",
+                 mp_.occupancy_decay_front_only_, false);
   load_parameter(node_, "grid_map.occupancy_decay_start", mp_.occupancy_decay_start_, 0.3);
   load_parameter(node_, "grid_map.occupancy_decay_interval", mp_.occupancy_decay_interval_, 0.1);
   load_parameter(node_, "grid_map.occupancy_decay_min_range", mp_.occupancy_decay_min_range_, 0.8);
@@ -917,6 +920,12 @@ void GridMap::decayOccupancyCallback()
       md_.active_occupied_voxels_.empty())
     return;
 
+  // When directional decay is requested, a missing body pose must fail safe:
+  // retain occupied voxels instead of silently falling back to omnidirectional
+  // decay. The body +X direction, not lidar +X, defines the forward half-map.
+  if (mp_.occupancy_decay_front_only_ && !md_.has_body_pose_)
+    return;
+
   const int64_t now_ns = node_->get_clock()->now().nanoseconds();
   if (now_ns <= 0 || md_.last_cloud_time_ns_ <= 0)
     return;
@@ -940,6 +949,10 @@ void GridMap::decayOccupancyCallback()
 
     Eigen::Vector3d pos;
     indexToPos(id, pos);
+    if (mp_.occupancy_decay_front_only_ &&
+        !plan_env::pointInBodyFrontHalfPlane(pos, md_.body_pos_, md_.body_q_))
+      continue;
+
     const double range = (pos - md_.ray_pos_).norm();
     if (range < mp_.occupancy_decay_min_range_ || range > mp_.occupancy_decay_max_range_)
       continue;

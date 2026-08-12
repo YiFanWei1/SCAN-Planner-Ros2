@@ -110,6 +110,8 @@ def generate_launch_description():
                 "odom_twist_in_body_frame"),
             "fsm.require_stop_before_emergency_replan": LaunchConfiguration(
                 "require_stop_before_emergency_replan"),
+            "grid_map.occupancy_decay_front_only": LaunchConfiguration(
+                "occupancy_decay_front_only"),
         }],
         remappings=[
             ("body_pose", "/scan_planner/body_pose"),
@@ -199,6 +201,13 @@ def generate_launch_description():
         DeclareLaunchArgument("accept_first_global_path_only", default_value="false"),
         DeclareLaunchArgument(
             "require_stop_before_emergency_replan", default_value="true"),
+        DeclareLaunchArgument(
+            "occupancy_decay_front_only",
+            default_value="true",
+            description=(
+                "Apply time-only occupancy decay only in the body-frame front "
+                "half of the configured decay range"),
+        ),
         DeclareLaunchArgument("project_reference_start_z", default_value="true"),
         DeclareLaunchArgument("reference_start_z_max_correction", default_value="0.60"),
         DeclareLaunchArgument("project_reference_start_velocity", default_value="true"),
