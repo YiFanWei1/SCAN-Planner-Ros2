@@ -21,6 +21,12 @@ scan_planner_node:
     # from raw odometry Z. Reject large corrections to avoid wrong-floor snaps.
     fsm.project_reference_start_z: true
     fsm.reference_start_z_max_correction: 0.60
+    # Constrain the local B-spline's initial derivative to the nearby raised
+    # 3-D reference path. This removes stair-impact/LIO lateral velocity while
+    # preserving the climb/descent rate implied by the terrain slope.
+    fsm.project_reference_start_velocity: true
+    fsm.reference_velocity_tangent_half_window: 0.40
+    fsm.reference_start_velocity_max: 0.75
     # Final dynamic-feasibility threshold is manager.max_acc (0.5) plus this
     # tolerance, giving 3.0 m/s^2 for the fast stair bag test.
     optimization.acc_tolerance: 2.5

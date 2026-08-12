@@ -100,6 +100,12 @@ def generate_launch_description():
                 "project_reference_start_z"),
             "fsm.reference_start_z_max_correction": LaunchConfiguration(
                 "reference_start_z_max_correction"),
+            "fsm.project_reference_start_velocity": LaunchConfiguration(
+                "project_reference_start_velocity"),
+            "fsm.reference_velocity_tangent_half_window": LaunchConfiguration(
+                "reference_velocity_tangent_half_window"),
+            "fsm.reference_start_velocity_max": LaunchConfiguration(
+                "reference_start_velocity_max"),
             "fsm.odom_twist_in_body_frame": LaunchConfiguration(
                 "odom_twist_in_body_frame"),
             "fsm.require_stop_before_emergency_replan": LaunchConfiguration(
@@ -195,6 +201,10 @@ def generate_launch_description():
             "require_stop_before_emergency_replan", default_value="true"),
         DeclareLaunchArgument("project_reference_start_z", default_value="true"),
         DeclareLaunchArgument("reference_start_z_max_correction", default_value="0.60"),
+        DeclareLaunchArgument("project_reference_start_velocity", default_value="true"),
+        DeclareLaunchArgument(
+            "reference_velocity_tangent_half_window", default_value="0.40"),
+        DeclareLaunchArgument("reference_start_velocity_max", default_value="0.75"),
         DeclareLaunchArgument("odom_twist_in_body_frame", default_value="true"),
         DeclareLaunchArgument(
             "point_cloud_type",

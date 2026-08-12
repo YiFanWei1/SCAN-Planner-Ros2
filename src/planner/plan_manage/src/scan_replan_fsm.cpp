@@ -109,6 +109,17 @@ namespace scan_planner
         load_parameter<bool>(node_, "fsm.project_reference_start_z", false);
     reference_start_z_max_correction_ = std::max(
         0.0, load_parameter<double>(node_, "fsm.reference_start_z_max_correction", 0.6));
+    project_reference_start_velocity_ =
+        load_parameter<bool>(node_, "fsm.project_reference_start_velocity", false);
+    reference_velocity_tangent_half_window_ = std::max(
+        0.05, load_parameter<double>(
+                  node_, "fsm.reference_velocity_tangent_half_window", 0.4));
+    reference_start_velocity_max_ = std::max(
+        0.0, load_parameter<double>(node_, "fsm.reference_start_velocity_max", 0.75));
+    RCLCPP_INFO(node_->get_logger(),
+                "Reference start velocity projection is %s (half_window=%.2f m, max=%.2f m/s)",
+                project_reference_start_velocity_ ? "enabled" : "disabled",
+                reference_velocity_tangent_half_window_, reference_start_velocity_max_);
     self_inflation_frame_id_ = load_parameter<std::string>(node_, "grid_map.frame_id", "world");
 
     // 预设航点参数以 [x0,y0,z0,x1,y1,z1,...] 的扁平数组表示。
@@ -307,6 +318,12 @@ namespace scan_planner
 
     if (!adjustGlobalTargetIfOccupied())
       return false;
+
+    // Preserve the raised, ordered reference geometry separately from
+    // global_data_, whose relevant interval is replaced by each accepted
+    // local B-spline.  Velocity conditioning must follow the reference path,
+    // not inherit the previous local bend.
+    reference_waypoints_ = waypoints;
 
     constexpr double step_size_t = 0.1;  // 按时间采样全局轨迹供 RViz 显示。
     int i_end = floor(planner_manager_->global_data_.global_duration_ / step_size_t);
@@ -1272,6 +1289,47 @@ namespace scan_planner
             "correction=%+.3f exceeds/violates %.3f m guard",
             last_raw_start_z_, projected_reference.z(), requested_correction,
             reference_start_z_max_correction_);
+      }
+    }
+
+    if (navi_mode_ == NAVI_MODE::REFERENCE_PATH && project_reference_start_velocity_)
+    {
+      Eigen::Vector3d tangent = Eigen::Vector3d::Zero();
+      Eigen::Vector3d projected_velocity = Eigen::Vector3d::Zero();
+      double raw_along_speed = 0.0;
+      double used_along_speed = 0.0;
+      double removed_lateral_speed = 0.0;
+      const Eigen::Vector3d raw_velocity = start_vel_;
+      const Eigen::Vector3d projected_reference =
+          planner_manager_->global_data_.getPosition(t_proj);
+
+      if (estimateLocalReferenceTangent(
+              reference_waypoints_, projected_reference,
+              reference_velocity_tangent_half_window_, tangent) &&
+          projectVelocityOntoReferenceTangent(
+              raw_velocity, tangent, reference_start_velocity_max_, projected_velocity,
+              &raw_along_speed, &used_along_speed, &removed_lateral_speed))
+      {
+        start_vel_ = projected_velocity;
+        const bool speed_was_clipped = std::abs(raw_along_speed - used_along_speed) > 0.05;
+        if (removed_lateral_speed > 0.20 || speed_was_clipped)
+        {
+          RCLCPP_WARN_THROTTLE(
+              node_->get_logger(), *node_->get_clock(), 1000,
+              "[ReferenceVelocityProjection] raw=[%.3f %.3f %.3f] "
+              "tangent=[%.3f %.3f %.3f] used=[%.3f %.3f %.3f] "
+              "along=%.3f->%.3f removed_lateral=%.3f",
+              raw_velocity.x(), raw_velocity.y(), raw_velocity.z(),
+              tangent.x(), tangent.y(), tangent.z(),
+              start_vel_.x(), start_vel_.y(), start_vel_.z(),
+              raw_along_speed, used_along_speed, removed_lateral_speed);
+        }
+      }
+      else
+      {
+        RCLCPP_WARN_THROTTLE(
+            node_->get_logger(), *node_->get_clock(), 2000,
+            "Reference start-velocity projection unavailable; retaining raw start velocity");
       }
     }
 

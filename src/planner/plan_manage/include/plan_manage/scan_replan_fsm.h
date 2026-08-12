@@ -64,6 +64,9 @@ namespace scan_planner
     bool odom_twist_in_body_frame_{false};
     bool project_reference_start_z_{false};
     double reference_start_z_max_correction_{0.6};
+    bool project_reference_start_velocity_{false};
+    double reference_velocity_tangent_half_window_{0.4};
+    double reference_start_velocity_max_{0.75};
     double last_start_z_correction_{0.0};
     double last_raw_start_z_{0.0};
     std::string self_inflation_frame_id_;
@@ -97,6 +100,7 @@ namespace scan_planner
     Eigen::Vector3d end_pt_, end_vel_;                                       // goal state
     Eigen::Vector3d local_target_pt_, local_target_vel_;                     // local target state
     std::vector<Eigen::Vector3d> active_waypoints_;
+    std::vector<Eigen::Vector3d> reference_waypoints_;
     int current_wp_;
 
     bool flag_escape_emergency_;

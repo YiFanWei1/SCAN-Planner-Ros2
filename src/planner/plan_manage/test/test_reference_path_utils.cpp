@@ -133,4 +133,66 @@ TEST(ReferencePathUtils, RejectsInvalidVelocityTransformInputs)
       Eigen::Vector3d::Zero(), Eigen::Quaterniond(0.0, 0.0, 0.0, 0.0), world_velocity));
 }
 
+TEST(ReferencePathUtils, EstimatesSmoothedThreeDimensionalPathTangent)
+{
+  const std::vector<Eigen::Vector3d> path{
+      {0.0, 0.0, 0.0}, {0.5, 0.0, -0.25}, {1.0, 0.0, -0.50}};
+  Eigen::Vector3d tangent = Eigen::Vector3d::Zero();
+
+  ASSERT_TRUE(scan_planner::estimateLocalReferenceTangent(
+      path, Eigen::Vector3d(0.55, 0.10, -0.20), 0.40, tangent));
+  const Eigen::Vector3d expected = Eigen::Vector3d(1.0, 0.0, -0.5).normalized();
+  EXPECT_NEAR(tangent.x(), expected.x(), 1e-9);
+  EXPECT_NEAR(tangent.y(), expected.y(), 1e-9);
+  EXPECT_NEAR(tangent.z(), expected.z(), 1e-9);
+}
+
+TEST(ReferencePathUtils, SmoothsTangentAcrossSmallPolylineKink)
+{
+  const std::vector<Eigen::Vector3d> path{
+      {0.0, 0.0, 0.0}, {0.5, 0.08, -0.20}, {1.0, 0.0, -0.40}};
+  Eigen::Vector3d tangent = Eigen::Vector3d::Zero();
+
+  ASSERT_TRUE(scan_planner::estimateLocalReferenceTangent(
+      path, path[1], 0.45, tangent));
+  EXPECT_GT(tangent.x(), 0.90);
+  EXPECT_NEAR(tangent.y(), 0.0, 1e-9);
+  EXPECT_LT(tangent.z(), -0.30);
+}
+
+TEST(ReferencePathUtils, ProjectsAndClampsVelocityAlongReferenceTangent)
+{
+  const Eigen::Vector3d tangent = Eigen::Vector3d(1.0, 0.0, -0.5).normalized();
+  const Eigen::Vector3d raw_velocity(0.70, 0.40, -0.80);
+  Eigen::Vector3d projected_velocity = Eigen::Vector3d::Zero();
+  double raw_along = 0.0;
+  double used_along = 0.0;
+  double removed_lateral = 0.0;
+
+  ASSERT_TRUE(scan_planner::projectVelocityOntoReferenceTangent(
+      raw_velocity, tangent, 0.75, projected_velocity,
+      &raw_along, &used_along, &removed_lateral));
+  EXPECT_GT(raw_along, 0.75);
+  EXPECT_DOUBLE_EQ(used_along, 0.75);
+  EXPECT_NEAR(projected_velocity.norm(), 0.75, 1e-9);
+  EXPECT_NEAR(projected_velocity.cross(tangent).norm(), 0.0, 1e-9);
+  EXPECT_GT(removed_lateral, 0.39);
+}
+
+TEST(ReferencePathUtils, RejectsReverseAndInvalidReferenceVelocity)
+{
+  Eigen::Vector3d projected_velocity = Eigen::Vector3d::Ones();
+  ASSERT_TRUE(scan_planner::projectVelocityOntoReferenceTangent(
+      Eigen::Vector3d(-1.0, 0.0, 0.0), Eigen::Vector3d::UnitX(),
+      0.75, projected_velocity));
+  EXPECT_TRUE(projected_velocity.isZero(1e-12));
+
+  const double nan = std::numeric_limits<double>::quiet_NaN();
+  EXPECT_FALSE(scan_planner::projectVelocityOntoReferenceTangent(
+      Eigen::Vector3d(nan, 0.0, 0.0), Eigen::Vector3d::UnitX(),
+      0.75, projected_velocity));
+  EXPECT_FALSE(scan_planner::estimateLocalReferenceTangent(
+      {Eigen::Vector3d::Zero()}, Eigen::Vector3d::Zero(), 0.4, projected_velocity));
+}
+
 }  // namespace
