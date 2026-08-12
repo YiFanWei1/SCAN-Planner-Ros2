@@ -4,10 +4,11 @@ import os
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
+from launch.actions import DeclareLaunchArgument, LogInfo
 from launch.conditions import IfCondition
-from launch.substitutions import IfElseSubstitution, LaunchConfiguration
+from launch.substitutions import EqualsSubstitution, IfElseSubstitution, LaunchConfiguration
 from launch_ros.actions import Node
+from launch_ros.parameter_descriptions import ParameterValue
 
 
 def generate_launch_description():
@@ -22,6 +23,18 @@ def generate_launch_description():
         if_value="/scan_planner/initial_path",
         else_value="/scan_planner/global_path_filtered",
     )
+    raw_cloud_selected = EqualsSubstitution(
+        LaunchConfiguration("point_cloud_type"), "1")
+    input_cloud_topic = IfElseSubstitution(
+        condition=raw_cloud_selected,
+        if_value="/livox/lidar",
+        else_value="/cloud_registered_body",
+    )
+    lidar_to_base_x = IfElseSubstitution(
+        condition=raw_cloud_selected, if_value="-0.15", else_value="0.0")
+    lidar_to_base_y = 0.0
+    lidar_to_base_z = IfElseSubstitution(
+        condition=raw_cloud_selected, if_value="-0.21", else_value="0.0")
 
     adapter = Node(
         package="scan_planner",
@@ -31,13 +44,13 @@ def generate_launch_description():
         parameters=[real_config, {
             # These overrides make the adapter usable with either a raw
             # lidar-frame cloud/pose pair or an already body-frame cloud.
-            "lidar_to_base_x": LaunchConfiguration("lidar_to_base_x"),
-            "lidar_to_base_y": LaunchConfiguration("lidar_to_base_y"),
-            "lidar_to_base_z": LaunchConfiguration("lidar_to_base_z"),
+            "lidar_to_base_x": ParameterValue(lidar_to_base_x, value_type=float),
+            "lidar_to_base_y": ParameterValue(lidar_to_base_y, value_type=float),
+            "lidar_to_base_z": ParameterValue(lidar_to_base_z, value_type=float),
         }],
         remappings=[
             ("lidar_odom", "/lio_odom_hf"),
-            ("cloud", LaunchConfiguration("input_cloud_topic")),
+            ("cloud", input_cloud_topic),
             ("global_path", "/plan"),
             ("body_pose", "/scan_planner/body_pose"),
             ("sensor_pose", "/scan_planner/sensor_pose"),
@@ -183,13 +196,14 @@ def generate_launch_description():
         DeclareLaunchArgument("project_reference_start_z", default_value="true"),
         DeclareLaunchArgument("reference_start_z_max_correction", default_value="0.60"),
         DeclareLaunchArgument("odom_twist_in_body_frame", default_value="true"),
-        # Raw Livox data uses the lidar/body origin and therefore keeps the
-        # lidar-to-base offset below.  A cloud already expressed in base_link
-        # must set all three offsets to zero.
-        DeclareLaunchArgument("input_cloud_topic", default_value="/livox/lidar"),
-        DeclareLaunchArgument("lidar_to_base_x", default_value="-0.15"),
-        DeclareLaunchArgument("lidar_to_base_y", default_value="0.0"),
-        DeclareLaunchArgument("lidar_to_base_z", default_value="-0.21"),
+        DeclareLaunchArgument(
+            "point_cloud_type",
+            default_value="2",
+            choices=["1", "2"],
+            description=(
+                "Point cloud input: 1=raw /livox/lidar in lidar/body frame; "
+                "2=feature /cloud_registered_body in base_link frame"),
+        ),
         # Disable this to feed the adapter's complete filtered global path
         # directly to SCAN instead of sending one terrain segment at a time.
         # Keep the real launch aligned with terrain_path_segmenter's defaults.
@@ -208,6 +222,12 @@ def generate_launch_description():
             default_value=(
                 "/home/wei/github_code/SCAN-Planner-Ros2/"
                 "src/scan_planner_analysis/output")),
+        LogInfo(msg=[
+            "Point cloud input type=", LaunchConfiguration("point_cloud_type"),
+            " topic=", input_cloud_topic,
+            " lidar_to_base=[", lidar_to_base_x, ", 0.0",
+            ", ", lidar_to_base_z, "]",
+        ]),
         adapter,
         segmenter,
         planner,
