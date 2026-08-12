@@ -57,7 +57,7 @@ scan_planner_node:
     grid_map.vis_height: 0.3
     grid_map.show_occ_time: false
 
-    manager.max_vel: 0.75
+    manager.max_vel: 0.75 #!
     manager.max_acc: 0.5
     manager.max_jerk: 4.0
     manager.control_points_distance: 0.2

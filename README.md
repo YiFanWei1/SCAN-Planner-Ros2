@@ -223,3 +223,102 @@ ros2 run scan_planner_analysis plot_velocity \
 
 
 xdg-open "${LATEST_LOG%.jsonl}.png"
+
+
+
+
+测试一：原始点云，不使用速度投影
+
+cd ~/github_code/SCAN-Planner-Ros2
+source /opt/ros/jazzy/setup.bash
+source install/setup.bash
+ros2 launch scan_planner real_go2_livox.launch.py \
+  rviz:=true \
+  enable_motion:=true \
+  point_cloud_type:=1 \
+  project_reference_start_velocity:=false \
+  use_path_segmentation:=true \
+  accept_first_global_path_only:=false \
+  require_stop_before_emergency_replan:=false
+
+cd ~/github_code/SCAN-Planner-Ros2
+source /opt/ros/jazzy/setup.bash
+source install/setup.bash
+ros2 bag play /home/wei/bag/up_and_down \
+  --start-offset 105 \
+  --playback-duration 110 \
+  --topics /plan /lio_odom_hf /livox/lidar
+
+
+
+
+测试二：原始点云，开启三维速度投影
+
+cd ~/github_code/SCAN-Planner-Ros2
+source /opt/ros/jazzy/setup.bash
+source install/setup.bash
+ros2 launch scan_planner real_go2_livox.launch.py \
+  rviz:=true \
+  enable_motion:=true \
+  point_cloud_type:=1 \
+  project_reference_start_velocity:=true \
+  reference_velocity_tangent_half_window:=0.40 \
+  reference_start_velocity_max:=0.75 \
+  use_path_segmentation:=true \
+  accept_first_global_path_only:=false \
+  require_stop_before_emergency_replan:=false
+
+
+cd ~/github_code/SCAN-Planner-Ros2
+source /opt/ros/jazzy/setup.bash
+source install/setup.bash
+ros2 bag play /home/wei/bag/up_and_down \
+  --start-offset 105 \
+  --playback-duration 110 \
+  --topics /plan /lio_odom_hf /livox/lidar
+
+
+特征点云，不使用速度投影
+
+cd ~/github_code/SCAN-Planner-Ros2
+source /opt/ros/jazzy/setup.bash
+source install/setup.bash
+ros2 launch scan_planner real_go2_livox.launch.py \
+  rviz:=true \
+  enable_motion:=true \
+  point_cloud_type:=2 \
+  project_reference_start_velocity:=false \
+  use_path_segmentation:=true \
+  accept_first_global_path_only:=false \
+  require_stop_before_emergency_replan:=false
+
+source /opt/ros/jazzy/setup.bash
+ros2 bag play /home/wei/bag/full_nav_replay_with_plan \
+  --start-offset 125 \
+  --playback-duration 115 \
+  --topics /plan /lio_odom_hf /cloud_registered_body
+
+
+
+特征点云，开启速度投影
+
+cd ~/github_code/SCAN-Planner-Ros2
+source /opt/ros/jazzy/setup.bash
+source install/setup.bash
+ros2 launch scan_planner real_go2_livox.launch.py \
+  rviz:=true \
+  enable_motion:=true \
+  point_cloud_type:=2 \
+  project_reference_start_velocity:=true \
+  reference_velocity_tangent_half_window:=0.40 \
+  reference_start_velocity_max:=0.75 \
+  use_path_segmentation:=true \
+  accept_first_global_path_only:=false \
+  require_stop_before_emergency_replan:=false
+
+
+source /opt/ros/jazzy/setup.bash
+ros2 bag play /home/wei/bag/full_nav_replay_with_plan \
+  --start-offset 125 \
+  --playback-duration 115 \
+  --topics /plan /lio_odom_hf /cloud_registered_body

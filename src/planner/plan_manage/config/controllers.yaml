@@ -9,7 +9,7 @@ closed_loop_controller:
     lookahead_max: 0.70
     projection_dt: 0.03
     projection_forward_window: 1.0
-    max_linear_accel: 0.50
+    max_linear_accel: 0.50 #!
     max_yaw_accel: 1.0
     max_vx: 0.75
     max_vy: 0.35

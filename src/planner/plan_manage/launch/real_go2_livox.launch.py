@@ -227,7 +227,7 @@ def generate_launch_description():
         DeclareLaunchArgument("segment_reached_tolerance", default_value="0.25"),
         DeclareLaunchArgument("analysis", default_value="true"),
         DeclareLaunchArgument("analysis_output", default_value=""),
-        DeclareLaunchArgument(
+        DeclareLaunchArgument( 
             "analysis_output_directory",
             default_value=(
                 "/home/wei/github_code/SCAN-Planner-Ros2/"
