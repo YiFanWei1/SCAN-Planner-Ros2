@@ -66,17 +66,20 @@ Visualization Manager:
         Value: /plan
       Value: true
     - Class: rviz_default_plugins/MarkerArray
-      Enabled: false
+      Enabled: true
       Name: Segments and targets
       Namespaces:
-        {}
+        current_target: true
+        segment_targets: true
+        segmented_paths: true
+        target_labels: true
       Topic:
         Depth: 5
         Durability Policy: Transient Local
         History Policy: Keep Last
         Reliability Policy: Reliable
         Value: /terrain_path/segments
-      Value: false
+      Value: true
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
@@ -318,16 +321,16 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 8.827237129211426
+      Distance: 3.942697048187256
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 1.2652508020401
-        Y: 0.35770317912101746
-        Z: -0.8466936945915222
+        X: -10.70789623260498
+        Y: 1.1307494640350342
+        Z: 1.2171239852905273
       Focal Shape Fixed Size: false
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
@@ -348,5 +351,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1290
-  X: 688
+  X: 630
   Y: 102

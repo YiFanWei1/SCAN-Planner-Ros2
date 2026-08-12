@@ -1,0 +1,299 @@
+[INFO] [launch]: All log files can be found below /home/wei/.ros/log/2026-08-11-20-34-02-171009-wei-318486
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [real_go2_input_adapter-1]: process started with pid [318490]
+[INFO] [terrain_path_visualizer-2]: process started with pid [318491]
+[INFO] [scan_planner_node-3]: process started with pid [318492]
+[INFO] [closed_loop_controller-4]: process started with pid [318493]
+[INFO] [cmd_vel_safety_gate-5]: process started with pid [318494]
+[INFO] [static_transform_publisher-6]: process started with pid [318495]
+[static_transform_publisher-6] [INFO] [1786451642.249192698] [map_to_camera_init_tf]: Spinning until stopped - publishing transform
+[static_transform_publisher-6] translation: ('0.000000', '0.000000', '0.000000')
+[static_transform_publisher-6] rotation: ('0.000000', '0.000000', '0.000000', '1.000000')
+[static_transform_publisher-6] from 'map' to 'camera_init'
+[cmd_vel_safety_gate-5] [WARN] [1786451642.255286175] [cmd_vel_safety_gate]: Velocity safety gate ready; motion is ENABLED
+[cmd_vel_safety_gate-5] [INFO] [1786451642.265402942] [cmd_vel_safety_gate]: Safety gate state: odometry_timeout
+[scan_planner_node-3] [WARN] [1786451642.293339780] [scan_planner_node]: Emergency replanning will not wait for odometry speed to fall below 0.1 m/s; use this test mode only when motion safety is handled externally
+[scan_planner_node-3] hit: 1.7346
+[scan_planner_node-3] miss: -0.847298
+[scan_planner_node-3] min log: -1.99243
+[scan_planner_node-3] max: 3.89182
+[scan_planner_node-3] thresh log: 1.38629
+[cmd_vel_safety_gate-5] [INFO] [1786451662.785404564] [cmd_vel_safety_gate]: Safety gate state: trajectory_timeout
+[scan_planner_node-3] [WARN] [1786451662.967613054] [scan_planner_node]: Waiting for occupancy map initialization (0 fused cloud updates)
+[scan_planner_node-3] [WARN] [1786451663.012020806] [scan_planner_node]: [GridMap] no sensor_pose received for lidar cloud update
+[cmd_vel_safety_gate-5] [INFO] [1786451663.125394419] [cmd_vel_safety_gate]: Safety gate state: active
+[scan_planner_node-3] [ERROR] [1786451665.814508383] [bspline_opt]: [AStarSummary] plan=failed calls=7 success=6 failures{init=0 search=1 initialization=1 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.052s iter=56575 generated=56575 rejects_collision=39777 outside_map=0 boundary=19013 start=[-8.928  2.466 -0.003] end=[-8.128  2.466 -0.003]}
+[scan_planner_node-3] [WARN] [1786451665.814540825] [scan_planner_node]: Local replan failed: start=[-9.728 2.503 -0.004], target=[-6.449 1.049 -0.008], raw_start_z=-0.296 start_z_correction=+0.292
+[scan_planner_node-3] [ERROR] [1786451666.499770051] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=0 failures{init=0 search=4 initialization=4 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.055s iter=57174 generated=57174 rejects_collision=26121 outside_map=0 boundary=18961 start=[-8.961  2.465  0.016] end=[-8.611  2.465  0.016]}
+[scan_planner_node-3] [ERROR] [1786451668.483070393] [bspline_opt]: [AStarSummary] plan=failed calls=8 success=4 failures{init=0 search=4 initialization=4 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.055s iter=57187 generated=57187 rejects_collision=17803 outside_map=0 boundary=19601 start=[-9.105  2.699 -0.021] end=[-6.655  2.199 -0.021]}
+[scan_planner_node-3] [WARN] [1786451668.483099747] [scan_planner_node]: Local replan failed: start=[-8.009 2.200 -0.024], target=[-4.876 0.819 -0.008], raw_start_z=-0.287 start_z_correction=+0.263
+[scan_planner_node-3] [ERROR] [1786451668.705992762] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=0 failures{init=0 search=4 initialization=4 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.057s iter=57777 generated=57777 rejects_collision=18144 outside_map=0 boundary=19538 start=[-7.246  2.262 -0.021] end=[-7.096  2.262 -0.021]}
+[scan_planner_node-3] [ERROR] [1786451668.926318493] [bspline_opt]: [AStarSummary] plan=failed calls=8 success=4 failures{init=0 search=4 initialization=4 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.054s iter=57187 generated=57187 rejects_collision=15330 outside_map=0 boundary=19601 start=[-9.105  2.699 -0.021] end=[-6.655  2.199 -0.021]}
+[scan_planner_node-3] [WARN] [1786451669.187606465] [scan_planner_node]: Local target was adjusted to a nearby collision-free point
+[scan_planner_node-3] [WARN] [1786451673.676570917] [bspline_opt]: [AStarSummary] plan=success calls=5 success=3 failures{init=0 search=2 initialization=0 rebound=2} last{context=rebound reason=OPEN_SET_EMPTY elapsed=0.047s iter=53255 generated=53255 rejects_collision=26150 outside_map=0 boundary=18994 start=[-3.066  1.480 -0.003] end=[-2.816  1.430 -0.003]}
+[scan_planner_node-3] [WARN] [1786451673.939197873] [scan_planner_node]: Refined trajectory is unsafe or dynamically infeasible; skipping publication
+[scan_planner_node-3] [WARN] [1786451673.939222576] [scan_planner_node]: Local replan failed: start=[-3.792 1.443 -0.010], target=[-0.778 0.213 -0.002], raw_start_z=-0.251 start_z_correction=+0.241
+[scan_planner_node-3] [WARN] [1786451675.921481116] [bspline_opt]: First three control points are in obstacles; t=0.298178
+[scan_planner_node-3] [ERROR] [1786451675.921519478] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=2 failures{init=0 search=2 initialization=1 rebound=1} last{context=rebound reason=OPEN_SET_EMPTY elapsed=0.051s iter=57085 generated=57085 rejects_collision=18919 outside_map=0 boundary=20170 start=[-2.321  1.223  0.003] end=[-1.571  1.373  0.003]}
+[scan_planner_node-3] [WARN] [1786451675.921543053] [scan_planner_node]: Local replan failed: start=[-2.353 1.177 0.007], target=[-0.367 0.112 -0.021], raw_start_z=-0.291 start_z_correction=+0.297
+[scan_planner_node-3] [WARN] [1786451675.922090865] [bspline_opt]: First three control points are in obstacles; t=0.198789
+[scan_planner_node-3] [WARN] [1786451679.227580841] [scan_planner_node]: Obstacle discovered; emergency stop in 0.000s
+[scan_planner_node-3] [ERROR] [1786451679.262263032] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451679.262316008] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451679.262327583] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451679.262333960] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451679.262343158] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451679.262349266] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451679.262357112] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451679.262362519] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451679.262371269] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451679.262376069] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451679.262383394] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451679.262388465] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451679.262396373] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451679.262401920] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451679.262410304] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451679.262415418] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451679.262422754] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451679.262427166] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451679.262434292] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451679.262439573] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451679.262447128] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451679.262452217] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451679.262459508] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451679.262464214] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451679.262471662] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451679.262477056] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451679.262484307] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451679.262489058] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451679.262496248] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451679.262501060] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451679.262508772] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451679.262514581] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451679.262522775] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451679.262528534] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451679.262536776] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451679.262542116] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451679.262550900] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451679.262556452] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451679.262565000] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451679.262569949] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451679.262577188] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451679.262582348] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451679.262587006] [scan_planner_node]: Local replan failed: start=[-1.783 -0.355 0.001], target=[-0.367 0.112 -0.021], raw_start_z=-0.301 start_z_correction=+0.302
+[scan_planner_node-3] [WARN] [1786451679.427605440] [scan_planner_node]: Obstacle discovered; emergency stop in 0.030s
+[scan_planner_node-3] [WARN] [1786451683.428313242] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786451683.428330589] [scan_planner_node]: Local replan failed: start=[-1.517 -0.357 -0.009], target=[-0.367 0.112 -0.021], raw_start_z=-0.428 start_z_correction=+0.419
+[scan_planner_node-3] [WARN] [1786451683.428530088] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451683.428538976] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451683.428546536] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451683.428553911] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451683.428560998] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451683.428568012] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451683.428575048] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451683.428581862] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451683.428590262] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451683.428596809] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451683.428603577] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451683.428610177] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451683.428617117] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451683.428623916] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451683.428630438] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451683.428636982] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451683.428643455] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451683.428650012] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451683.428656452] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451683.428663019] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451683.428669516] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451683.428675591] [scan_planner_node]: Obstacle discovered; emergency stop in 0.000s
+[scan_planner_node-3] [WARN] [1786451683.537707196] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451683.537730383] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451683.537738285] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451683.537745794] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451683.537753456] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451683.537760267] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451683.537767145] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451683.537773981] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451683.537780729] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451683.537787610] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451683.537794320] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451683.537800895] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451683.537807451] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451683.537813919] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451683.537820647] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.467684490] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.467705874] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.467714489] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.467722010] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.467729331] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.467736651] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.467743891] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.467751139] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.467761509] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.467769408] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.467794332] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.467801610] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.467808927] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.467815829] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.467824002] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.467831117] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.467838113] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.467844996] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.467851845] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.467858747] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.467862382] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786451684.467866354] [scan_planner_node]: Local replan failed: start=[-1.505 -0.369 -0.009], target=[-0.367 0.112 -0.021], raw_start_z=-0.579 start_z_correction=+0.570
+[scan_planner_node-3] [WARN] [1786451684.467967553] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.467978855] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.467986022] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.467992991] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.468000091] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.468006930] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.468013829] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.468020556] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.468027248] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.468033891] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.468040407] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.468046985] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.468053686] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.468061235] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.468068274] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.468074960] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.468081606] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.468088422] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.468095372] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.468098316] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786451684.527545213] [scan_planner_node]: Obstacle discovered; emergency stop in 0.340s
+[scan_planner_node-3] [WARN] [1786451684.624346152] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [ERROR] [1786451684.624384475] [bspline_opt]: [AStarSummary] plan=failed calls=3 success=2 failures{init=0 search=1 initialization=1 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.046s iter=53048 generated=53048 rejects_collision=20583 outside_map=0 boundary=20006 start=[-1.086 -0.167 -0.014] end=[-0.936 -0.117 -0.014]}
+[scan_planner_node-3] [ERROR] [1786451684.677756745] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451684.677790391] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451684.677798497] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451684.677803382] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451684.677810547] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451684.677812863] [bspline_opt]: A-star path has fewer than 2 points; drop collision segment
+[scan_planner_node-3] [ERROR] [1786451684.677818409] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451684.677822031] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451684.677827475] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451684.677831215] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451684.677836614] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451684.677840046] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451684.677845354] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451684.677849207] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451684.677854377] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451684.677857873] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451684.677863145] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451684.677872410] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451684.677877567] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451684.677881090] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451684.677886337] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451684.677889758] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451684.677894929] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451684.677898546] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451684.677903879] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451684.677907542] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451684.677912474] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451684.677915839] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451684.677920797] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451684.677924274] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451684.677928994] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451684.677932374] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451684.677937129] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451684.677940513] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451684.677945083] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451684.677948507] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451684.677953334] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451684.677956888] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451684.677961635] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451684.677965146] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451684.677969877] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451684.677973304] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.787673457] [bspline_opt]: A-star path has fewer than 2 points
+[scan_planner_node-3] [ERROR] [1786451684.787728938] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451684.787754189] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451684.787761530] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451684.787766186] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451684.787771902] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451684.787775613] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451684.787780623] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451684.787784175] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451684.787789175] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451684.787793263] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451684.787798561] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451684.787802045] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451684.787806710] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451684.787810341] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451684.787815615] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451684.787819093] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451684.787824347] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451684.787827827] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451684.787832894] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451684.787836464] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451684.787841329] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451684.787844842] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [ERROR] [1786451684.787849580] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786451684.789101425] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786451684.911137737] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.911160789] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.911169219] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.911179706] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.911187787] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.911194466] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.911201104] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.911207752] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.911214311] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.911221191] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.911228551] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.911235527] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.911242727] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.911249521] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.911256018] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.911262557] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.911269226] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.911275833] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.911283555] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451684.911290299] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786451685.011472086] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451685.011497556] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451685.011506270] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451685.011514978] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451685.011522987] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451685.011530065] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451685.011536918] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451685.011543669] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451685.011550581] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451685.011557674] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451685.011564646] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451685.011571634] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451685.011578747] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451685.011585766] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451685.011592731] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451685.011599703] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451685.011606624] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451685.011613517] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451685.011620322] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451685.011627324] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451685.125972875] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451685.126005159] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451685.126015379] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451685.126029409] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451685.126038777] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786451685.126046685] [bspline_opt]: Failed to generate rebound direction
+[cmd_vel_safety_gate-5] [INFO] [1786451685.425366665] [cmd_vel_safety_gate]: Safety gate state: odometry_timeout
+[scan_planner_node-3] [ERROR] [1786451686.159333736] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [ERROR] [1786451687.137895521] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [ERROR] [1786451688.117944816] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [ERROR] [1786451689.109629883] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [ERROR] [1786451690.087814974] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [ERROR] [1786451691.067811931] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [ERROR] [1786451692.059249047] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [ERROR] [1786451693.037925521] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [ERROR] [1786451694.017891119] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [ERROR] [1786451695.009143094] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [ERROR] [1786451695.987826325] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [ERROR] [1786451696.967786458] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [ERROR] [1786451697.947841764] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [ERROR] [1786451698.927860898] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [ERROR] [1786451699.907858368] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [ERROR] [1786451700.887759250] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [ERROR] [1786451701.867779406] [bspline_opt]: The robot is inside an obstacle

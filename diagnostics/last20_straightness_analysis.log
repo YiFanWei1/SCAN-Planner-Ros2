@@ -1,0 +1,95 @@
+SCAN-Planner final-20-second flat-ground straightness analysis
+Date: 2026-08-11
+Input bag: /home/wei/bag/up_and_down
+Playback start offset: 420 s (bag duration 442.823 s)
+Launch: segmented path enabled, motion enabled, accept rolling paths,
+        emergency replan does not wait for measured stop
+ROS isolation: ROS_DOMAIN_ID=77
+
+Recorded output bag
+-------------------
+diagnostics/last20_outputs_20260811
+body_pose messages:                4495
+filtered global path messages:       14
+segmented initial path messages:     14
+initial-trajectory markers:         184 (92 line strips)
+published B-splines:                 77
+optimal-trajectory markers:         146 (73 line strips)
+A-star markers:                      66 (33 line strips)
+inflated occupancy clouds:          675
+
+Straightness measurements
+-------------------------
+The metric is maximum XY distance from the trajectory samples to the chord
+joining that trajectory's first and last samples.
+
+Initial trajectory:
+  median maximum deviation: 0.227 m
+  maximum deviation:        1.014 m
+
+Final optimized trajectory:
+  median maximum deviation: 0.204 m
+  maximum deviation:        0.577 m
+
+Finding: curvature already exists before collision optimization. On median,
+the optimizer reduces rather than creates the deviation (0.227 -> 0.204 m).
+
+Filtered/segmented global path:
+  while more than roughly 2 m remained, whole-message chord deviations were
+  commonly 0.43-0.78 m; only the final 9-point path fell to 0.088 m.
+Finding: the reference supplied to SCAN is not geometrically straight over
+most of this interval, even though the physical area is flat.
+
+Internal collision evidence
+---------------------------
+The planner emitted 33 A-star line strips. Logs include OPEN_SET_EMPTY,
+local-target adjustment, first-three-control-points occupied, and robot-inside-
+obstacle events. Thus internal collision handling is active even when the RViz
+view appears clear. Published inflated clouds contained a median of 35,664
+voxels per frame. For several published trajectories, a sampled center/front/
+rear body point was within 0.014-0.05 m of a published inflated voxel.
+
+However, internal collision handling is not the primary source of the normal
+flat-ground curvature because the initial path is already curved before the
+optimizer runs.
+
+Odometry twist-frame test
+-------------------------
+body_pose header.frame_id: camera_init
+body_pose child_frame_id:  base_link
+The adapter changes the child frame and composes the LiDAR-to-base pose, but it
+copies the input twist without rotating it or applying the lever-arm velocity.
+The FSM then consumes twist.linear directly as a world-frame start velocity.
+
+Comparison against finite-difference world position velocity:
+  raw twist direction error median:          20.98 deg
+  raw twist direction error 90th percentile: 157.64 deg
+  yaw-rotated twist error median:             10.01 deg
+  yaw-rotated twist error 90th percentile:    33.11 deg
+  finite-difference speed median:              0.584 m/s
+  reported twist speed median:                 0.696 m/s
+
+Primary cause
+-------------
+The min-snap initializer is constrained by a start velocity expressed in the
+wrong coordinate frame. It must bend the initial trajectory to satisfy that
+velocity before converging toward the local target. The global reference path
+is also curved, and deterministic failures may invoke a random midpoint retry,
+adding further variation. Collision rebound is a secondary contributor in
+frames where the internal inflated map reports occupancy.
+
+Recommended corrections
+-----------------------
+1. Define and enforce twist semantics in real_go2_input_adapter. If LIO twist
+   is base/sensor-frame velocity, rotate it into camera_init before publishing
+   body_pose, and include omega cross lidar_to_base translation if appropriate.
+2. Add a diagnostic comparing reported twist against pose finite differences;
+   reject or zero start velocity when direction/magnitude is inconsistent.
+3. In reference-path mode, project the start velocity onto the local reference
+   tangent or use a bounded tangent speed instead of an unrestricted XY vector.
+4. Log deterministic versus random initialization. Do not use random retry for
+   non-collision failures on clear flat ground.
+5. Preserve the exact local polyline/tangent instead of fitting the remaining
+   path with a global min-snap curve when strict straightness is required.
+6. Publish the exact front/rear collision-query voxels so RViz shows the same
+   occupancy decision used by the optimizer.

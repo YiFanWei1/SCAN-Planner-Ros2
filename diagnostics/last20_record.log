@@ -1,0 +1,17 @@
+[WARN] [ros2bag]: Positional "topics" argument deprecated. Please use optional "--topics" argument instead.
+[INFO] [1786451653.558111854] [rosbag2_recorder]: Press SPACE for pausing/resuming
+[INFO] [1786451653.558169865] [rosbag2_recorder]: Event publisher thread: Started
+[INFO] [1786451653.561472380] [rosbag2_recorder]: Starting recording to 'diagnostics/last20_outputs_20260811'
+[INFO] [1786451653.562558791] [rosbag2_recorder]: Listening for topics...
+[INFO] [1786451653.562570631] [rosbag2_recorder]: Recording...
+[INFO] [1786451653.562598041] [rosbag2_recorder]: Topics discovery started.
+[INFO] [1786451653.669518571] [rosbag2_recorder]: Subscribed to topic '/scan_planner/initial_path'
+[INFO] [1786451653.672489038] [rosbag2_recorder]: Subscribed to topic '/a_star_list'
+[INFO] [1786451653.673530530] [rosbag2_recorder]: Subscribed to topic '/grid_map/occupancy_inflate'
+[INFO] [1786451653.673951116] [rosbag2_recorder]: Subscribed to topic '/init_list'
+[INFO] [1786451653.674388958] [rosbag2_recorder]: Subscribed to topic '/optimal_list'
+[INFO] [1786451653.675187340] [rosbag2_recorder]: Subscribed to topic '/planning/bspline'
+[INFO] [1786451653.676172733] [rosbag2_recorder]: Subscribed to topic '/scan_planner/body_pose'
+[INFO] [1786451653.676587265] [rosbag2_recorder]: Subscribed to topic '/scan_planner/global_path_filtered'
+[INFO] [1786451653.676601027] [rosbag2_recorder]: All requested topics are subscribed. Stopping discovery...
+[INFO] [1786451653.676604835] [rosbag2_recorder]: Topics discovery stopped.

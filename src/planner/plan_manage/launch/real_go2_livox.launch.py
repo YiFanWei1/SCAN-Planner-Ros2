@@ -168,18 +168,18 @@ def generate_launch_description():
     return LaunchDescription([
         DeclareLaunchArgument("rviz", default_value="true"),
         DeclareLaunchArgument("enable_motion", default_value="false"),
-        DeclareLaunchArgument("project_reference_start_z", default_value="true"),
-        DeclareLaunchArgument("reference_start_z_max_correction", default_value="0.60"),
+        DeclareLaunchArgument("use_path_segmentation", default_value="true"),
+        DeclareLaunchArgument("accept_first_global_path_only", default_value="false"),
         DeclareLaunchArgument(
             "require_stop_before_emergency_replan", default_value="true"),
+        DeclareLaunchArgument("project_reference_start_z", default_value="true"),
+        DeclareLaunchArgument("reference_start_z_max_correction", default_value="0.60"),
         # Disable this to feed the adapter's complete filtered global path
         # directly to SCAN instead of sending one terrain segment at a time.
-        DeclareLaunchArgument("use_path_segmentation", default_value="true"),
         # Keep the real launch aligned with terrain_path_segmenter's defaults.
-        DeclareLaunchArgument("max_linear_z_error", default_value="0.04"),
-        DeclareLaunchArgument("slope_merge_threshold", default_value="0.04"),
+        DeclareLaunchArgument("max_linear_z_error", default_value="0.06"),
+        DeclareLaunchArgument("slope_merge_threshold", default_value="0.06"),
         DeclareLaunchArgument("minimum_segment_length", default_value="0.50"),
-        DeclareLaunchArgument("accept_first_global_path_only", default_value="false"),
         # In first-path-only mode, accept a clearly reversed route as a new
         # navigation task while continuing to ignore same-direction rolling
         # updates from the global planner.
