@@ -51,7 +51,9 @@ namespace scan_planner
     int continuous_failures_count_{0};
 
     void updateTrajInfo(const UniformBspline &position_traj, const rclcpp::Time time_now);
-    bool checkDynamicFeasibility(UniformBspline position_traj);
+    bool checkDynamicFeasibility(UniformBspline position_traj,
+                                 bool refinement_attempted,
+                                 double initial_retime_ratio);
 
     void reparamBspline(UniformBspline &bspline, vector<Eigen::Vector3d> &start_end_derivative, double ratio, Eigen::MatrixXd &ctrl_pts, double &dt,
                         double &time_inc);

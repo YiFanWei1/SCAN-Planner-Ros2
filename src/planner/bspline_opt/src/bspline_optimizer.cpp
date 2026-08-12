@@ -1014,6 +1014,7 @@ namespace scan_planner
 
     setControlPoints(init_points);
     setBsplineInterval(ts);
+    refine_attempt_diagnostics_ = RefineAttemptDiagnostics{};
 
     bool flag_success = refine_optimize();
 
@@ -1143,6 +1144,8 @@ namespace scan_planner
       lbfgs_params.g_epsilon = 0.001;
 
       int result = lbfgs::lbfgs_optimize(variable_num_, q, &final_cost, BsplineOptimizer::costFunctionRefine, NULL, NULL, this, &lbfgs_params);
+      refine_attempt_diagnostics_.solver_result = result;
+      refine_attempt_diagnostics_.optimizer_iterations = iter_num_;
       if (result == lbfgs::LBFGS_CONVERGENCE ||
           result == lbfgs::LBFGSERR_MAXIMUMITERATION ||
           result == lbfgs::LBFGS_ALREADY_MINIMIZED ||
@@ -1160,11 +1163,15 @@ namespace scan_planner
       double tm, tmp;
       traj.getTimeSpan(tm, tmp);
       double t_step = (tmp - tm) / ((traj.evaluateDeBoorT(tmp) - traj.evaluateDeBoorT(tm)).norm() / grid_map_->getResolution()); // Step size is defined as the maximum size that can passes through every grid.
+      refine_attempt_diagnostics_.trajectory_duration = tmp - tm;
+      refine_attempt_diagnostics_.sample_step = t_step;
       for (double t = tm; t < tmp * 2 / 3; t += t_step)
       {
         Eigen::Vector3d pos = traj.evaluateDeBoorT(t);
         Eigen::Vector3d pos_next = traj.evaluateDeBoorT(std::min(t + t_step, tmp));
-        if (grid_map_->getInflateOccupancy(pos, estimateSegmentYaw(pos, pos_next)))
+        const double yaw = estimateSegmentYaw(pos, pos_next);
+        refine_attempt_diagnostics_.collision_samples_checked++;
+        if (grid_map_->getInflateOccupancy(pos, yaw))
         {
           // cout << "Refined traj hit_obs, t=" << t << " P=" << traj.evaluateDeBoorT(t).transpose() << endl;
 
@@ -1175,6 +1182,10 @@ namespace scan_planner
           }
 
           flag_safe = false;
+          refine_attempt_diagnostics_.collision = true;
+          refine_attempt_diagnostics_.collision_time = t - tm;
+          refine_attempt_diagnostics_.collision_position = pos;
+          refine_attempt_diagnostics_.collision_yaw = yaw;
           break;
         }
       }

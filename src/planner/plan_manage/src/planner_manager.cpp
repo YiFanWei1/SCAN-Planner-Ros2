@@ -268,9 +268,11 @@ namespace scan_planner
     UniformBspline pos = UniformBspline(ctrl_pts, 3, ts);
     pos.setPhysicalLimits(pp_.max_vel_, pp_.max_acc_, pp_.feasibility_tolerance_);
 
-    double ratio;
+    double ratio = 1.0;
     bool flag_step_2_success = true;
-    if (!pos.checkFeasibility(ratio, false))
+    const bool initial_control_points_feasible = pos.checkFeasibility(ratio, false);
+    const bool refinement_attempted = !initial_control_points_feasible;
+    if (refinement_attempted)
     {
       Eigen::MatrixXd optimal_control_points;
       flag_step_2_success = refineTrajAlgo(pos, start_end_derivatives, ratio, ts, optimal_control_points);
@@ -278,11 +280,28 @@ namespace scan_planner
         pos = UniformBspline(optimal_control_points, 3, ts);
     }
 
-    if (!flag_step_2_success || !checkDynamicFeasibility(pos))
+    if (!flag_step_2_success)
     {
       bspline_optimizer_rebound_->reportAStarAttemptDiagnostics(false);
+      const auto &diagnostics = bspline_optimizer_rebound_->getRefineAttemptDiagnostics();
       RCLCPP_WARN(node_->get_logger(),
-                  "Refined trajectory is unsafe or dynamically infeasible; skipping publication");
+                  "Trajectory rejected: reason=REFINE_COLLISION initial_control_points_feasible=%d "
+                  "retime_ratio=%.3f solver_result=%d optimizer_iterations=%d "
+                  "collision_t=%.3f/%.3f collision_pos=[%.3f %.3f %.3f] collision_yaw=%.3f "
+                  "sample_step=%.4f samples_checked=%d",
+                  initial_control_points_feasible, ratio,
+                  diagnostics.solver_result, diagnostics.optimizer_iterations,
+                  diagnostics.collision_time, diagnostics.trajectory_duration,
+                  diagnostics.collision_position.x(), diagnostics.collision_position.y(),
+                  diagnostics.collision_position.z(), diagnostics.collision_yaw,
+                  diagnostics.sample_step, diagnostics.collision_samples_checked);
+      continuous_failures_count_++;
+      return false;
+    }
+
+    if (!checkDynamicFeasibility(pos, refinement_attempted, ratio))
+    {
+      bspline_optimizer_rebound_->reportAStarAttemptDiagnostics(false);
       continuous_failures_count_++;
       return false;
     }
@@ -487,7 +506,9 @@ namespace scan_planner
     local_data_.traj_id_ += 1;
   }
 
-  bool SCANPlannerManager::checkDynamicFeasibility(UniformBspline position_traj)
+  bool SCANPlannerManager::checkDynamicFeasibility(UniformBspline position_traj,
+                                                   const bool refinement_attempted,
+                                                   const double initial_retime_ratio)
   {
     UniformBspline vel_traj = position_traj.getDerivative();
     UniformBspline acc_traj = vel_traj.getDerivative();
@@ -496,26 +517,52 @@ namespace scan_planner
     const double vel_limit = pp_.max_vel_ + pp_.vel_tolerance_;
     const double acc_limit = pp_.max_acc_ + pp_.acc_tolerance_;
 
+    double max_vel = -1.0;
+    double max_vel_time = 0.0;
+    Eigen::Vector3d max_vel_vector = Eigen::Vector3d::Zero();
+    double max_acc = -1.0;
+    double max_acc_time = 0.0;
+    Eigen::Vector3d max_acc_vector = Eigen::Vector3d::Zero();
+
     for (double t = 0.0; t < duration + 1e-6; t += sample_dt)
     {
       const double tc = std::min(t, duration);
-      Eigen::Vector3d vel = vel_traj.evaluateDeBoorT(tc);
-      if (vel.norm() > vel_limit)
+      const Eigen::Vector3d vel = vel_traj.evaluateDeBoorT(tc);
+      const double vel_norm = vel.norm();
+      if (vel_norm > max_vel)
       {
-        RCLCPP_WARN(node_->get_logger(),
-                    "Dynamic feasibility failed: velocity at t=%.3f is %.3f > %.3f",
-                    tc, vel.norm(), vel_limit);
-        return false;
+        max_vel = vel_norm;
+        max_vel_time = tc;
+        max_vel_vector = vel;
       }
 
-      Eigen::Vector3d acc = acc_traj.evaluateDeBoorT(tc);
-      if (acc.norm() > acc_limit)
+      const Eigen::Vector3d acc = acc_traj.evaluateDeBoorT(tc);
+      const double acc_norm = acc.norm();
+      if (acc_norm > max_acc)
       {
-        RCLCPP_WARN(node_->get_logger(),
-                    "Dynamic feasibility failed: acceleration at t=%.3f is %.3f > %.3f",
-                    tc, acc.norm(), acc_limit);
-        return false;
+        max_acc = acc_norm;
+        max_acc_time = tc;
+        max_acc_vector = acc;
       }
+    }
+
+    const bool velocity_failed = max_vel > vel_limit;
+    const bool acceleration_failed = max_acc > acc_limit;
+    if (velocity_failed || acceleration_failed)
+    {
+      const char *reason = velocity_failed && acceleration_failed
+                               ? "DYNAMIC_VELOCITY_AND_ACCELERATION"
+                               : (velocity_failed ? "DYNAMIC_VELOCITY" : "DYNAMIC_ACCELERATION");
+      RCLCPP_WARN(node_->get_logger(),
+                  "Trajectory rejected: reason=%s duration=%.3f sample_dt=%.3f refined=%d retime_ratio=%.3f "
+                  "max_vel=%.3f limit=%.3f ratio=%.3f at_t=%.3f vel=[%.3f %.3f %.3f] "
+                  "max_acc=%.3f limit=%.3f ratio=%.3f at_t=%.3f acc=[%.3f %.3f %.3f]",
+                  reason, duration, sample_dt, refinement_attempted, initial_retime_ratio,
+                  max_vel, vel_limit, max_vel / vel_limit, max_vel_time,
+                  max_vel_vector.x(), max_vel_vector.y(), max_vel_vector.z(),
+                  max_acc, acc_limit, max_acc / acc_limit, max_acc_time,
+                  max_acc_vector.x(), max_acc_vector.y(), max_acc_vector.z());
+      return false;
     }
 
     return true;

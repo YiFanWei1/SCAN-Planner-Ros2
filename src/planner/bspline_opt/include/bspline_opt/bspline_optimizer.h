@@ -28,6 +28,19 @@ namespace scan_planner
     AStarSearchDiagnostics last_failure;
   };
 
+  struct RefineAttemptDiagnostics
+  {
+    int solver_result{0};
+    int optimizer_iterations{0};
+    int collision_samples_checked{0};
+    bool collision{false};
+    double collision_time{0.0};
+    double trajectory_duration{0.0};
+    double sample_step{0.0};
+    double collision_yaw{0.0};
+    Eigen::Vector3d collision_position{Eigen::Vector3d::Zero()};
+  };
+
   class ControlPoints
   {
   public:
@@ -97,6 +110,10 @@ namespace scan_planner
     const AStarAttemptDiagnostics &getAStarAttemptDiagnostics() const
     {
       return a_star_attempt_diagnostics_;
+    }
+    const RefineAttemptDiagnostics &getRefineAttemptDiagnostics() const
+    {
+      return refine_attempt_diagnostics_;
     }
 
     inline int getOrder(void) { return order_; }
@@ -171,6 +188,7 @@ namespace scan_planner
     void combineCostRefine(const double *x, double *grad, double &f_combine, const int n);
 
     AStarAttemptDiagnostics a_star_attempt_diagnostics_;
+    RefineAttemptDiagnostics refine_attempt_diagnostics_;
 
     /* for benchmark evaluation only */
   public:
