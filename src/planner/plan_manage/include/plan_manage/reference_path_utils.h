@@ -11,6 +11,22 @@
 namespace scan_planner
 {
 
+inline bool transformBodyVelocityToWorld(
+    const Eigen::Vector3d &body_velocity,
+    const Eigen::Quaterniond &world_from_body,
+    Eigen::Vector3d &world_velocity)
+{
+  if (!body_velocity.allFinite() || !world_from_body.coeffs().allFinite())
+    return false;
+
+  const double quaternion_norm = world_from_body.norm();
+  if (!std::isfinite(quaternion_norm) || quaternion_norm < 1e-9)
+    return false;
+
+  world_velocity = world_from_body.normalized() * body_velocity;
+  return world_velocity.allFinite();
+}
+
 inline bool alignStartZToReference(
     Eigen::Vector3d &start,
     const Eigen::Vector3d &reference,

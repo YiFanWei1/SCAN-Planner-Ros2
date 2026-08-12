@@ -97,4 +97,40 @@ TEST(ReferencePathUtils, RejectsUnsafeOrNonFiniteStartHeightCorrection)
   EXPECT_DOUBLE_EQ(start.z(), -0.30);
 }
 
+TEST(ReferencePathUtils, RotatesBodyVelocityIntoWorldFrame)
+{
+  const Eigen::Quaterniond yaw_90(
+      Eigen::AngleAxisd(M_PI_2, Eigen::Vector3d::UnitZ()));
+  Eigen::Vector3d world_velocity = Eigen::Vector3d::Zero();
+
+  ASSERT_TRUE(scan_planner::transformBodyVelocityToWorld(
+      Eigen::Vector3d(1.0, 0.0, 0.25), yaw_90, world_velocity));
+  EXPECT_NEAR(world_velocity.x(), 0.0, 1e-9);
+  EXPECT_NEAR(world_velocity.y(), 1.0, 1e-9);
+  EXPECT_NEAR(world_velocity.z(), 0.25, 1e-9);
+}
+
+TEST(ReferencePathUtils, RotatesVelocityWithFullThreeDimensionalAttitude)
+{
+  const Eigen::Quaterniond pitch_30(
+      Eigen::AngleAxisd(M_PI / 6.0, Eigen::Vector3d::UnitY()));
+  Eigen::Vector3d world_velocity = Eigen::Vector3d::Zero();
+
+  ASSERT_TRUE(scan_planner::transformBodyVelocityToWorld(
+      Eigen::Vector3d(1.0, 0.0, 0.0), pitch_30, world_velocity));
+  EXPECT_NEAR(world_velocity.x(), std::sqrt(3.0) / 2.0, 1e-9);
+  EXPECT_NEAR(world_velocity.y(), 0.0, 1e-9);
+  EXPECT_NEAR(world_velocity.z(), -0.5, 1e-9);
+}
+
+TEST(ReferencePathUtils, RejectsInvalidVelocityTransformInputs)
+{
+  Eigen::Vector3d world_velocity = Eigen::Vector3d::Zero();
+  const double nan = std::numeric_limits<double>::quiet_NaN();
+  EXPECT_FALSE(scan_planner::transformBodyVelocityToWorld(
+      Eigen::Vector3d(nan, 0.0, 0.0), Eigen::Quaterniond::Identity(), world_velocity));
+  EXPECT_FALSE(scan_planner::transformBodyVelocityToWorld(
+      Eigen::Vector3d::Zero(), Eigen::Quaterniond(0.0, 0.0, 0.0, 0.0), world_velocity));
+}
+
 }  // namespace

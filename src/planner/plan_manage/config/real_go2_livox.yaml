@@ -13,6 +13,9 @@ scan_planner_node:
     fsm.failure_retry_cooldown: 1.0
     fsm.reference_path_min_distance: 0.15
     fsm.clear_map_on_new_path: false
+    # /lio_odom_hf follows nav_msgs/Odometry semantics: twist is expressed in
+    # child_frame_id=base_link. Rotate it into camera_init before planning.
+    fsm.odom_twist_in_body_frame: true
     # Keep XY and dynamics tied to live odometry, but start each reference-path
     # replan at the raised terrain-path Z instead of drawing an artificial ramp
     # from raw odometry Z. Reject large corrections to avoid wrong-floor snaps.

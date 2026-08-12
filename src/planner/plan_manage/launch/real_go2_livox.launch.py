@@ -81,6 +81,8 @@ def generate_launch_description():
                 "project_reference_start_z"),
             "fsm.reference_start_z_max_correction": LaunchConfiguration(
                 "reference_start_z_max_correction"),
+            "fsm.odom_twist_in_body_frame": LaunchConfiguration(
+                "odom_twist_in_body_frame"),
             "fsm.require_stop_before_emergency_replan": LaunchConfiguration(
                 "require_stop_before_emergency_replan"),
         }],
@@ -174,6 +176,7 @@ def generate_launch_description():
             "require_stop_before_emergency_replan", default_value="true"),
         DeclareLaunchArgument("project_reference_start_z", default_value="true"),
         DeclareLaunchArgument("reference_start_z_max_correction", default_value="0.60"),
+        DeclareLaunchArgument("odom_twist_in_body_frame", default_value="true"),
         # Disable this to feed the adapter's complete filtered global path
         # directly to SCAN instead of sending one terrain segment at a time.
         # Keep the real launch aligned with terrain_path_segmenter's defaults.

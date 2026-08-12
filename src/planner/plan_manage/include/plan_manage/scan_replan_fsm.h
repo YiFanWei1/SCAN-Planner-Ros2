@@ -61,6 +61,7 @@ namespace scan_planner
     double self_inflation_z_up_, self_inflation_z_down_;
     double self_double_cylinder_radius_, self_double_cylinder_offset_;
     double body_height_;
+    bool odom_twist_in_body_frame_{false};
     bool project_reference_start_z_{false};
     double reference_start_z_max_correction_{0.6};
     double last_start_z_correction_{0.0};

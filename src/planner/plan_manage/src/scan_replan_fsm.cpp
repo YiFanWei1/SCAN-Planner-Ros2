@@ -101,6 +101,10 @@ namespace scan_planner
     self_double_cylinder_radius_ = load_parameter<double>(node_, "grid_map.double_cylinder_radius", 0.0);
     self_double_cylinder_offset_ = load_parameter<double>(node_, "grid_map.double_cylinder_offset", 0.0);
     body_height_ = load_parameter<double>(node_, "grid_map.body_height", 0.0);
+    odom_twist_in_body_frame_ =
+        load_parameter<bool>(node_, "fsm.odom_twist_in_body_frame", false);
+    RCLCPP_INFO(node_->get_logger(), "Odometry linear twist is interpreted in the %s frame",
+                odom_twist_in_body_frame_ ? "body/child" : "world/header");
     project_reference_start_z_ =
         load_parameter<bool>(node_, "fsm.project_reference_start_z", false);
     reference_start_z_max_correction_ = std::max(
@@ -495,19 +499,35 @@ namespace scan_planner
       RCLCPP_INFO(node_->get_logger(), "Set RViz goal height from initial body_pose z: %.3f", rviz_goal_height_);
     }
 
-    // 提取线速度，供轨迹起点连续性约束使用。
-    odom_vel_(0) = msg->twist.twist.linear.x;
-    odom_vel_(1) = msg->twist.twist.linear.y;
-    odom_vel_(2) = msg->twist.twist.linear.z;
-
-    // 当前未从里程计估计加速度；规划起点加速度由旧轨迹给出或置零。
-    // odom_acc_ = estimateAcc(msg);
-
     // ROS 四元数消息转换为 Eigen 四元数，后续用于计算机器人航向角。
     odom_orient_.w() = msg->pose.pose.orientation.w;
     odom_orient_.x() = msg->pose.pose.orientation.x;
     odom_orient_.y() = msg->pose.pose.orientation.y;
     odom_orient_.z() = msg->pose.pose.orientation.z;
+
+    // nav_msgs/Odometry 规定 twist 位于 child_frame_id。真机 LIO 的
+    // child_frame_id=base_link，因此必须先旋转到与规划控制点一致的世界坐标系。
+    const Eigen::Vector3d received_velocity(
+        msg->twist.twist.linear.x,
+        msg->twist.twist.linear.y,
+        msg->twist.twist.linear.z);
+    if (odom_twist_in_body_frame_)
+    {
+      if (!transformBodyVelocityToWorld(received_velocity, odom_orient_, odom_vel_))
+      {
+        odom_vel_.setZero();
+        RCLCPP_WARN_THROTTLE(
+            node_->get_logger(), *node_->get_clock(), 1000,
+            "Invalid body-frame odometry velocity/orientation; using zero start velocity");
+      }
+    }
+    else
+    {
+      odom_vel_ = received_velocity;
+    }
+
+    // 当前未从里程计估计加速度；规划起点加速度由旧轨迹给出或置零。
+    // odom_acc_ = estimateAcc(msg);
 
     have_odom_ = true;
     publishSelfInflationMarker();  // 每次位姿更新时同步刷新机体双圆柱包络。
