@@ -1,3 +1,4 @@
+#include <atomic>
 #include <chrono>
 #include <cstddef>
 #include <cmath>
@@ -65,15 +66,31 @@ public:
         "initial_path", rclcpp::QoS(1).reliable().transient_local());
     status_pub_ = create_publisher<std_msgs::msg::String>("status", 10);
 
+    odom_callback_group_ =
+        create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
+    sync_callback_group_ =
+        create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
+    path_callback_group_ =
+        create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
+
+    rclcpp::SubscriptionOptions odom_options;
+    odom_options.callback_group = odom_callback_group_;
     odom_sub_ = create_subscription<nav_msgs::msg::Odometry>(
         "lidar_odom", rclcpp::SensorDataQoS(),
-        std::bind(&RealGo2InputAdapter::odomCallback, this, std::placeholders::_1));
+        std::bind(&RealGo2InputAdapter::odomCallback, this, std::placeholders::_1),
+        odom_options);
+
+    rclcpp::SubscriptionOptions path_options;
+    path_options.callback_group = path_callback_group_;
     path_sub_ = create_subscription<nav_msgs::msg::Path>(
         "global_path", rclcpp::QoS(10).reliable(),
-        std::bind(&RealGo2InputAdapter::pathCallback, this, std::placeholders::_1));
+        std::bind(&RealGo2InputAdapter::pathCallback, this, std::placeholders::_1),
+        path_options);
 
-    cloud_sync_sub_.subscribe(this, "cloud", rmw_qos_profile_sensor_data);
-    odom_sync_sub_.subscribe(this, "lidar_odom", rmw_qos_profile_sensor_data);
+    rclcpp::SubscriptionOptions sync_options;
+    sync_options.callback_group = sync_callback_group_;
+    cloud_sync_sub_.subscribe(this, "cloud", rmw_qos_profile_sensor_data, sync_options);
+    odom_sync_sub_.subscribe(this, "lidar_odom", rmw_qos_profile_sensor_data, sync_options);
     synchronizer_ = std::make_shared<message_filters::Synchronizer<SyncPolicy>>(
         SyncPolicy(100), cloud_sync_sub_, odom_sync_sub_);
     synchronizer_->setMaxIntervalDuration(rclcpp::Duration::from_seconds(sync_tolerance_));
@@ -81,8 +98,9 @@ public:
         std::bind(&RealGo2InputAdapter::cloudOdomCallback, this,
                   std::placeholders::_1, std::placeholders::_2));
 
-    path_timer_ = create_wall_timer(std::chrono::milliseconds(50),
-                                    std::bind(&RealGo2InputAdapter::pathTimer, this));
+    path_timer_ = create_wall_timer(
+        std::chrono::milliseconds(50),
+        std::bind(&RealGo2InputAdapter::pathTimer, this), path_callback_group_);
     last_path_publish_time_ = now() - rclcpp::Duration::from_seconds(10.0);
     publishStatus("waiting_for_inputs");
     RCLCPP_DEBUG(get_logger(), "Real Go2 input adapter ready; lidar->base=(%.3f, %.3f, %.3f)",
@@ -198,7 +216,7 @@ private:
   void cloudOdomCallback(const sensor_msgs::msg::PointCloud2::ConstSharedPtr cloud,
                          const nav_msgs::msg::Odometry::ConstSharedPtr odom)
   {
-    if (!have_valid_odom_ || !finitePose(odom->pose.pose))
+    if (!have_valid_odom_.load(std::memory_order_acquire) || !finitePose(odom->pose.pose))
       return;
     auto sensor_pose = makeSensorPose(*odom);
     sensor_pose.header.stamp = cloud->header.stamp;
@@ -270,7 +288,7 @@ private:
 
   void pathTimer()
   {
-    if (!have_valid_odom_)
+    if (!have_valid_odom_.load(std::memory_order_acquire))
       return;
     if ((now() - last_path_publish_time_).seconds() < 1.0 / path_update_rate_)
       return;
@@ -312,6 +330,7 @@ private:
 
   void publishStatus(const std::string &text)
   {
+    std::lock_guard<std::mutex> lock(status_mutex_);
     if (text == last_status_)
       return;
     last_status_ = text;
@@ -328,8 +347,9 @@ private:
   double path_body_height_offset_, path_projection_vertical_weight_;
   double path_projection_max_xy_distance_, path_projection_max_z_error_;
   std::string world_frame_, last_status_;
-  bool have_valid_odom_{false}, input_valid_{true};
-  std::mutex state_mutex_, path_mutex_;
+  std::atomic<bool> have_valid_odom_{false};
+  bool input_valid_{true};
+  std::mutex state_mutex_, path_mutex_, status_mutex_;
   std::optional<rclcpp::Time> last_input_stamp_, last_valid_stamp_;
   Eigen::Vector3d last_valid_position_{Eigen::Vector3d::Zero()};
   std::optional<Eigen::Vector3d> initial_position_;
@@ -343,6 +363,8 @@ private:
   rclcpp::Publisher<std_msgs::msg::String>::SharedPtr status_pub_;
   rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_sub_;
   rclcpp::Subscription<nav_msgs::msg::Path>::SharedPtr path_sub_;
+  rclcpp::CallbackGroup::SharedPtr odom_callback_group_, sync_callback_group_;
+  rclcpp::CallbackGroup::SharedPtr path_callback_group_;
   message_filters::Subscriber<sensor_msgs::msg::PointCloud2> cloud_sync_sub_;
   message_filters::Subscriber<nav_msgs::msg::Odometry> odom_sync_sub_;
   std::shared_ptr<message_filters::Synchronizer<SyncPolicy>> synchronizer_;
@@ -353,7 +375,11 @@ private:
 int main(int argc, char **argv)
 {
   rclcpp::init(argc, argv);
-  rclcpp::spin(std::make_shared<scan_planner::RealGo2InputAdapter>());
+  auto node = std::make_shared<scan_planner::RealGo2InputAdapter>();
+  rclcpp::executors::MultiThreadedExecutor executor(
+      rclcpp::ExecutorOptions(), 3);
+  executor.add_node(node);
+  executor.spin();
   rclcpp::shutdown();
   return 0;
 }
