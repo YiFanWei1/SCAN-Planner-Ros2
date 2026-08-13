@@ -233,7 +233,7 @@ def generate_launch_description():
         # navigation task while continuing to ignore same-direction rolling
         # updates from the global planner.
         DeclareLaunchArgument("reverse_path_direction_cosine", default_value="-0.25"),
-        DeclareLaunchArgument("segment_reached_tolerance", default_value="0.25"),
+        DeclareLaunchArgument("segment_reached_tolerance", default_value="0.35"),
         DeclareLaunchArgument("analysis", default_value="true"),
         DeclareLaunchArgument("analysis_output", default_value=""),
         DeclareLaunchArgument( 
