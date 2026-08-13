@@ -76,13 +76,6 @@ closed_loop_controller:
     max_vx: 0.50
     max_vy: 0.30
     max_vyaw: 0.80
-    # Measured minimum commands that produce physical Go2 motion. Commands
-    # below the small numerical deadbands remain zero; other non-zero commands
-    # are promoted while preserving planar direction and angular sign.
-    min_linear_speed: 0.25
-    min_vyaw: 0.35
-    linear_command_deadband: 0.02
-    yaw_command_deadband: 0.03
     odom_timeout: 0.15
     trajectory_timeout: 0.50
 

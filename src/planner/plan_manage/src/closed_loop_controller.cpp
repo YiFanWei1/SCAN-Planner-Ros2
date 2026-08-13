@@ -3,7 +3,6 @@
 #include <cstdint>
 #include <limits>
 #include <memory>
-#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -18,7 +17,6 @@
 #include <tf2/utils.hpp>
 
 #include "bspline_opt/uniform_bspline.h"
-#include "plan_manage/velocity_command_utils.h"
 
 namespace scan_planner
 {
@@ -32,10 +30,6 @@ public:
     max_vx_ = declare_parameter<double>("max_vx", 0.75);
     max_vy_ = declare_parameter<double>("max_vy", 0.35);
     max_vyaw_ = std::min(declare_parameter<double>("max_vyaw", 1.0), kMaxVYawLimit);
-    min_linear_speed_ = declare_parameter<double>("min_linear_speed", 0.0);
-    min_vyaw_ = declare_parameter<double>("min_vyaw", 0.0);
-    linear_command_deadband_ = declare_parameter<double>("linear_command_deadband", 0.0);
-    yaw_command_deadband_ = declare_parameter<double>("yaw_command_deadband", 0.0);
     finish_dist_ = declare_parameter<double>("finish_dist", 0.15);
     odom_timeout_ = declare_parameter<double>("odom_timeout", 0.15);
     trajectory_timeout_ = declare_parameter<double>("trajectory_timeout", 0.50);
@@ -50,18 +44,6 @@ public:
     trajectory_frame_ = declare_parameter<std::string>("trajectory_frame", "world");
     visualization_rate_ = declare_parameter<double>("trajectory_visualization_rate", 20.0);
     visualization_dt_ = declare_parameter<double>("trajectory_visualization_dt", 0.10);
-
-    const bool invalid_linear_deadband =
-        (min_linear_speed_ == 0.0 && linear_command_deadband_ != 0.0) ||
-        (min_linear_speed_ > 0.0 && linear_command_deadband_ >= min_linear_speed_);
-    const bool invalid_yaw_deadband =
-        (min_vyaw_ == 0.0 && yaw_command_deadband_ != 0.0) ||
-        (min_vyaw_ > 0.0 && yaw_command_deadband_ >= min_vyaw_);
-    if (min_linear_speed_ < 0.0 || min_linear_speed_ > std::min(max_vx_, max_vy_) ||
-        min_vyaw_ < 0.0 || min_vyaw_ > max_vyaw_ ||
-        linear_command_deadband_ < 0.0 || invalid_linear_deadband ||
-        yaw_command_deadband_ < 0.0 || invalid_yaw_deadband)
-      throw std::invalid_argument("invalid closed-loop minimum velocity parameters");
 
     bspline_sub_ = create_subscription<scan_planner_msgs::msg::Bspline>(
         "planning/bspline", 10,
@@ -264,38 +246,7 @@ private:
         desired.angular.z - previous_command_.angular.z, -max_yaw_step, max_yaw_step);
     previous_command_ = command;
 
-    // The Go2 does not respond to very small non-zero commands. Preserve the
-    // controller's acceleration-limited internal state, but map its output
-    // through the measured hardware dead zone. Exact stop conditions remain
-    // exact zero and therefore never get promoted to a minimum motion command.
-    geometry_msgs::msg::Twist output = command;
-    if (desired_linear.squaredNorm() < 1e-12)
-    {
-      output.linear.x = 0.0;
-      output.linear.y = 0.0;
-      previous_command_.linear.x = 0.0;
-      previous_command_.linear.y = 0.0;
-    }
-    else
-    {
-      const Eigen::Vector2d compensated_linear = applyMinimumPlanarSpeed(
-          Eigen::Vector2d(command.linear.x, command.linear.y),
-          linear_command_deadband_, min_linear_speed_);
-      output.linear.x = std::clamp(compensated_linear.x(), -max_vx_, max_vx_);
-      output.linear.y = std::clamp(compensated_linear.y(), -max_vy_, max_vy_);
-    }
-    if (std::abs(desired.angular.z) < 1e-12)
-    {
-      output.angular.z = 0.0;
-      previous_command_.angular.z = 0.0;
-    }
-    else
-    {
-      output.angular.z = std::clamp(
-          applyMinimumAngularSpeed(command.angular.z, yaw_command_deadband_, min_vyaw_),
-          -max_vyaw_, max_vyaw_);
-    }
-    cmd_vel_pub_->publish(output);
+    cmd_vel_pub_->publish(command);
   }
 
   void publishTrajectoryPath(const rclcpp::Time &current_time)
@@ -357,8 +308,6 @@ private:
   double kp_pos_, kp_yaw_;
   double odom_timeout_, trajectory_timeout_;
   double max_vx_, max_vy_, max_vyaw_, finish_dist_;
-  double min_linear_speed_, min_vyaw_;
-  double linear_command_deadband_, yaw_command_deadband_;
   double lookahead_base_, lookahead_speed_gain_, lookahead_min_, lookahead_max_;
   double projection_dt_, projection_forward_window_;
   double max_linear_accel_, max_yaw_accel_;
