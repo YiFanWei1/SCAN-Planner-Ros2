@@ -19,6 +19,7 @@
 #include <visualization_msgs/msg/marker_array.hpp>
 
 #include "bspline_opt/uniform_bspline.h"
+#include "plan_manage/controller_tracking_utils.h"
 
 namespace scan_planner
 {
@@ -306,13 +307,15 @@ private:
     const double nearest_t = findProjectionTime();
     const Eigen::Vector3d nearest = traj_[0].evaluateDeBoorT(nearest_t);
     const Eigen::Vector3d velocity_at_nearest = traj_[1].evaluateDeBoorT(nearest_t);
-    const double planned_speed = velocity_at_nearest.head<2>().norm();
+    const double nearest_planned_speed = velocity_at_nearest.head<2>().norm();
     const double lookahead_distance = std::clamp(
-        lookahead_base_ + lookahead_speed_gain_ * planned_speed,
+        lookahead_base_ + lookahead_speed_gain_ * nearest_planned_speed,
         lookahead_min_, lookahead_max_);
     const double lookahead_t = findLookaheadTime(nearest_t, lookahead_distance);
     publishLookaheadMarkers(current_time, nearest_t, lookahead_t, lookahead_distance);
-    Eigen::Vector2d tangent = traj_[1].evaluateDeBoorT(lookahead_t).head<2>();
+    const Eigen::Vector2d lookahead_velocity =
+        traj_[1].evaluateDeBoorT(lookahead_t).head<2>();
+    Eigen::Vector2d tangent = lookahead_velocity;
     if (tangent.squaredNorm() < 1e-6)
       tangent = (traj_[0].evaluateDeBoorT(lookahead_t) - nearest).head<2>();
     if (tangent.squaredNorm() < 1e-6)
@@ -321,11 +324,14 @@ private:
 
     const double desired_yaw = std::atan2(tangent.y(), tangent.x());
     const double yaw_error = normalizeAngle(desired_yaw - odom_yaw_);
-    const double heading_scale = std::clamp(std::cos(yaw_error), 0.0, 1.0);
     const Eigen::Vector2d projection_error = nearest.head<2>() - odom_pos_.head<2>();
-    const Eigen::Vector2d vel_world = clampNorm(
-        heading_scale * (planned_speed * tangent + kp_pos_ * projection_error),
-        std::max(max_vx_, max_vy_));
+    // The nearest point can be the zero-velocity first knot while the robot is
+    // stationary.  Using its speed creates a zero-command equilibrium after an
+    // in-place turn.  The forward sample supplies the trajectory's natural
+    // acceleration without imposing a command dead zone or minimum speed.
+    const Eigen::Vector2d vel_world = calculateTrackingVelocity(
+        tangent, lookahead_velocity.norm(), projection_error, yaw_error,
+        kp_pos_, std::max(max_vx_, max_vy_));
     const double c = std::cos(odom_yaw_);
     const double s = std::sin(odom_yaw_);
     geometry_msgs::msg::Twist desired;
