@@ -73,9 +73,9 @@ closed_loop_controller:
     trajectory_frame: camera_init
     trajectory_visualization_rate: 20.0
     trajectory_visualization_dt: 0.10
-    max_vx: 0.30
-    max_vy: 0.30
-    max_vyaw: 0.50
+    max_vx: 0.50
+    max_vy: 0.50
+    max_vyaw: 0.80
     odom_timeout: 0.15
     trajectory_timeout: 0.50
 
@@ -110,9 +110,9 @@ cmd_vel_safety_gate:
   ros__parameters:
     use_sim_time: false
     enable_motion_on_start: false
-    max_vx: 0.30
-    max_vy: 0.30
-    max_vyaw: 0.50
+    max_vx: 0.50
+    max_vy: 0.50
+    max_vyaw: 0.80
     odom_timeout: 0.15
     trajectory_timeout: 0.50
     # DataDisp is event-driven visualization data, not a periodic heartbeat.
