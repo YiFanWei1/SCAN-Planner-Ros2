@@ -205,7 +205,7 @@ private:
     const auto body_pose = makeBodyPose(*msg);
     body_pose_pub_->publish(body_pose);
     {
-      std::lock_guard<std::mutex> lock(path_mutex_);
+      std::lock_guard<std::mutex> lock(body_position_mutex_);
       current_body_position_ = Eigen::Vector3d(
           body_pose.pose.pose.position.x, body_pose.pose.pose.position.y,
           body_pose.pose.pose.position.z);
@@ -271,9 +271,14 @@ private:
       const nav_msgs::msg::Path &path,
       PathProjection3D *projection_result = nullptr) const
   {
-    if (!current_body_position_ || path.poses.size() < 2)
+    std::optional<Eigen::Vector3d> body_position;
+    {
+      std::lock_guard<std::mutex> lock(body_position_mutex_);
+      body_position = current_body_position_;
+    }
+    if (!body_position || path.poses.size() < 2)
       return std::nullopt;
-    Eigen::Vector3d path_query = *current_body_position_;
+    Eigen::Vector3d path_query = *body_position;
     path_query.z() -= path_body_height_offset_;
     const auto projection = projectPointOntoPath3D(
         path, path_query, path_projection_vertical_weight_);
@@ -350,6 +355,7 @@ private:
   std::atomic<bool> have_valid_odom_{false};
   bool input_valid_{true};
   std::mutex state_mutex_, path_mutex_, status_mutex_;
+  mutable std::mutex body_position_mutex_;
   std::optional<rclcpp::Time> last_input_stamp_, last_valid_stamp_;
   Eigen::Vector3d last_valid_position_{Eigen::Vector3d::Zero()};
   std::optional<Eigen::Vector3d> initial_position_;
