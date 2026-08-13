@@ -47,6 +47,7 @@ foreach(target open_loop_controller closed_loop_controller go2_kinematic_sim go2
     std_msgs tf2 tf2_geometry_msgs tf2_ros)
   target_link_libraries(${target} Eigen3::Eigen)
 endforeach()
+ament_target_dependencies(closed_loop_controller visualization_msgs)
 
 add_executable(real_go2_input_adapter src/real_go2_input_adapter.cpp)
 target_include_directories(real_go2_input_adapter PRIVATE include)

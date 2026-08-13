@@ -15,6 +15,8 @@
 #include <std_msgs/msg/bool.hpp>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.hpp>
 #include <tf2/utils.hpp>
+#include <visualization_msgs/msg/marker.hpp>
+#include <visualization_msgs/msg/marker_array.hpp>
 
 #include "bspline_opt/uniform_bspline.h"
 
@@ -54,11 +56,14 @@ public:
     cmd_vel_pub_ = create_publisher<geometry_msgs::msg::Twist>("cmd_vel", 20);
     trajectory_path_pub_ = create_publisher<nav_msgs::msg::Path>(
         "planning/bspline_path", rclcpp::QoS(1).reliable().transient_local());
+    lookahead_marker_pub_ = create_publisher<visualization_msgs::msg::MarkerArray>(
+        "planning/lookahead_markers", rclcpp::QoS(1).reliable().transient_local());
     execution_frozen_pub_ = create_publisher<std_msgs::msg::Bool>("planning/go2_execution_frozen", 10);
     cmd_timer_ = create_wall_timer(std::chrono::milliseconds(10),
                                    std::bind(&ClosedLoopController::cmdCallback, this));
     last_update_time_ = now();
     last_visualization_time_ = now() - rclcpp::Duration::from_seconds(1.0);
+    last_lookahead_visualization_time_ = last_visualization_time_;
     RCLCPP_DEBUG(get_logger(), "Closed-loop controller ready");
   }
 
@@ -147,6 +152,104 @@ private:
     execution_frozen_pub_->publish(msg);
   }
 
+  void clearLookaheadMarkers()
+  {
+    if (!lookahead_markers_visible_)
+      return;
+    visualization_msgs::msg::MarkerArray markers;
+    visualization_msgs::msg::Marker marker;
+    marker.header.stamp = now();
+    marker.header.frame_id = trajectory_frame_;
+    marker.action = visualization_msgs::msg::Marker::DELETEALL;
+    markers.markers.push_back(marker);
+    lookahead_marker_pub_->publish(markers);
+    lookahead_markers_visible_ = false;
+  }
+
+  void publishLookaheadMarkers(const rclcpp::Time &stamp,
+                               double nearest_t,
+                               double lookahead_t,
+                               double lookahead_distance)
+  {
+    if (visualization_rate_ <= 0.0 ||
+        (stamp - last_lookahead_visualization_time_).seconds() <
+            1.0 / visualization_rate_)
+      return;
+    last_lookahead_visualization_time_ = stamp;
+
+    visualization_msgs::msg::MarkerArray markers;
+    auto make_marker = [&](int id, int type) {
+      visualization_msgs::msg::Marker marker;
+      marker.header.stamp = stamp;
+      marker.header.frame_id = trajectory_frame_;
+      marker.ns = "controller_lookahead";
+      marker.id = id;
+      marker.type = type;
+      marker.action = visualization_msgs::msg::Marker::ADD;
+      marker.pose.orientation.w = 1.0;
+      return marker;
+    };
+
+    const Eigen::Vector3d nearest = traj_[0].evaluateDeBoorT(nearest_t);
+    const Eigen::Vector3d lookahead = traj_[0].evaluateDeBoorT(lookahead_t);
+
+    auto projection = make_marker(0, visualization_msgs::msg::Marker::SPHERE);
+    projection.pose.position.x = nearest.x();
+    projection.pose.position.y = nearest.y();
+    projection.pose.position.z = nearest.z();
+    projection.scale.x = projection.scale.y = projection.scale.z = 0.10;
+    projection.color.r = 0.10F;
+    projection.color.g = 0.55F;
+    projection.color.b = 1.00F;
+    projection.color.a = 1.00F;
+    markers.markers.push_back(projection);
+
+    auto target = make_marker(1, visualization_msgs::msg::Marker::SPHERE);
+    target.pose.position.x = lookahead.x();
+    target.pose.position.y = lookahead.y();
+    target.pose.position.z = lookahead.z();
+    target.scale.x = target.scale.y = target.scale.z = 0.16;
+    target.color.r = 1.00F;
+    target.color.g = 0.85F;
+    target.color.b = 0.05F;
+    target.color.a = 1.00F;
+    markers.markers.push_back(target);
+
+    auto arc = make_marker(2, visualization_msgs::msg::Marker::LINE_STRIP);
+    arc.scale.x = 0.035;
+    arc.color.r = 0.10F;
+    arc.color.g = 0.90F;
+    arc.color.b = 1.00F;
+    arc.color.a = 0.90F;
+    const double marker_step = std::max(0.005, projection_dt_);
+    for (double t = nearest_t; t < lookahead_t; t += marker_step)
+    {
+      const Eigen::Vector3d point = traj_[0].evaluateDeBoorT(t);
+      geometry_msgs::msg::Point message_point;
+      message_point.x = point.x();
+      message_point.y = point.y();
+      message_point.z = point.z();
+      arc.points.push_back(message_point);
+    }
+    geometry_msgs::msg::Point endpoint;
+    endpoint.x = lookahead.x();
+    endpoint.y = lookahead.y();
+    endpoint.z = lookahead.z();
+    arc.points.push_back(endpoint);
+    markers.markers.push_back(arc);
+
+    auto label = make_marker(3, visualization_msgs::msg::Marker::TEXT_VIEW_FACING);
+    label.pose.position = endpoint;
+    label.pose.position.z += 0.22;
+    label.scale.z = 0.14;
+    label.color.r = label.color.g = label.color.b = label.color.a = 1.00F;
+    label.text = "lookahead " + std::to_string(lookahead_distance).substr(0, 4) + " m";
+    markers.markers.push_back(label);
+
+    lookahead_marker_pub_->publish(markers);
+    lookahead_markers_visible_ = true;
+  }
+
   void bsplineCallback(const scan_planner_msgs::msg::Bspline::ConstSharedPtr msg)
   {
     if (msg->pos_pts.empty() || msg->knots.empty() || msg->order <= 0)
@@ -190,6 +293,7 @@ private:
         (current_time - last_odom_time_).seconds() > odom_timeout_ ||
         (current_time - last_trajectory_time_).seconds() > traj_duration_ + trajectory_timeout_)
     {
+      clearLookaheadMarkers();
       publishExecutionFrozen(false);
       publishStop();
       return;
@@ -207,6 +311,7 @@ private:
         lookahead_base_ + lookahead_speed_gain_ * planned_speed,
         lookahead_min_, lookahead_max_);
     const double lookahead_t = findLookaheadTime(nearest_t, lookahead_distance);
+    publishLookaheadMarkers(current_time, nearest_t, lookahead_t, lookahead_distance);
     Eigen::Vector2d tangent = traj_[1].evaluateDeBoorT(lookahead_t).head<2>();
     if (tangent.squaredNorm() < 1e-6)
       tangent = (traj_[0].evaluateDeBoorT(lookahead_t) - nearest).head<2>();
@@ -285,12 +390,14 @@ private:
 
   rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr cmd_vel_pub_;
   rclcpp::Publisher<nav_msgs::msg::Path>::SharedPtr trajectory_path_pub_;
+  rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr lookahead_marker_pub_;
   rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr execution_frozen_pub_;
   rclcpp::Subscription<scan_planner_msgs::msg::Bspline>::SharedPtr bspline_sub_;
   rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_sub_;
   rclcpp::TimerBase::SharedPtr cmd_timer_;
   bool receive_traj_{false};
   bool have_odom_{false};
+  bool lookahead_markers_visible_{false};
   std::vector<UniformBspline> traj_;
   double traj_duration_{0.0};
   std::int64_t traj_id_{0};
@@ -303,6 +410,7 @@ private:
   rclcpp::Time last_odom_time_{0, 0, RCL_ROS_TIME};
   rclcpp::Time last_trajectory_time_{0, 0, RCL_ROS_TIME};
   rclcpp::Time last_visualization_time_{0, 0, RCL_ROS_TIME};
+  rclcpp::Time last_lookahead_visualization_time_{0, 0, RCL_ROS_TIME};
   std::string trajectory_frame_;
   double visualization_rate_, visualization_dt_;
   double kp_pos_, kp_yaw_;
