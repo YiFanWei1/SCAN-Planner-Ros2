@@ -1,0 +1,7 @@
+scan_mppi_controller:
+  ros__parameters:
+    use_sim_time: false
+    trajectory_frame: camera_init
+    odom_twist_in_body_frame: true
+    worker_threads: 10
+    map_timeout: 1.00

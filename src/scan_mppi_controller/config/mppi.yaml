@@ -1,0 +1,74 @@
+scan_mppi_controller:
+  ros__parameters:
+    use_sim_time: false
+    controller_frequency: 30.0
+    model_dt: 0.05
+    time_steps: 24
+    batch_size: 800
+    min_batch_size: 600
+    worker_threads: 8
+    max_solve_time_ms: 33.0
+
+    vx_min: -0.20
+    vx_max: 0.50
+    vy_min: -0.35
+    vy_max: 0.35
+    wz_min: -0.80
+    wz_max: 0.80
+    linear_accel_max: 0.50
+    angular_accel_max: 1.0
+
+    noise_vx: 0.20
+    noise_vy: 0.15
+    noise_wz: 0.35
+    noise_smoothing: 0.65
+    temperature: 1.0
+    random_seed: 42
+
+    map_resolution: 0.05
+    clearance_index_radius_xy: 2.0
+    clearance_index_half_height: 1.5
+    front_rear_offset: 0.18
+    collision_translation_step: 0.025
+    collision_yaw_step: 0.0872664626
+    safety_distance: 0.20
+    critical_distance: 0.08
+    clearance_stride: 3
+
+    weight_path: 15.0
+    weight_heading: 3.0
+    weight_velocity: 2.0
+    weight_control: 0.20
+    weight_smooth: 4.0
+    weight_clearance: 40.0
+    weight_progress: 4.0
+    weight_terminal: 20.0
+    critical_cost: 10000.0
+
+    trajectory_frame: world
+    odom_timeout: 0.25
+    map_timeout: 0.25
+    trajectory_timeout: 0.50
+    finish_distance: 0.15
+    projection_dt: 0.025
+    projection_forward_window: 1.0
+
+    visualization_rate: 10.0
+    visualization_max_candidates: 50
+    footprint_stride: 3
+    footprint_radius: 0.35
+    footprint_height: 0.36
+    odom_twist_in_body_frame: true
+
+cmd_vel_safety_gate:
+  ros__parameters:
+    enable_motion_on_start: false
+    max_vx: 0.50
+    max_vy: 0.50
+    max_vyaw: 0.80
+    odom_timeout: 0.80
+    trajectory_timeout: 0.50
+    require_planner_heartbeat: false
+    planner_heartbeat_timeout: 4.0
+    command_timeout: 0.15
+    publish_rate: 100.0

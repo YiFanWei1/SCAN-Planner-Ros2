@@ -1,0 +1,210 @@
+{
+  "closed_loop": {
+    "commands": {
+      "abs_yaw_rate_max": 0.8,
+      "abs_yaw_rate_mean": 0.43895642100286164,
+      "abs_yaw_rate_p95": 0.8,
+      "command_mean_step_change": 0.006760223663288326,
+      "command_total_variation": 74.08529112597677,
+      "command_variation_per_second": 0.6759589677616106,
+      "duration_s": 109.60027850700001,
+      "gate_changed_fraction": 0.0,
+      "gate_forced_zero_fraction": 0.0,
+      "linear_accel_max": 37.27780621168473,
+      "linear_accel_p95": 0.5084521599829612,
+      "linear_speed_max": 0.5000000000000001,
+      "linear_speed_mean": 0.39298147786380627,
+      "linear_speed_p95": 0.5,
+      "linear_speed_rms": 0.41983327788633756,
+      "raw_rate_hz": 100.00001781275981,
+      "raw_samples": 10960,
+      "safe_samples": 10960,
+      "saturation_fraction": 0.43184306569343067,
+      "stop_fraction": 0.013686131386861315,
+      "yaw_accel_max": 30.589810200046472,
+      "yaw_accel_p95": 1.013842482164647
+    },
+    "events": {
+      "astar_failed_summaries": 12,
+      "local_replan_failed": 17,
+      "trajectory_rejected": 7
+    },
+    "odometry_samples": 21900,
+    "resources": {
+      "processes": {
+        "closed_loop_controller": {
+          "cpu_max": 5.0,
+          "cpu_mean": 2.9819469026548675,
+          "cpu_p95": 4.0,
+          "rss_max_mb": 31.9140625,
+          "rss_mean_mb": 31.69797428097345,
+          "samples": 113
+        },
+        "cmd_vel_safety_gate": {
+          "cpu_max": 5.0,
+          "cpu_mean": 3.787079646017699,
+          "cpu_p95": 5.0,
+          "rss_max_mb": 30.62890625,
+          "rss_mean_mb": 30.592401825221238,
+          "samples": 113
+        },
+        "real_go2_input_adapter": {
+          "cpu_max": 8.0,
+          "cpu_mean": 4.433185840707965,
+          "cpu_p95": 5.3999999999999915,
+          "rss_max_mb": 35.52734375,
+          "rss_mean_mb": 35.212147400442475,
+          "samples": 113
+        },
+        "scan_planner_node": {
+          "cpu_max": 74.0,
+          "cpu_mean": 40.66123893805309,
+          "cpu_p95": 61.39999999999999,
+          "rss_max_mb": 286.71875,
+          "rss_mean_mb": 284.96017699115043,
+          "samples": 113
+        },
+        "static_transform_publisher": {
+          "cpu_max": 1.0,
+          "cpu_mean": 0.8571428571428571,
+          "cpu_p95": 1.0,
+          "rss_max_mb": 30.08984375,
+          "rss_mean_mb": 30.08984375,
+          "samples": 7
+        },
+        "telemetry_recorder": {
+          "cpu_max": 23.0,
+          "cpu_mean": 15.121858407079646,
+          "cpu_p95": 18.0,
+          "rss_max_mb": 71.58984375,
+          "rss_mean_mb": 71.31799640486726,
+          "samples": 113
+        },
+        "terrain_path_visualizer": {
+          "cpu_max": 20.0,
+          "cpu_mean": 12.043482142857142,
+          "cpu_p95": 16.0,
+          "rss_max_mb": 76.88671875,
+          "rss_mean_mb": 76.43094308035714,
+          "samples": 112
+        }
+      },
+      "stack": {
+        "cpu_max": 102.0,
+        "cpu_mean": 63.80035398230089,
+        "cpu_p95": 88.0,
+        "rss_max_mb": 461.67578125,
+        "rss_mean_mb": 458.217263550885,
+        "samples": 113
+      }
+    }
+  },
+  "mppi": {
+    "commands": {
+      "abs_yaw_rate_max": 0.8,
+      "abs_yaw_rate_mean": 0.3732314457078779,
+      "abs_yaw_rate_p95": 0.7874074540695719,
+      "command_mean_step_change": 0.02886841478988002,
+      "command_total_variation": 94.86161099954575,
+      "command_variation_per_second": 0.865837958496497,
+      "duration_s": 109.56046690800001,
+      "gate_changed_fraction": 0.004381161007667032,
+      "gate_forced_zero_fraction": 0.0,
+      "linear_accel_max": 17.3242868698195,
+      "linear_accel_p95": 1.028749294047046,
+      "linear_speed_max": 0.6076658404604525,
+      "linear_speed_mean": 0.3589223991000484,
+      "linear_speed_p95": 0.5768303343336907,
+      "linear_speed_rms": 0.4046820157970333,
+      "raw_rate_hz": 29.999361392200495,
+      "raw_samples": 3287,
+      "safe_samples": 10956,
+      "saturation_fraction": 0.04654700334651658,
+      "stop_fraction": 0.0648007301490721,
+      "yaw_accel_max": 23.855516440788364,
+      "yaw_accel_p95": 1.4963181359888862
+    },
+    "events": {
+      "astar_failed_summaries": 44,
+      "local_replan_failed": 44,
+      "mppi_state_transitions": {
+        "map_timeout": 1,
+        "no_safe_trajectory": 32,
+        "odometry_timeout": 3,
+        "tracking": 35,
+        "trajectory_timeout": 1,
+        "waiting_for_trajectory": 2
+      },
+      "trajectory_rejected": 20
+    },
+    "odometry_samples": 21824,
+    "resources": {
+      "processes": {
+        "cmd_vel_safety_gate": {
+          "cpu_max": 4.0,
+          "cpu_mean": 3.159026548672567,
+          "cpu_p95": 4.0,
+          "rss_max_mb": 31.6953125,
+          "rss_mean_mb": 31.598658738938052,
+          "samples": 113
+        },
+        "real_go2_input_adapter": {
+          "cpu_max": 7.0,
+          "cpu_mean": 4.3803539823008855,
+          "cpu_p95": 6.0,
+          "rss_max_mb": 35.88671875,
+          "rss_mean_mb": 35.48482439159292,
+          "samples": 113
+        },
+        "scan_mppi_controller_node": {
+          "cpu_max": 57.0,
+          "cpu_mean": 39.911415929203535,
+          "cpu_p95": 53.39999999999999,
+          "rss_max_mb": 153.65234375,
+          "rss_mean_mb": 117.2175746681416,
+          "samples": 113
+        },
+        "scan_planner_node": {
+          "cpu_max": 112.0,
+          "cpu_mean": 78.84646017699114,
+          "cpu_p95": 91.39999999999999,
+          "rss_max_mb": 293.6484375,
+          "rss_mean_mb": 291.57190265486724,
+          "samples": 113
+        },
+        "static_transform_publisher": {
+          "cpu_max": 1.0,
+          "cpu_mean": 0.74875,
+          "cpu_p95": 1.0,
+          "rss_max_mb": 29.73828125,
+          "rss_mean_mb": 29.73828125,
+          "samples": 8
+        },
+        "telemetry_recorder": {
+          "cpu_max": 18.0,
+          "cpu_mean": 12.981681415929204,
+          "cpu_p95": 16.0,
+          "rss_max_mb": 71.921875,
+          "rss_mean_mb": 71.78156111725664,
+          "samples": 113
+        },
+        "terrain_path_visualizer": {
+          "cpu_max": 16.0,
+          "cpu_mean": 12.053008849557521,
+          "cpu_p95": 15.0,
+          "rss_max_mb": 76.58203125,
+          "rss_mean_mb": 76.13208655973452,
+          "samples": 113
+        }
+      },
+      "stack": {
+        "cpu_max": 168.0,
+        "cpu_mean": 138.35026548672568,
+        "cpu_p95": 163.0,
+        "rss_max_mb": 590.83984375,
+        "rss_mean_mb": 552.0050470132743,
+        "samples": 113
+      }
+    }
+  }
+}

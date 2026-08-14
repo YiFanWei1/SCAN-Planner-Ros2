@@ -23,13 +23,13 @@ scan_planner_node:
     grid_map.need_extrinsic: false  # 地图内部是否再次应用雷达外参；适配器已经提供雷达位姿时必须为“否”，避免重复变换。
     grid_map.map_ready_min_cloud_updates: 2  # 允许首次规划前必须完成的有效点云栅格更新次数，避免空地图抢先生成穿过障碍物的轨迹。
     grid_map.body_height: 0.40  # 输入全局路径从地形表面抬升到机身规划中心的高度，单位为米；应与路径高度语义和机身旋转中心一致。
-    grid_map.double_cylinder_radius: 0.25  # 双圆柱碰撞模型的单圆半径，同时作为障碍栅格的水平膨胀半径，单位为米。
+    grid_map.double_cylinder_radius: 0.30  # 双圆柱碰撞模型的单圆半径，同时作为障碍栅格的水平膨胀半径，单位为米。
     grid_map.double_cylinder_offset: 0.18  # 前后两个碰撞圆柱中心相对机身中心沿航向的偏移量，单位为米；增大后机身纵向包络变长。
     grid_map.obstacles_inflation_z_up: 0.00  # 占据栅格向上额外膨胀的距离，单位为米；实际按栅格分辨率向上取整到整数层。
-    grid_map.obstacles_inflation_z_down: 0.00  # 占据栅格向下额外膨胀的距离，单位为米；过大会使坡面和楼梯更容易与轨迹相交。
+    grid_map.obstacles_inflation_z_down: 0.05  # 占据栅格向下额外膨胀的距离，单位为米；过大会使坡面和楼梯更容易与轨迹相交。
     grid_map.body_exclusion_enabled: true  # 是否启用机身周边点云排除和占据清除；启用后该盒内不会建立障碍，并会清除已有占据。
     grid_map.body_exclusion_half_length: 0.55  # 机身排除盒沿机体前后方向的半长度，单位为米；完整长度为该值的两倍。
-    grid_map.body_exclusion_half_width: 0.40  # 机身排除盒沿机体左右方向的半宽度，单位为米；过大会误删贴近机器人的真实障碍。
+    grid_map.body_exclusion_half_width: 0.10  # 机身排除盒沿机体左右方向的半宽度，单位为米；过大会误删贴近机器人的真实障碍。
     grid_map.body_exclusion_z_down: 0.35  # 机身排除盒相对机身中心向下覆盖的距离，单位为米。
     grid_map.body_exclusion_z_up: 0.35  # 机身排除盒相对机身中心向上覆盖的距离，单位为米。
     grid_map.occupancy_decay_enabled: true  # 是否启用占据栅格时间衰减，用于清除动态障碍物离开后留下的历史占据。

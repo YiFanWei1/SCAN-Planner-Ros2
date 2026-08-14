@@ -225,6 +225,11 @@ ros2 run scan_planner_analysis plot_velocity \
 xdg-open "${LATEST_LOG%.jsonl}.png"
 
 
+编译
+colcon build --packages-select scan_planner --symlink-install \
+  --cmake-args -DCMAKE_BUILD_TYPE=Release
+
+
 
 
 测试一：原始点云，不使用速度投影
@@ -269,6 +274,12 @@ ros2 launch scan_planner real_go2_livox.launch.py \
   accept_first_global_path_only:=false \
   require_stop_before_emergency_replan:=false \
   occupancy_decay_front_only:=true
+
+cd ~/github_code/SCAN-Planner-Ros2
+source /opt/ros/jazzy/setup.bash
+source install/setup.bash
+ros2 launch scan_planner real_go2_livox.launch.py \
+  enable_motion:=true
 
 
 cd ~/github_code/SCAN-Planner-Ros2
@@ -326,3 +337,51 @@ ros2 bag play /home/wei/bag/full_nav_replay_with_plan \
   --start-offset 125 \
   --playback-duration 115 \
   --topics /plan /lio_odom_hf /cloud_registered_body
+
+
+
+实机
+
+建图
+./run_mapping_nodes.sh mode:=mapping
+
+保存地图
+mkdir -p /home/langyi/workspace/map/test_map_2/map
+ros2 service call /save_pcd_service moveit_msgs/srv/SaveMap \
+  "{filename: '/home/langyi/workspace/map/test_map_2/map/test_map_2-0.2'}"
+
+
+切片
+langyi@langyi:/opt/nerva_nav$ 
+ros2 launch tomography tomography.launch.py   config:=/opt/nerva_nav/install/tomography/share/tomography/config/silou180.yaml   map_dir:=/home/langyi/workspace/map/test_map_2
+
+
+开启重定位
+langyi@langyi:/opt/mapping_ws$ 
+./run_mapping_nodes.sh mode:=localization config:=test_map_loc
+
+
+all
+
+langyi@langyi:/opt/mapping_ws$ 
+./run_mapping_nodes.sh mode:=localization config:=test_map_2_loc
+
+langyi@langyi:/opt/nerva_nav$ 
+ros2 launch nav2_bringup bringup_middle_planner.launch.py   map_dir:=/home/langyi/workspace/map/test_map_2   use_route3d_viz:=true log_level:=error
+
+langyi@langyi:~/workspace/nerva_nav$ 
+ros2 run robot_control_adapter cmd_vel_adapter_node --ros-args -p network_interface:=enp2s0
+
+source /opt/ros/jazzy/setup.bash
+source install/setup.bash
+ros2 launch scan_planner real_go2_livox.launch.py \
+  rviz:=true \
+  enable_motion:=true \
+  point_cloud_type:=1 \
+  project_reference_start_velocity:=true \
+  reference_velocity_tangent_half_window:=0.40 \
+  reference_start_velocity_max:=0.75 \
+  use_path_segmentation:=true \
+  accept_first_global_path_only:=false \
+  require_stop_before_emergency_replan:=false \
+  occupancy_decay_front_only:=true

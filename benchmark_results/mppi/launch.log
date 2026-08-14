@@ -1,0 +1,577 @@
+[INFO] [launch]: All log files can be found below /home/wei/.ros/log/2026-08-14-15-08-10-789260-wei-1106954
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [launch.user]: SCAN MPPI cloud input type=1 topic=/livox/lidar body exclusion=[0.40, 0.22, -0.18..0.18]
+[INFO] [real_go2_input_adapter-1]: process started with pid [1106958]
+[INFO] [terrain_path_visualizer-2]: process started with pid [1106959]
+[INFO] [scan_planner_node-3]: process started with pid [1106960]
+[INFO] [scan_mppi_controller_node-4]: process started with pid [1106961]
+[INFO] [cmd_vel_safety_gate-5]: process started with pid [1106962]
+[INFO] [telemetry_recorder-6]: process started with pid [1106963]
+[INFO] [static_transform_publisher-7]: process started with pid [1106964]
+[static_transform_publisher-7] [INFO] [1786691290.857022266] [map_to_camera_init_tf]: Spinning until stopped - publishing transform
+[static_transform_publisher-7] translation: ('0.000000', '0.000000', '0.000000')
+[static_transform_publisher-7] rotation: ('0.000000', '0.000000', '0.000000', '1.000000')
+[static_transform_publisher-7] from 'map' to 'camera_init'
+[cmd_vel_safety_gate-5] [WARN] [1786691290.864583874] [cmd_vel_safety_gate]: Velocity safety gate ready; motion is ENABLED
+[scan_mppi_controller_node-4] [INFO] [1786691290.865197458] [scan_mppi_controller]: Standalone SCAN MPPI ready: 800 samples, 24 x 0.050s horizon
+[cmd_vel_safety_gate-5] [INFO] [1786691290.874742688] [cmd_vel_safety_gate]: Safety gate state: odometry_timeout
+[scan_mppi_controller_node-4] [INFO] [1786691290.898687789] [scan_mppi_controller]: MPPI state: odometry_timeout
+[scan_planner_node-3] [WARN] [1786691290.908187137] [scan_planner_node]: Emergency replanning will not wait for odometry speed to fall below 0.1 m/s; use this test mode only when motion safety is handled externally
+[scan_planner_node-3] [INFO] [1786691290.908282723] [scan_planner_node]: Odometry linear twist is interpreted in the body/child frame
+[scan_planner_node-3] [INFO] [1786691290.908308287] [scan_planner_node]: Reference start velocity projection is enabled (half_window=0.40 m, max=0.75 m/s)
+[scan_planner_node-3] hit: 1.7346
+[scan_planner_node-3] miss: -0.847298
+[scan_planner_node-3] min log: -1.99243
+[scan_planner_node-3] max: 3.89182
+[scan_planner_node-3] thresh log: 1.38629
+[telemetry_recorder-6] [INFO] [1786691291.149169940] [scan_planner_telemetry_recorder]: Recording SCAN-Planner telemetry to /home/wei/github_code/SCAN-Planner-Ros2/benchmark_results/mppi/telemetry.jsonl
+[cmd_vel_safety_gate-5] [INFO] [1786691297.294663664] [cmd_vel_safety_gate]: Safety gate state: trajectory_timeout
+[scan_mppi_controller_node-4] [INFO] [1786691297.298617806] [scan_mppi_controller]: MPPI state: waiting_for_trajectory
+[scan_planner_node-3] [WARN] [1786691297.326334835] [scan_planner_node]: [GridMap] no sensor_pose received for lidar cloud update
+[scan_planner_node-3] [WARN] [1786691297.686926685] [bspline_opt]: First three control points are in obstacles; t=0.135449
+[scan_planner_node-3] [WARN] [1786691297.686948367] [scan_planner_node]: Local replan failed: start=[-27.563 -0.936 -0.083], target=[-27.267 -0.085 -0.395], raw_start_z=-0.376 start_z_correction=+0.293
+[scan_planner_node-3] [WARN] [1786691297.787007942] [bspline_opt]: First three control points are in obstacles; t=0.139879
+[scan_planner_node-3] [ERROR] [1786691298.046185970] [bspline_opt]: [AStarSummary] plan=failed calls=5 success=4 failures{init=0 search=1 initialization=1 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.049s iter=52704 generated=52704 rejects_collision=43888 outside_map=0 boundary=19299 start=[-27.501  -0.876  -0.051] end=[-27.251  -0.626  -0.201]}
+[scan_planner_node-3] [WARN] [1786691298.106993347] [scan_planner_node]: [ReferenceVelocityProjection] raw=[-0.004 -0.053 0.044] tangent=[0.277 0.930 -0.243] used=[0.000 0.000 -0.000] along=-0.061->0.000 removed_lateral=0.032
+[scan_planner_node-3] [WARN] [1786691298.737353579] [scan_planner_node]: Local replan failed: start=[-27.554 -0.937 -0.083], target=[-27.267 -0.085 -0.395], raw_start_z=-0.363 start_z_correction=+0.279
+[scan_planner_node-3] [ERROR] [1786691298.987762205] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=3 failures{init=0 search=1 initialization=1 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.048s iter=53283 generated=53283 rejects_collision=27303 outside_map=0 boundary=17245 start=[-27.629  -0.692  -0.141] end=[-27.629  -0.292  -0.241]}
+[scan_planner_node-3] [ERROR] [1786691299.332254464] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=3 failures{init=0 search=1 initialization=1 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.044s iter=50453 generated=50453 rejects_collision=22808 outside_map=0 boundary=19091 start=[-27.394  -0.859  -0.104] end=[-27.194  -0.459  -0.204]}
+[scan_planner_node-3] [ERROR] [1786691299.434320890] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=3 failures{init=0 search=1 initialization=1 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.044s iter=53463 generated=53463 rejects_collision=23587 outside_map=0 boundary=17053 start=[-27.664  -0.726  -0.134] end=[-27.664  -0.326  -0.234]}
+[scan_planner_node-3] [WARN] [1786691299.727286912] [scan_planner_node]: Replan failed 20 times; emergency stop, then retry retained target after 1.00s
+[cmd_vel_safety_gate-5] [INFO] [1786691299.734872870] [cmd_vel_safety_gate]: Safety gate state: active
+[scan_mppi_controller_node-4] [INFO] [1786691299.735334547] [scan_mppi_controller]: MPPI state: tracking
+[scan_planner_node-3] [WARN] [1786691300.736418335] [scan_planner_node]: Failure cooldown elapsed; retrying the retained target from current odometry
+[scan_planner_node-3] [WARN] [1786691300.737464487] [scan_planner_node]: Local replan failed: start=[-27.555 -0.938 -0.083], target=[-27.267 -0.085 -0.395], raw_start_z=-0.363 start_z_correction=+0.279
+[scan_planner_node-3] [ERROR] [1786691300.881457727] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=3 failures{init=0 search=1 initialization=1 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.044s iter=52782 generated=52782 rejects_collision=18107 outside_map=0 boundary=17248 start=[-27.621  -0.714  -0.137] end=[-27.621  -0.314  -0.237]}
+[scan_planner_node-3] [ERROR] [1786691301.001172088] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=3 failures{init=0 search=1 initialization=1 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.054s iter=53452 generated=53452 rejects_collision=22300 outside_map=0 boundary=17311 start=[-27.628  -0.737  -0.131] end=[-27.628  -0.387  -0.231]}
+[scan_planner_node-3] [ERROR] [1786691301.049257393] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=3 failures{init=1 search=0 initialization=1 rebound=0} last{context=initialization reason=occupied end could not be moved to a free point before pool boundary elapsed=0.000s iter=0 generated=0 rejects_collision=0 outside_map=0 boundary=0 start=[-27.676  -0.739  -0.149] end=[-28.022   1.879  -0.887]}
+[scan_planner_node-3] [ERROR] [1786691301.855675961] [bspline_opt]: [AStarSummary] plan=failed calls=5 success=4 failures{init=0 search=1 initialization=0 rebound=1} last{context=rebound reason=OPEN_SET_EMPTY elapsed=0.058s iter=51114 generated=51114 rejects_collision=15536 outside_map=0 boundary=18234 start=[-27.512  -0.898  -0.060] end=[-27.262  -0.548  -0.210]}
+[scan_planner_node-3] [WARN] [1786691301.855718075] [scan_planner_node]: Local replan failed: start=[-27.552 -0.937 -0.083], target=[-27.267 -0.085 -0.395], raw_start_z=-0.363 start_z_correction=+0.280
+[scan_planner_node-3] [ERROR] [1786691302.175614285] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=3 failures{init=0 search=1 initialization=1 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.047s iter=53232 generated=53232 rejects_collision=25703 outside_map=0 boundary=17198 start=[-27.691  -0.757  -0.127] end=[-27.991   1.793  -0.877]}
+[scan_planner_node-3] [ERROR] [1786691302.387974627] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=3 failures{init=0 search=1 initialization=1 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.051s iter=52510 generated=52510 rejects_collision=17650 outside_map=0 boundary=17146 start=[-27.621  -0.725  -0.134] end=[-27.621  -0.325  -0.234]}
+[scan_planner_node-3] [WARN] [1786691302.757303528] [scan_planner_node]: Replan failed 20 times; emergency stop, then retry retained target after 1.00s
+[scan_planner_node-3] [WARN] [1786691303.777759941] [scan_planner_node]: Failure cooldown elapsed; retrying the retained target from current odometry
+[scan_planner_node-3] [WARN] [1786691303.787279886] [scan_planner_node]: Local replan failed: start=[-27.552 -0.936 -0.083], target=[-27.267 -0.085 -0.395], raw_start_z=-0.368 start_z_correction=+0.284
+[scan_planner_node-3] [ERROR] [1786691303.926127731] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=3 failures{init=0 search=1 initialization=1 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.039s iter=52633 generated=52633 rejects_collision=15768 outside_map=0 boundary=17389 start=[-27.598  -0.717  -0.137] end=[-27.598  -0.317  -0.237]}
+[scan_planner_node-3] [WARN] [1786691304.847336284] [scan_planner_node]: Local replan failed: start=[-27.422 -0.710 -0.138], target=[-27.267 -0.085 -0.395], raw_start_z=-0.432 start_z_correction=+0.294
+[scan_planner_node-3] [WARN] [1786691305.057023413] [scan_planner_node]: Trajectory rejected: reason=DYNAMIC_ACCELERATION duration=1.724 sample_dt=0.034 refined=1 retime_ratio=2.707 start_vel=[0.000 0.000 -0.000] start_acc=[0.000 0.000 0.000] max_vel=0.558 limit=1.750 ratio=0.319 at_t=0.896 vel=[0.094 0.538 -0.118] pos=[-27.492 -0.360 -0.278] max_acc=3.681 limit=3.000 ratio=1.227 at_t=1.724 acc=[-3.569 -0.885 0.150] pos=[-27.284 -0.093 -0.385]
+[scan_planner_node-3] [WARN] [1786691305.487181949] [scan_planner_node]: [ReferenceVelocityProjection] raw=[0.391 0.612 -0.901] tangent=[0.176 0.841 -0.512] used=[0.132 0.630 -0.384] along=1.045->0.750 removed_lateral=0.498
+[scan_planner_node-3] [WARN] [1786691306.735776217] [scan_planner_node]: [ReferenceVelocityProjection] raw=[-0.156 0.205 0.073] tangent=[0.176 0.841 -0.512] used=[0.019 0.090 -0.055] along=0.107->0.107 removed_lateral=0.245
+[scan_planner_node-3] [WARN] [1786691306.896927846] [bspline_opt]: First three control points are in obstacles; t=0.105956
+[scan_planner_node-3] [WARN] [1786691306.896944944] [scan_planner_node]: Local replan failed: start=[-27.247 0.091 -0.644], target=[-27.008 1.671 -1.497], raw_start_z=-0.910 start_z_correction=+0.266
+[scan_planner_node-3] [WARN] [1786691306.897020789] [bspline_opt]: First three control points are in obstacles; t=0.105914
+[scan_planner_node-3] [WARN] [1786691306.897022952] [scan_planner_node]: Obstacle discovered; emergency stop in 0.930s
+[scan_mppi_controller_node-4] [INFO] [1786691307.033192159] [scan_mppi_controller]: MPPI state: no_safe_trajectory
+[scan_mppi_controller_node-4] [INFO] [1786691307.067562449] [scan_mppi_controller]: MPPI state: tracking
+[scan_planner_node-3] [WARN] [1786691307.396938343] [bspline_opt]: First three control points are in obstacles; t=0.109708
+[scan_planner_node-3] [WARN] [1786691307.397020427] [bspline_opt]: First three control points are in obstacles; t=0.109812
+[scan_planner_node-3] [WARN] [1786691307.397022798] [scan_planner_node]: Obstacle discovered; emergency stop in 0.660s
+[scan_planner_node-3] [WARN] [1786691308.146823391] [scan_planner_node]: [ReferenceVelocityProjection] raw=[-0.155 0.702 -0.770] tangent=[0.116 0.850 -0.514] used=[0.087 0.637 -0.386] along=0.974->0.750 removed_lateral=0.401
+[scan_planner_node-3] [WARN] [1786691308.597248674] [scan_planner_node]: Local replan failed: start=[-27.069 0.574 -0.914], target=[-27.008 1.671 -1.497], raw_start_z=-1.386 start_z_correction=+0.472
+[scan_mppi_controller_node-4] [INFO] [1786691308.667577064] [scan_mppi_controller]: MPPI state: no_safe_trajectory
+[scan_mppi_controller_node-4] [INFO] [1786691308.701545826] [scan_mppi_controller]: MPPI state: tracking
+[scan_planner_node-3] [WARN] [1786691308.746875336] [scan_planner_node]: Obstacle discovered; emergency stop in 0.940s
+[scan_planner_node-3] [WARN] [1786691310.056965998] [scan_planner_node]: [ReferenceVelocityProjection] raw=[0.476 0.863 -1.590] tangent=[0.537 0.710 -0.455] used=[0.403 0.533 -0.342] along=1.593->0.750 removed_lateral=0.981
+[scan_mppi_controller_node-4] [INFO] [1786691310.233187052] [scan_mppi_controller]: MPPI state: no_safe_trajectory
+[scan_planner_node-3] [WARN] [1786691310.346907822] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691310.346927949] [scan_planner_node]: Local replan failed: start=[-27.252 1.503 -1.497], target=[-26.433 2.312 -1.928], raw_start_z=-1.882 start_z_correction=+0.386
+[scan_planner_node-3] [ERROR] [1786691310.347015381] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786691310.349665289] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_mppi_controller_node-4] [INFO] [1786691310.433484437] [scan_mppi_controller]: MPPI state: tracking
+[scan_planner_node-3] [WARN] [1786691310.457002473] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691310.457081268] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691310.589195595] [scan_planner_node]: Trajectory rejected: reason=REFINE_COLLISION initial_control_points_feasible=0 retime_ratio=1.284 solver_result=0 optimizer_iterations=18 start_vel=[0.221 0.292 -0.187] start_acc=[0.000 0.000 0.000] collision_t=1.389/3.334 collision_pos=[-26.845 2.040 -1.713] collision_yaw=0.848 sample_step=0.1389 samples_checked=11
+[scan_mppi_controller_node-4] [INFO] [1786691310.667107902] [scan_mppi_controller]: MPPI state: no_safe_trajectory
+[scan_mppi_controller_node-4] [INFO] [1786691310.834424193] [scan_mppi_controller]: MPPI state: tracking
+[scan_planner_node-3] [WARN] [1786691311.057015050] [scan_planner_node]: [ReferenceVelocityProjection] raw=[0.684 0.216 -0.072] tangent=[0.537 0.710 -0.455] used=[0.297 0.393 -0.252] along=0.554->0.554 removed_lateral=0.462
+[scan_planner_node-3] [WARN] [1786691311.097019763] [scan_planner_node]: Obstacle discovered; emergency stop in 0.480s
+[scan_mppi_controller_node-4] [INFO] [1786691311.166492620] [scan_mppi_controller]: MPPI state: no_safe_trajectory
+[scan_planner_node-3] [WARN] [1786691311.190367239] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_mppi_controller_node-4] [INFO] [1786691311.267299231] [scan_mppi_controller]: MPPI state: tracking
+[scan_planner_node-3] [WARN] [1786691311.796882209] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691311.796899296] [scan_planner_node]: Local replan failed: start=[-26.900 1.890 -1.716], target=[-26.433 2.312 -1.928], raw_start_z=-1.986 start_z_correction=+0.270
+[scan_planner_node-3] [WARN] [1786691311.796997998] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691311.797000447] [scan_planner_node]: Obstacle discovered; emergency stop in 0.410s
+[scan_planner_node-3] [ERROR] [1786691311.935828303] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [ERROR] [1786691311.964291445] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786691311.964434592] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [ERROR] [1786691311.964454066] [bspline_opt]: [AStarSummary] plan=failed calls=3 success=1 failures{init=0 search=2 initialization=1 rebound=1} last{context=rebound reason=OPEN_SET_EMPTY elapsed=0.028s iter=35733 generated=35733 rejects_collision=15964 outside_map=0 boundary=11272 start=[-26.868   2.033  -1.695] end=[-26.668   2.133  -1.795]}
+[scan_planner_node-3] [WARN] [1786691312.736855956] [scan_planner_node]: [ReferenceVelocityProjection] raw=[0.499 -0.043 -0.752] tangent=[0.984 -0.154 -0.089] used=[0.556 -0.087 -0.050] along=0.565->0.565 removed_lateral=0.705
+[scan_planner_node-3] [WARN] [1786691312.896887374] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691312.896905354] [scan_planner_node]: Local replan failed: start=[-26.591 2.033 -1.928], target=[-25.880 2.225 -1.978], raw_start_z=-2.341 start_z_correction=+0.413
+[scan_planner_node-3] [WARN] [1786691312.897059762] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691312.897062299] [scan_planner_node]: Obstacle discovered; emergency stop in 0.000s
+[scan_mppi_controller_node-4] [INFO] [1786691312.933907468] [scan_mppi_controller]: MPPI state: no_safe_trajectory
+[scan_planner_node-3] [WARN] [1786691312.946853756] [scan_planner_node]: Obstacle discovered; emergency stop in 0.000s
+[scan_mppi_controller_node-4] [INFO] [1786691313.067387271] [scan_mppi_controller]: MPPI state: tracking
+[scan_planner_node-3] [WARN] [1786691314.837220995] [scan_planner_node]: [ReferenceVelocityProjection] raw=[0.331 0.078 0.159] tangent=[0.984 -0.154 -0.089] used=[0.294 -0.046 -0.027] along=0.299->0.299 removed_lateral=0.226
+[scan_planner_node-3] [WARN] [1786691315.196996691] [scan_planner_node]: Local replan failed: start=[-26.144 2.977 -1.943], target=[-25.880 2.225 -1.978], raw_start_z=-2.221 start_z_correction=+0.278
+[scan_planner_node-3] [WARN] [1786691315.197207365] [scan_planner_node]: Obstacle discovered; emergency stop in 0.300s
+[scan_planner_node-3] [ERROR] [1786691315.506985669] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786691315.507183877] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_mppi_controller_node-4] [INFO] [1786691315.634021433] [scan_mppi_controller]: MPPI state: no_safe_trajectory
+[scan_mppi_controller_node-4] [INFO] [1786691315.667124505] [scan_mppi_controller]: MPPI state: tracking
+[scan_planner_node-3] [WARN] [1786691316.206917937] [scan_planner_node]: [ReferenceVelocityProjection] raw=[0.364 -0.158 0.081] tangent=[0.465 -0.885 -0.001] used=[0.144 -0.273 -0.000] along=0.309->0.309 removed_lateral=0.262
+[scan_planner_node-3] [WARN] [1786691317.596805726] [scan_planner_node]: [ReferenceVelocityProjection] raw=[-0.165 -0.345 0.164] tangent=[0.182 -0.970 -0.161] used=[0.051 -0.270 -0.045] along=0.279->0.279 removed_lateral=0.309
+[scan_planner_node-3] [WARN] [1786691317.597000793] [scan_planner_node]: Local replan failed: start=[-25.398 2.432 -1.989], target=[-25.667 1.812 -2.120], raw_start_z=-2.247 start_z_correction=+0.258
+[scan_planner_node-3] [WARN] [1786691317.597172642] [scan_planner_node]: Obstacle discovered; emergency stop in 0.000s
+[scan_planner_node-3] [WARN] [1786691317.907053239] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691318.040408128] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691319.397562790] [scan_planner_node]: [ReferenceVelocityProjection] raw=[-0.255 -0.278 -0.183] tangent=[-0.000 -0.839 -0.544] used=[-0.000 -0.279 -0.181] along=0.333->0.333 removed_lateral=0.255
+[scan_planner_node-3] [WARN] [1786691319.398791618] [scan_planner_node]: Local replan failed: start=[-25.540 1.809 -2.221], target=[-25.767 0.368 -3.103], raw_start_z=-2.515 start_z_correction=+0.294
+[scan_planner_node-3] [WARN] [1786691319.400158971] [scan_planner_node]: Obstacle discovered; emergency stop in 0.490s
+[scan_mppi_controller_node-4] [INFO] [1786691319.533234224] [scan_mppi_controller]: MPPI state: no_safe_trajectory
+[scan_mppi_controller_node-4] [INFO] [1786691319.567473220] [scan_mppi_controller]: MPPI state: tracking
+[scan_planner_node-3] [WARN] [1786691320.397325674] [bspline_opt]: First three control points are in obstacles; t=0.229091
+[scan_planner_node-3] [WARN] [1786691320.415536320] [bspline_opt]: First three control points are in obstacles; t=0.229464
+[scan_planner_node-3] [ERROR] [1786691320.415564635] [bspline_opt]: [AStarSummary] plan=failed calls=1 success=0 failures{init=0 search=1 initialization=0 rebound=1} last{context=rebound reason=OPEN_SET_EMPTY elapsed=0.018s iter=21325 generated=21325 rejects_collision=23477 outside_map=0 boundary=4806 start=[-25.412   1.491  -2.386] end=[-25.412   0.791  -2.786]}
+[scan_planner_node-3] [WARN] [1786691320.415583533] [scan_planner_node]: Local replan failed: start=[-25.430 1.513 -2.375], target=[-25.767 0.368 -3.103], raw_start_z=-2.375 start_z_correction=+0.000
+[scan_planner_node-3] [WARN] [1786691320.415598561] [scan_planner_node]: Obstacle discovered; emergency stop in 0.340s
+[scan_planner_node-3] [WARN] [1786691322.298052756] [scan_planner_node]: Local replan failed: start=[-25.677 1.021 -2.766], target=[-25.767 0.368 -3.103], raw_start_z=-3.040 start_z_correction=+0.274
+[scan_planner_node-3] [WARN] [1786691322.299222008] [scan_planner_node]: Obstacle discovered; emergency stop in 0.060s
+[scan_planner_node-3] [WARN] [1786691323.047866702] [scan_planner_node]: [ReferenceVelocityProjection] raw=[-0.196 -0.563 -0.577] tangent=[-0.200 -0.826 -0.527] used=[-0.150 -0.620 -0.395] along=0.808->0.750 removed_lateral=0.188
+[scan_planner_node-3] [WARN] [1786691324.048329426] [scan_planner_node]: Local replan failed: start=[-25.860 0.397 -3.199], target=[-26.530 -0.988 -4.061], raw_start_z=-3.535 start_z_correction=+0.337
+[scan_planner_node-3] [WARN] [1786691324.050718185] [scan_planner_node]: Obstacle discovered; emergency stop in 0.030s
+[scan_planner_node-3] [WARN] [1786691324.157171721] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_mppi_controller_node-4] [INFO] [1786691324.266569353] [scan_mppi_controller]: MPPI state: no_safe_trajectory
+[scan_mppi_controller_node-4] [INFO] [1786691324.468071662] [scan_mppi_controller]: MPPI state: tracking
+[scan_planner_node-3] [WARN] [1786691324.698373280] [scan_planner_node]: Obstacle discovered; emergency stop in 0.730s
+[scan_planner_node-3] [WARN] [1786691325.198287569] [scan_planner_node]: Local replan failed: start=[-25.901 0.194 -3.356], target=[-26.530 -0.988 -4.061], raw_start_z=-3.629 start_z_correction=+0.274
+[scan_planner_node-3] [WARN] [1786691325.199065759] [scan_planner_node]: Obstacle discovered; emergency stop in 0.900s
+[scan_planner_node-3] [WARN] [1786691325.408641863] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_mppi_controller_node-4] [INFO] [1786691325.467078786] [scan_mppi_controller]: MPPI state: no_safe_trajectory
+[scan_planner_node-3] [ERROR] [1786691325.531019396] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786691325.531535527] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_mppi_controller_node-4] [INFO] [1786691325.567170017] [scan_mppi_controller]: MPPI state: tracking
+[scan_mppi_controller_node-4] [INFO] [1786691325.601752555] [scan_mppi_controller]: MPPI state: no_safe_trajectory
+[scan_planner_node-3] [WARN] [1786691325.631737398] [bspline_opt]: First three control points are in obstacles; t=0.128368
+[scan_planner_node-3] [WARN] [1786691325.732466274] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_mppi_controller_node-4] [INFO] [1786691325.734205451] [scan_mppi_controller]: MPPI state: tracking
+[scan_planner_node-3] [WARN] [1786691325.845461711] [scan_planner_node]: Trajectory rejected: reason=DYNAMIC_ACCELERATION duration=2.043 sample_dt=0.041 refined=1 retime_ratio=2.787 start_vel=[0.000 0.000 0.000] start_acc=[0.000 0.000 0.000] max_vel=0.825 limit=1.750 ratio=0.472 at_t=1.103 vel=[-0.232 -0.753 -0.246] pos=[-26.132 -0.630 -3.804] max_acc=4.014 limit=3.000 ratio=1.338 at_t=2.043 acc=[3.076 0.016 2.580] pos=[-26.479 -0.985 -4.056]
+[scan_planner_node-3] [WARN] [1786691325.979087484] [bspline_opt]: [AStarSummary] plan=success calls=1 success=0 failures{init=0 search=1 initialization=1 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.032s iter=38801 generated=38801 rejects_collision=24663 outside_map=0 boundary=17536 start=[-26.049  -0.235  -3.631] end=[-26.399  -0.385  -3.781]}
+[scan_planner_node-3] [WARN] [1786691326.548383682] [scan_planner_node]: Local replan failed: start=[-26.026 -0.356 -3.640], target=[-26.530 -0.988 -4.061], raw_start_z=-3.962 start_z_correction=+0.323
+[scan_planner_node-3] [WARN] [1786691326.549011539] [scan_planner_node]: Obstacle discovered; emergency stop in 0.280s
+[scan_planner_node-3] [WARN] [1786691326.998297560] [scan_planner_node]: [ReferenceVelocityProjection] raw=[-0.031 -0.427 -0.515] tangent=[-0.550 -0.673 -0.495] used=[-0.307 -0.376 -0.277] along=0.559->0.559 removed_lateral=0.368
+[scan_planner_node-3] [WARN] [1786691326.998387454] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691326.998469878] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691326.998472194] [scan_planner_node]: Obstacle discovered; emergency stop in 0.170s
+[scan_planner_node-3] [WARN] [1786691327.547752151] [scan_planner_node]: Obstacle discovered; emergency stop in 0.710s
+[scan_planner_node-3] [WARN] [1786691327.657077095] [scan_planner_node]: Local replan failed: start=[-25.906 -0.730 -3.794], target=[-26.530 -0.988 -4.061], raw_start_z=-4.204 start_z_correction=+0.410
+[scan_planner_node-3] [WARN] [1786691328.370173540] [bspline_opt]: [AStarSummary] plan=success calls=2 success=1 failures{init=0 search=1 initialization=1 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.030s iter=35990 generated=35990 rejects_collision=16440 outside_map=0 boundary=11141 start=[-25.976  -1.040  -3.937] end=[-26.326  -1.090  -3.987]}
+[scan_planner_node-3] [WARN] [1786691328.373024703] [scan_planner_node]: Obstacle discovered; emergency stop in 0.000s
+[scan_mppi_controller_node-4] [INFO] [1786691328.399875045] [scan_mppi_controller]: MPPI state: no_safe_trajectory
+[scan_mppi_controller_node-4] [INFO] [1786691328.433669173] [scan_mppi_controller]: MPPI state: tracking
+[scan_planner_node-3] [ERROR] [1786691328.480171352] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [ERROR] [1786691328.513742083] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [ERROR] [1786691328.547288509] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [ERROR] [1786691328.580949055] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [ERROR] [1786691328.615167810] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786691328.649716786] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [ERROR] [1786691328.649746940] [bspline_opt]: [AStarSummary] plan=failed calls=6 success=0 failures{init=0 search=6 initialization=1 rebound=5} last{context=rebound reason=OPEN_SET_EMPTY elapsed=0.035s iter=38781 generated=38781 rejects_collision=15706 outside_map=0 boundary=11504 start=[-24.814  -1.092  -3.824] end=[-26.014  -1.042  -3.974]}
+[scan_planner_node-3] [ERROR] [1786691328.652676387] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786691328.660357856] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691328.660369989] [scan_planner_node]: Local replan failed: start=[-25.970 -1.119 -3.969], target=[-26.530 -0.988 -4.061], raw_start_z=-4.209 start_z_correction=+0.239
+[scan_mppi_controller_node-4] [INFO] [1786691328.767279265] [scan_mppi_controller]: MPPI state: no_safe_trajectory
+[scan_mppi_controller_node-4] [INFO] [1786691328.800674840] [scan_mppi_controller]: MPPI state: tracking
+[scan_planner_node-3] [WARN] [1786691330.646797948] [scan_planner_node]: [ReferenceVelocityProjection] raw=[-0.428 -0.215 0.063] tangent=[-0.770 0.637 0.031] used=[-0.150 0.124 0.006] along=0.195->0.195 removed_lateral=0.442
+[scan_planner_node-3] [WARN] [1786691330.655041610] [scan_planner_node]: Local replan failed: start=[-26.224 -1.949 -4.092], target=[-27.172 -0.583 -4.130], raw_start_z=-4.317 start_z_correction=+0.226
+[scan_planner_node-3] [ERROR] [1786691331.665879492] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=0 failures{init=0 search=4 initialization=4 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.027s iter=33352 generated=33352 rejects_collision=21383 outside_map=0 boundary=18974 start=[-26.467  -2.536  -4.101] end=[-26.867  -1.686  -4.101]}
+[scan_planner_node-3] [WARN] [1786691331.665918278] [scan_planner_node]: Local replan failed: start=[-26.643 -2.049 -4.092], target=[-27.172 -0.583 -4.130], raw_start_z=-4.370 start_z_correction=+0.279
+[scan_planner_node-3] [WARN] [1786691331.666256364] [scan_planner_node]: [ReferenceVelocityProjection] raw=[-0.505 -0.013 -0.055] tangent=[-0.770 0.637 0.031] used=[-0.292 0.241 0.012] along=0.379->0.379 removed_lateral=0.339
+[scan_planner_node-3] [ERROR] [1786691331.776596425] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=0 failures{init=0 search=4 initialization=4 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.027s iter=33352 generated=33352 rejects_collision=21429 outside_map=0 boundary=18974 start=[-26.467  -2.536  -4.101] end=[-26.867  -1.686  -4.101]}
+[scan_planner_node-3] [ERROR] [1786691331.888544980] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=0 failures{init=0 search=4 initialization=4 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.028s iter=33352 generated=33352 rejects_collision=21429 outside_map=0 boundary=18974 start=[-26.467  -2.536  -4.101] end=[-26.867  -1.686  -4.101]}
+[scan_planner_node-3] [ERROR] [1786691331.911684188] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=3 failures{init=0 search=1 initialization=1 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.023s iter=26854 generated=26854 rejects_collision=16538 outside_map=0 boundary=10252 start=[-26.800  -2.471  -4.051] end=[-26.550  -1.571  -4.101]}
+[scan_planner_node-3] [WARN] [1786691335.156903855] [scan_planner_node]: [ReferenceVelocityProjection] raw=[0.287 0.304 0.021] tangent=[-0.084 0.996 -0.010] used=[-0.023 0.278 -0.003] along=0.279->0.279 removed_lateral=0.312
+[scan_planner_node-3] [WARN] [1786691335.156939066] [scan_planner_node]: Local target was adjusted to a nearby collision-free point
+[scan_planner_node-3] [WARN] [1786691336.241744326] [scan_planner_node]: Local replan failed: start=[-27.517 -0.919 -4.046], target=[-27.267 -0.385 -4.214], raw_start_z=-4.349 start_z_correction=+0.303
+[scan_planner_node-3] [ERROR] [1786691336.275319572] [bspline_opt]: [AStarSummary] plan=failed calls=2 success=1 failures{init=0 search=1 initialization=0 rebound=1} last{context=rebound reason=OPEN_SET_EMPTY elapsed=0.033s iter=39287 generated=39287 rejects_collision=18618 outside_map=0 boundary=17535 start=[-27.355  -0.682  -4.082] end=[-27.255  -0.482  -4.132]}
+[scan_planner_node-3] [WARN] [1786691336.277482855] [scan_planner_node]: Obstacle discovered; emergency stop in 0.200s
+[scan_planner_node-3] [WARN] [1786691336.497536370] [scan_planner_node]: Obstacle discovered; emergency stop in 0.890s
+[scan_planner_node-3] [WARN] [1786691336.847296093] [scan_planner_node]: [ReferenceVelocityProjection] raw=[0.350 0.474 -0.146] tangent=[0.000 0.845 -0.534] used=[0.000 0.404 -0.256] along=0.478->0.478 removed_lateral=0.373
+[scan_planner_node-3] [WARN] [1786691337.297399660] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691337.297418414] [scan_planner_node]: Local replan failed: start=[-27.483 -0.454 -4.267], target=[-26.512 2.367 -6.057], raw_start_z=-4.433 start_z_correction=+0.166
+[scan_planner_node-3] [WARN] [1786691337.297514177] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691337.847456105] [scan_planner_node]: Obstacle discovered; emergency stop in 0.310s
+[scan_planner_node-3] [WARN] [1786691338.546864900] [scan_planner_node]: [ReferenceVelocityProjection] raw=[0.014 0.252 -0.401] tangent=[0.096 0.851 -0.517] used=[0.040 0.360 -0.219] along=0.423->0.423 removed_lateral=0.214
+[scan_planner_node-3] [WARN] [1786691338.547220295] [scan_planner_node]: Local replan failed: start=[-27.250 -0.121 -4.548], target=[-26.512 2.367 -6.057], raw_start_z=-4.911 start_z_correction=+0.363
+[scan_mppi_controller_node-4] [INFO] [1786691338.667574095] [scan_mppi_controller]: MPPI state: no_safe_trajectory
+[scan_mppi_controller_node-4] [INFO] [1786691338.701262433] [scan_mppi_controller]: MPPI state: tracking
+[scan_planner_node-3] [WARN] [1786691338.997769712] [scan_planner_node]: Obstacle discovered; emergency stop in 0.620s
+[scan_planner_node-3] [WARN] [1786691339.737412901] [scan_planner_node]: [ReferenceVelocityProjection] raw=[0.565 0.617 -0.483] tangent=[0.143 0.832 -0.535] used=[0.107 0.624 -0.402] along=0.853->0.750 removed_lateral=0.454
+[scan_planner_node-3] [WARN] [1786691340.698561398] [scan_planner_node]: Local replan failed: start=[-27.192 0.596 -4.908], target=[-26.512 2.367 -6.057], raw_start_z=-5.253 start_z_correction=+0.345
+[scan_planner_node-3] [WARN] [1786691340.699790343] [scan_planner_node]: Obstacle discovered; emergency stop in 0.470s
+[scan_mppi_controller_node-4] [INFO] [1786691340.833228750] [scan_mppi_controller]: MPPI state: no_safe_trajectory
+[scan_mppi_controller_node-4] [INFO] [1786691340.901358268] [scan_mppi_controller]: MPPI state: tracking
+[scan_planner_node-3] [WARN] [1786691341.847272953] [scan_planner_node]: [ReferenceVelocityProjection] raw=[0.411 0.454 -0.315] tangent=[0.080 0.833 -0.547] used=[0.047 0.486 -0.319] along=0.584->0.584 removed_lateral=0.366
+[scan_planner_node-3] [WARN] [1786691341.847667157] [scan_planner_node]: Local replan failed: start=[-26.888 1.027 -5.208], target=[-26.512 2.367 -6.057], raw_start_z=-5.550 start_z_correction=+0.342
+[scan_planner_node-3] [WARN] [1786691341.847896965] [scan_planner_node]: Obstacle discovered; emergency stop in 0.700s
+[scan_planner_node-3] [WARN] [1786691341.948381617] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691342.057033924] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691342.157069503] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691342.291881730] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691342.397889073] [bspline_opt]: A-star path has fewer than 2 points
+[scan_planner_node-3] [WARN] [1786691342.397913887] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691342.498480704] [bspline_opt]: A-star path has fewer than 2 points
+[scan_planner_node-3] [WARN] [1786691342.498506397] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_mppi_controller_node-4] [INFO] [1786691342.702200177] [scan_mppi_controller]: MPPI state: no_safe_trajectory
+[scan_mppi_controller_node-4] [INFO] [1786691342.733585891] [scan_mppi_controller]: MPPI state: tracking
+[scan_mppi_controller_node-4] [INFO] [1786691342.800496594] [scan_mppi_controller]: MPPI state: no_safe_trajectory
+[scan_planner_node-3] [WARN] [1786691342.807572187] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_mppi_controller_node-4] [INFO] [1786691342.867540307] [scan_mppi_controller]: MPPI state: tracking
+[scan_planner_node-3] [WARN] [1786691342.931666395] [scan_planner_node]: Trajectory rejected: reason=REFINE_COLLISION initial_control_points_feasible=0 retime_ratio=2.753 solver_result=0 optimizer_iterations=15 start_vel=[0.000 0.000 -0.000] start_acc=[0.000 0.000 0.000] collision_t=0.000/2.028 collision_pos=[-26.735 1.462 -5.588] collision_yaw=1.516 sample_step=0.1011 samples_checked=1
+[scan_planner_node-3] [WARN] [1786691342.931702089] [scan_planner_node]: Local replan failed: start=[-26.736 1.451 -5.584], target=[-26.512 2.367 -6.057], raw_start_z=-5.787 start_z_correction=+0.203
+[scan_planner_node-3] [WARN] [1786691343.348084737] [scan_planner_node]: [ReferenceVelocityProjection] raw=[0.083 0.032 0.355] tangent=[0.298 0.779 -0.552] used=[0.000 0.000 -0.000] along=-0.146->0.000 removed_lateral=0.335
+[scan_planner_node-3] [ERROR] [1786691343.379475403] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=3 failures{init=0 search=1 initialization=1 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.030s iter=37837 generated=37837 rejects_collision=18846 outside_map=0 boundary=16367 start=[-26.757   1.577  -5.580] end=[-26.707   2.077  -5.780]}
+[scan_planner_node-3] [WARN] [1786691343.379508240] [scan_planner_node]: Obstacle discovered; emergency stop in 0.050s
+[scan_planner_node-3] [WARN] [1786691343.448604618] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [ERROR] [1786691343.559201801] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786691343.559408895] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [ERROR] [1786691343.690558978] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786691343.690961483] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691343.798446805] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_mppi_controller_node-4] [INFO] [1786691343.866624793] [scan_mppi_controller]: MPPI state: no_safe_trajectory
+[scan_planner_node-3] [ERROR] [1786691343.898373491] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786691343.898706023] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [ERROR] [1786691344.006983297] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786691344.007195340] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691344.007199848] [scan_planner_node]: Local replan failed: start=[-26.599 1.639 -5.779], target=[-26.512 2.367 -6.057], raw_start_z=-5.928 start_z_correction=+0.149
+[scan_planner_node-3] [WARN] [1786691344.096909897] [scan_planner_node]: Obstacle discovered; emergency stop in 0.000s
+[scan_mppi_controller_node-4] [INFO] [1786691344.100528053] [scan_mppi_controller]: MPPI state: tracking
+[scan_planner_node-3] [WARN] [1786691344.947542145] [scan_planner_node]: [ReferenceVelocityProjection] raw=[0.042 0.194 0.155] tangent=[0.486 0.700 -0.524] used=[0.036 0.052 -0.039] along=0.075->0.075 removed_lateral=0.241
+[scan_planner_node-3] [WARN] [1786691345.752566306] [scan_planner_node]: Obstacle discovered; emergency stop in 0.000s
+[scan_planner_node-3] [WARN] [1786691345.996994633] [scan_planner_node]: [ReferenceVelocityProjection] raw=[0.014 0.311 -0.402] tangent=[0.590 0.642 -0.490] used=[0.239 0.260 -0.199] along=0.405->0.405 removed_lateral=0.307
+[scan_planner_node-3] [WARN] [1786691345.997165836] [scan_planner_node]: Local replan failed: start=[-26.859 2.167 -5.937], target=[-26.512 2.367 -6.057], raw_start_z=-6.284 start_z_correction=+0.348
+[scan_planner_node-3] [WARN] [1786691345.997272380] [scan_planner_node]: Obstacle discovered; emergency stop in 0.510s
+[scan_planner_node-3] [WARN] [1786691348.737846640] [scan_planner_node]: [ReferenceVelocityProjection] raw=[0.332 -0.019 0.207] tangent=[0.997 0.082 -0.008] used=[0.327 0.027 -0.003] along=0.328->0.328 removed_lateral=0.214
+[scan_planner_node-3] [WARN] [1786691349.198040458] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691349.198058151] [scan_planner_node]: Local replan failed: start=[-26.514 3.328 -6.115], target=[-25.567 1.870 -6.152], raw_start_z=-6.355 start_z_correction=+0.240
+[scan_planner_node-3] [WARN] [1786691349.198232906] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691349.198235350] [scan_planner_node]: Obstacle discovered; emergency stop in 0.000s
+[scan_planner_node-3] [WARN] [1786691349.298189269] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_mppi_controller_node-4] [INFO] [1786691349.434051556] [scan_mppi_controller]: MPPI state: no_safe_trajectory
+[scan_mppi_controller_node-4] [INFO] [1786691349.467301366] [scan_mppi_controller]: MPPI state: tracking
+[scan_planner_node-3] [WARN] [1786691350.197060356] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691350.197234153] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691350.197237178] [scan_planner_node]: Obstacle discovered; emergency stop in 0.000s
+[scan_planner_node-3] [WARN] [1786691350.297412130] [scan_planner_node]: Local replan failed: start=[-26.177 3.363 -6.098], target=[-25.567 1.870 -6.152], raw_start_z=-6.337 start_z_correction=+0.238
+[scan_planner_node-3] [ERROR] [1786691350.456971784] [bspline_opt]: [AStarSummary] plan=failed calls=6 success=5 failures{init=0 search=1 initialization=0 rebound=1} last{context=rebound reason=OPEN_SET_EMPTY elapsed=0.030s iter=38379 generated=38379 rejects_collision=16990 outside_map=0 boundary=20063 start=[-26.302   3.892  -6.105] end=[-25.902   3.042  -6.105]}
+[scan_planner_node-3] [ERROR] [1786691350.713062347] [bspline_opt]: [AStarSummary] plan=failed calls=8 success=4 failures{init=0 search=4 initialization=4 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.030s iter=36676 generated=36676 rejects_collision=18135 outside_map=0 boundary=19427 start=[-26.039   2.433  -6.132] end=[-25.989   2.283  -6.132]}
+[scan_planner_node-3] [WARN] [1786691351.691217758] [scan_planner_node]: [ReferenceVelocityProjection] raw=[0.636 -0.256 -0.060] tangent=[0.606 -0.795 0.005] used=[0.357 -0.468 0.003] along=0.589->0.589 removed_lateral=0.357
+[scan_mppi_controller_node-4] [INFO] [1786691352.033122469] [scan_mppi_controller]: MPPI state: no_safe_trajectory
+[scan_planner_node-3] [ERROR] [1786691352.057188221] [bspline_opt]: [AStarSummary] plan=failed calls=3 success=2 failures{init=0 search=1 initialization=1 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.020s iter=25262 generated=25262 rejects_collision=5129 outside_map=0 boundary=13887 start=[-24.279   4.412  -6.054] end=[-25.379   2.562  -6.054]}
+[scan_planner_node-3] [WARN] [1786691352.057212008] [scan_planner_node]: Trajectory rejected: reason=REFINE_COLLISION initial_control_points_feasible=0 retime_ratio=2.343 solver_result=0 optimizer_iterations=27 start_vel=[0.399 -0.608 0.001] start_acc=[0.000 0.000 0.000] collision_t=0.120/1.902 collision_pos=[-25.263 3.032 -6.053] collision_yaw=-1.060 sample_step=0.1203 samples_checked=2
+[scan_planner_node-3] [WARN] [1786691352.057234631] [scan_planner_node]: Local replan failed: start=[-25.304 3.104 -6.053], target=[-25.567 2.343 -6.056], raw_start_z=-6.353 start_z_correction=+0.300
+[scan_planner_node-3] [ERROR] [1786691352.078851682] [bspline_opt]: [AStarSummary] plan=failed calls=2 success=1 failures{init=0 search=1 initialization=1 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.021s iter=26839 generated=26839 rejects_collision=4602 outside_map=0 boundary=14046 start=[-24.188   4.020  -6.054] end=[-25.388   2.820  -6.054]}
+[scan_planner_node-3] [WARN] [1786691352.078877801] [scan_planner_node]: Trajectory rejected: reason=REFINE_COLLISION initial_control_points_feasible=0 retime_ratio=2.349 solver_result=0 optimizer_iterations=31 start_vel=[0.399 -0.608 0.001] start_acc=[0.000 0.000 0.000] collision_t=0.121/1.905 collision_pos=[-25.264 3.032 -6.053] collision_yaw=-1.072 sample_step=0.1213 samples_checked=2
+[scan_planner_node-3] [ERROR] [1786691352.189652835] [bspline_opt]: [AStarSummary] plan=failed calls=9 success=1 failures{init=4 search=4 initialization=4 rebound=4} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.010s iter=12969 generated=12969 rejects_collision=12342 outside_map=0 boundary=3047 start=[-25.236   3.003  -6.053] end=[-25.236   2.853  -6.053]}
+[scan_planner_node-3] [ERROR] [1786691352.221433206] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=1 failures{init=0 search=3 initialization=3 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.011s iter=12969 generated=12969 rejects_collision=12400 outside_map=0 boundary=3047 start=[-25.232   3.004  -6.053] end=[-25.232   2.854  -6.053]}
+[scan_planner_node-3] [WARN] [1786691352.290178910] [bspline_opt]: First three control points are in obstacles; t=0.125181
+[scan_planner_node-3] [ERROR] [1786691352.290209846] [bspline_opt]: [AStarSummary] plan=failed calls=2 success=1 failures{init=0 search=1 initialization=1 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.033s iter=39392 generated=39392 rejects_collision=17301 outside_map=0 boundary=13817 start=[-24.178   4.207  -5.894] end=[-25.378   2.107  -6.144]}
+[scan_planner_node-3] [WARN] [1786691352.290357976] [bspline_opt]: First three control points are in obstacles; t=0.125181
+[scan_planner_node-3] [WARN] [1786691352.408995910] [bspline_opt]: First three control points are in obstacles; t=0.118770
+[scan_planner_node-3] [WARN] [1786691352.497179582] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [ERROR] [1786691352.497260130] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786691352.511481818] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [ERROR] [1786691352.613024841] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786691352.627246866] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [ERROR] [1786691352.627349084] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786691352.641855863] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691352.713508198] [bspline_opt]: First three control points are in obstacles; t=0.120867
+[scan_planner_node-3] [WARN] [1786691352.745028389] [bspline_opt]: First three control points are in obstacles; t=0.122764
+[scan_planner_node-3] [WARN] [1786691352.824194708] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691352.841196074] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_mppi_controller_node-4] [INFO] [1786691352.934966677] [scan_mppi_controller]: MPPI state: tracking
+[scan_planner_node-3] [WARN] [1786691352.944806789] [scan_planner_node]: [ReferenceVelocityProjection] raw=[-0.356 -0.078 0.180] tangent=[0.215 -0.976 -0.029] used=[0.000 -0.000 -0.000] along=-0.005->0.000 removed_lateral=0.407
+[scan_planner_node-3] [WARN] [1786691352.964491122] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691352.978716571] [scan_planner_node]: Trajectory rejected: reason=DYNAMIC_ACCELERATION duration=2.104 sample_dt=0.042 refined=1 retime_ratio=2.932 start_vel=[0.000 -0.000 -0.000] start_acc=[0.000 0.000 0.000] max_vel=0.809 limit=1.750 ratio=0.462 at_t=1.220 vel=[-0.202 -0.780 -0.075] pos=[-25.189 2.244 -6.109] max_acc=3.761 limit=3.000 ratio=1.254 at_t=2.104 acc=[3.446 1.114 1.016] pos=[-25.520 1.840 -6.181]
+[scan_planner_node-3] [WARN] [1786691353.047700432] [bspline_opt]: First three control points are in obstacles; t=0.129177
+[scan_planner_node-3] [WARN] [1786691353.048165777] [bspline_opt]: First three control points are in obstacles; t=0.130200
+[scan_planner_node-3] [WARN] [1786691353.230885718] [bspline_opt]: First three control points are in obstacles; t=0.065863
+[scan_planner_node-3] [ERROR] [1786691353.230923378] [bspline_opt]: [AStarSummary] plan=failed calls=3 success=1 failures{init=0 search=2 initialization=1 rebound=1} last{context=rebound reason=OPEN_SET_EMPTY elapsed=0.035s iter=38264 generated=38264 rejects_collision=20584 outside_map=0 boundary=17699 start=[-25.125   2.700  -6.054] end=[-25.175   2.550  -6.054]}
+[scan_planner_node-3] [WARN] [1786691353.230947393] [scan_planner_node]: Local replan failed: start=[-25.148 2.702 -6.039], target=[-25.567 1.819 -6.180], raw_start_z=-6.322 start_z_correction=+0.283
+[scan_planner_node-3] [WARN] [1786691353.265454128] [bspline_opt]: First three control points are in obstacles; t=0.066024
+[scan_planner_node-3] [ERROR] [1786691353.265486577] [bspline_opt]: [AStarSummary] plan=failed calls=2 success=1 failures{init=0 search=1 initialization=0 rebound=1} last{context=rebound reason=OPEN_SET_EMPTY elapsed=0.034s iter=38264 generated=38264 rejects_collision=20696 outside_map=0 boundary=17699 start=[-25.125   2.693  -6.053] end=[-25.175   2.543  -6.053]}
+[scan_planner_node-3] [WARN] [1786691353.333356342] [bspline_opt]: First three control points are in obstacles; t=0.065863
+[scan_planner_node-3] [ERROR] [1786691353.333405662] [bspline_opt]: [AStarSummary] plan=failed calls=3 success=1 failures{init=0 search=2 initialization=1 rebound=1} last{context=rebound reason=OPEN_SET_EMPTY elapsed=0.033s iter=38264 generated=38264 rejects_collision=20664 outside_map=0 boundary=17699 start=[-25.125   2.700  -6.054] end=[-25.175   2.550  -6.054]}
+[scan_planner_node-3] [WARN] [1786691353.351118118] [bspline_opt]: First three control points are in obstacles; t=0.065897
+[scan_planner_node-3] [WARN] [1786691353.380116107] [bspline_opt]: First three control points are in obstacles; t=0.135139
+[scan_planner_node-3] [WARN] [1786691353.398500076] [bspline_opt]: First three control points are in obstacles; t=0.135546
+[scan_planner_node-3] [WARN] [1786691353.600005499] [scan_planner_node]: Obstacle discovered; emergency stop in 0.660s
+[scan_planner_node-3] [WARN] [1786691354.247054283] [scan_planner_node]: Local replan failed: start=[-25.257 2.250 -6.093], target=[-25.567 1.819 -6.180], raw_start_z=-6.367 start_z_correction=+0.274
+[scan_planner_node-3] [WARN] [1786691354.693755579] [scan_planner_node]: [ReferenceVelocityProjection] raw=[-0.041 -0.883 -0.798] tangent=[-0.177 -0.832 -0.526] used=[-0.133 -0.624 -0.395] along=1.162->0.750 removed_lateral=0.262
+[scan_planner_node-3] [ERROR] [1786691355.278712376] [bspline_opt]: [AStarSummary] plan=failed calls=8 success=4 failures{init=0 search=4 initialization=4 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.046s iter=47720 generated=47720 rejects_collision=49855 outside_map=0 boundary=16251 start=[-25.300   1.320  -6.563] end=[-25.550  -0.230  -7.413]}
+[scan_planner_node-3] [WARN] [1786691355.278748939] [scan_planner_node]: Local replan failed: start=[-25.338 1.913 -6.180], target=[-26.411 -0.932 -8.093], raw_start_z=-6.180 start_z_correction=+0.000
+[scan_planner_node-3] [WARN] [1786691355.278769214] [scan_planner_node]: Obstacle discovered; emergency stop in 0.090s
+[scan_planner_node-3] [WARN] [1786691355.342954413] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691355.449132490] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691355.622759907] [bspline_opt]: [AStarSummary] plan=success calls=4 success=3 failures{init=0 search=1 initialization=1 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.054s iter=58719 generated=58719 rejects_collision=14386 outside_map=0 boundary=18863 start=[-25.409  -0.071  -7.379] end=[-25.509  -0.221  -7.479]}
+[scan_planner_node-3] [WARN] [1786691356.596137173] [scan_planner_node]: [ReferenceVelocityProjection] raw=[-0.347 -0.254 -0.458] tangent=[-0.057 -0.833 -0.550] used=[-0.027 -0.402 -0.266] along=0.483->0.483 removed_lateral=0.401
+[scan_planner_node-3] [WARN] [1786691357.797799100] [scan_planner_node]: [ReferenceVelocityProjection] raw=[-0.469 -0.488 -0.601] tangent=[-0.125 -0.823 -0.553] used=[-0.094 -0.618 -0.415] along=0.793->0.750 removed_lateral=0.436
+[scan_planner_node-3] [WARN] [1786691359.197367697] [scan_planner_node]: [ReferenceVelocityProjection] raw=[-0.330 -0.104 -0.454] tangent=[-0.380 -0.769 -0.515] used=[-0.167 -0.338 -0.226] along=0.439->0.439 removed_lateral=0.365
+[scan_planner_node-3] [WARN] [1786691359.197442593] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691359.197446056] [scan_planner_node]: Local replan failed: start=[-25.894 -0.009 -7.625], target=[-26.418 -0.940 -8.107], raw_start_z=-7.872 start_z_correction=+0.246
+[scan_planner_node-3] [WARN] [1786691359.197518222] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691359.197520359] [scan_planner_node]: Obstacle discovered; emergency stop in 0.190s
+[scan_planner_node-3] [WARN] [1786691359.307178248] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691360.437635467] [scan_planner_node]: Local replan failed: start=[-26.013 -0.655 -7.896], target=[-26.418 -0.940 -8.107], raw_start_z=-8.283 start_z_correction=+0.388
+[scan_mppi_controller_node-4] [INFO] [1786691360.536003563] [scan_mppi_controller]: MPPI state: no_safe_trajectory
+[scan_planner_node-3] [WARN] [1786691360.554097219] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691360.554275050] [bspline_opt]: First three control points are in obstacles; t=0.095466
+[scan_mppi_controller_node-4] [INFO] [1786691360.567461070] [scan_mppi_controller]: MPPI state: tracking
+[scan_planner_node-3] [WARN] [1786691362.797271448] [scan_planner_node]: Local replan failed: start=[-26.413 -1.848 -8.138], target=[-27.167 -0.212 -8.265], raw_start_z=-8.393 start_z_correction=+0.255
+[scan_planner_node-3] [ERROR] [1786691362.909868690] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=0 failures{init=0 search=4 initialization=4 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.028s iter=32369 generated=32369 rejects_collision=19976 outside_map=0 boundary=19172 start=[-26.414  -1.939  -8.110] end=[-26.764  -1.489  -8.160]}
+[scan_planner_node-3] [WARN] [1786691362.909898755] [scan_planner_node]: Obstacle discovered; emergency stop in 0.710s
+[scan_planner_node-3] [WARN] [1786691363.246981348] [scan_planner_node]: [ReferenceVelocityProjection] raw=[-0.424 -0.065 0.005] tangent=[-0.707 0.707 -0.026] used=[-0.179 0.179 -0.007] along=0.254->0.254 removed_lateral=0.346
+[scan_planner_node-3] [WARN] [1786691364.432200562] [scan_planner_node]: Local replan failed: start=[-27.332 -1.645 -8.139], target=[-27.167 -0.463 -8.155], raw_start_z=-8.399 start_z_correction=+0.260
+[scan_planner_node-3] [ERROR] [1786691364.445934187] [bspline_opt]: [AStarSummary] plan=failed calls=3 success=2 failures{init=0 search=1 initialization=0 rebound=1} last{context=rebound reason=OPEN_SET_EMPTY elapsed=0.014s iter=16093 generated=16093 rejects_collision=12463 outside_map=0 boundary=2930 start=[-27.338  -1.614  -8.141] end=[-28.388  -0.314  -8.141]}
+[scan_planner_node-3] [WARN] [1786691364.445959338] [scan_planner_node]: Trajectory rejected: reason=REFINE_COLLISION initial_control_points_feasible=0 retime_ratio=1.398 solver_result=0 optimizer_iterations=12 start_vel=[-0.499 0.538 -0.009] start_acc=[0.000 0.000 0.000] collision_t=0.446/3.517 collision_pos=[-27.522 -1.421 -8.142] collision_yaw=2.116 sample_step=0.1487 samples_checked=4
+[scan_planner_node-3] [WARN] [1786691364.448331283] [scan_planner_node]: Obstacle discovered; emergency stop in 0.980s
+[scan_planner_node-3] [WARN] [1786691364.596815974] [scan_planner_node]: [ReferenceVelocityProjection] raw=[-0.372 0.636 -0.133] tangent=[-0.029 1.000 0.004] used=[-0.019 0.646 0.002] along=0.646->0.646 removed_lateral=0.379
+[scan_planner_node-3] [WARN] [1786691365.692949135] [scan_planner_node]: [ReferenceVelocityProjection] raw=[0.138 0.401 0.212] tangent=[-0.019 1.000 0.003] used=[-0.008 0.399 0.001] along=0.399->0.399 removed_lateral=0.256
+[scan_planner_node-3] [WARN] [1786691367.131964161] [scan_planner_node]: [ReferenceVelocityProjection] raw=[0.300 0.690 -0.096] tangent=[0.000 0.919 -0.394] used=[0.000 0.618 -0.265] along=0.672->0.672 removed_lateral=0.352
+[scan_planner_node-3] [WARN] [1786691367.647265198] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691367.647284384] [scan_planner_node]: Local replan failed: start=[-27.291 -0.159 -8.358], target=[-27.167 0.208 -8.428], raw_start_z=-8.676 start_z_correction=+0.317
+[scan_planner_node-3] [WARN] [1786691367.647454201] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691367.647457190] [scan_planner_node]: Obstacle discovered; emergency stop in 0.140s
+[scan_planner_node-3] [WARN] [1786691367.751075148] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691368.191564189] [bspline_opt]: First three control points are in obstacles; t=0.205048
+[scan_planner_node-3] [ERROR] [1786691368.191603539] [bspline_opt]: [AStarSummary] plan=failed calls=1 success=0 failures{init=0 search=1 initialization=1 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.042s iter=41980 generated=41980 rejects_collision=20609 outside_map=0 boundary=14432 start=[-27.379   0.168  -8.574] end=[-27.379   0.318  -8.674]}
+[scan_planner_node-3] [WARN] [1786691368.232310949] [bspline_opt]: First three control points are in obstacles; t=0.205257
+[scan_planner_node-3] [ERROR] [1786691368.232352375] [bspline_opt]: [AStarSummary] plan=failed calls=1 success=0 failures{init=0 search=1 initialization=1 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.041s iter=42024 generated=42024 rejects_collision=17460 outside_map=0 boundary=14453 start=[-27.341   0.105  -8.562] end=[-27.391   0.305  -8.662]}
+[scan_planner_node-3] [WARN] [1786691368.232371119] [scan_planner_node]: Obstacle discovered; emergency stop in 0.810s
+[scan_planner_node-3] [WARN] [1786691369.198683417] [scan_planner_node]: [ReferenceVelocityProjection] raw=[0.191 0.158 -0.278] tangent=[0.111 0.799 -0.590] used=[0.035 0.249 -0.184] along=0.312->0.312 removed_lateral=0.204
+[scan_planner_node-3] [WARN] [1786691369.199297461] [bspline_opt]: First three control points are in obstacles; t=0.230770
+[scan_planner_node-3] [WARN] [1786691369.199308589] [scan_planner_node]: Local replan failed: start=[-27.262 0.472 -8.820], target=[-27.072 1.606 -9.597], raw_start_z=-9.130 start_z_correction=+0.309
+[scan_planner_node-3] [WARN] [1786691369.199667009] [bspline_opt]: First three control points are in obstacles; t=0.230965
+[scan_planner_node-3] [WARN] [1786691369.199670873] [scan_planner_node]: Obstacle discovered; emergency stop in 0.430s
+[scan_mppi_controller_node-4] [INFO] [1786691369.333984575] [scan_mppi_controller]: MPPI state: no_safe_trajectory
+[scan_mppi_controller_node-4] [INFO] [1786691369.367766362] [scan_mppi_controller]: MPPI state: tracking
+[scan_planner_node-3] [WARN] [1786691369.448445125] [scan_planner_node]: Obstacle discovered; emergency stop in 0.880s
+[scan_mppi_controller_node-4] [INFO] [1786691370.133232472] [scan_mppi_controller]: MPPI state: no_safe_trajectory
+[scan_mppi_controller_node-4] [INFO] [1786691370.205496726] [scan_mppi_controller]: MPPI state: tracking
+[scan_planner_node-3] [WARN] [1786691370.656805851] [scan_planner_node]: [ReferenceVelocityProjection] raw=[0.452 0.675 -0.423] tangent=[0.051 0.780 -0.624] used=[0.038 0.585 -0.468] along=0.814->0.750 removed_lateral=0.421
+[scan_planner_node-3] [WARN] [1786691370.656840992] [scan_planner_node]: Local target was adjusted to a nearby collision-free point
+[scan_planner_node-3] [WARN] [1786691370.656934303] [scan_planner_node]: Trajectory rejected: reason=DYNAMIC_ACCELERATION duration=1.479 sample_dt=0.030 refined=1 retime_ratio=3.199 start_vel=[0.038 0.585 -0.468] start_acc=[0.000 0.000 0.000] max_vel=0.748 limit=1.750 ratio=0.428 at_t=1.479 vel=[-0.237 0.551 -0.448] pos=[-27.056 1.108 -9.152] max_acc=3.565 limit=3.000 ratio=1.188 at_t=0.237 acc=[-0.499 -1.614 3.140] pos=[-26.704 1.035 -9.075]
+[scan_planner_node-3] [WARN] [1786691370.656948810] [scan_planner_node]: Local replan failed: start=[-26.704 0.921 -9.021], target=[-27.087 1.155 -9.134], raw_start_z=-9.364 start_z_correction=+0.342
+[scan_planner_node-3] [WARN] [1786691370.657054842] [scan_planner_node]: Trajectory rejected: reason=DYNAMIC_ACCELERATION duration=1.455 sample_dt=0.029 refined=1 retime_ratio=3.114 start_vel=[0.038 0.585 -0.468] start_acc=[0.000 0.000 0.000] max_vel=0.749 limit=1.750 ratio=0.428 at_t=1.455 vel=[-0.237 0.551 -0.448] pos=[-27.057 1.111 -9.153] max_acc=3.477 limit=3.000 ratio=1.159 at_t=0.233 acc=[-0.551 -1.503 3.086] pos=[-26.704 1.036 -9.076]
+[scan_mppi_controller_node-4] [INFO] [1786691370.700556534] [scan_mppi_controller]: MPPI state: no_safe_trajectory
+[scan_planner_node-3] [WARN] [1786691370.756902652] [scan_planner_node]: Trajectory rejected: reason=DYNAMIC_ACCELERATION duration=1.493 sample_dt=0.030 refined=1 retime_ratio=3.248 start_vel=[-0.016 0.449 -0.380] start_acc=[0.000 0.000 0.000] max_vel=0.748 limit=1.750 ratio=0.427 at_t=1.493 vel=[-0.237 0.551 -0.448] pos=[-27.066 1.119 -9.159] max_acc=3.230 limit=3.000 ratio=1.077 at_t=0.239 acc=[-0.338 -1.295 2.939] pos=[-26.733 1.004 -9.159]
+[scan_planner_node-3] [WARN] [1786691370.757039583] [scan_planner_node]: Trajectory rejected: reason=DYNAMIC_ACCELERATION duration=1.491 sample_dt=0.030 refined=1 retime_ratio=3.243 start_vel=[-0.016 0.449 -0.380] start_acc=[0.000 0.000 0.000] max_vel=0.748 limit=1.750 ratio=0.428 at_t=1.491 vel=[-0.237 0.551 -0.448] pos=[-27.066 1.120 -9.158] max_acc=3.189 limit=3.000 ratio=1.063 at_t=0.239 acc=[-0.454 -1.155 2.937] pos=[-26.734 1.006 -9.159]
+[scan_mppi_controller_node-4] [INFO] [1786691370.767533864] [scan_mppi_controller]: MPPI state: tracking
+[scan_mppi_controller_node-4] [INFO] [1786691371.832309299] [scan_mppi_controller]: MPPI state: goal_reached
+[scan_planner_node-3] [WARN] [1786691371.897673952] [scan_planner_node]: [ReferenceVelocityProjection] raw=[-0.296 0.795 -0.566] tangent=[0.407 0.775 -0.483] used=[0.306 0.581 -0.362] along=0.769->0.750 removed_lateral=0.670
+[scan_mppi_controller_node-4] [INFO] [1786691371.901507680] [scan_mppi_controller]: MPPI state: tracking
+[scan_planner_node-3] [WARN] [1786691372.448502968] [scan_planner_node]: Local replan failed: start=[-26.909 1.641 -9.753], target=[-26.767 2.319 -10.090], raw_start_z=-10.047 start_z_correction=+0.293
+[scan_planner_node-3] [WARN] [1786691372.448833167] [scan_planner_node]: Obstacle discovered; emergency stop in 0.310s
+[scan_planner_node-3] [WARN] [1786691373.406846500] [scan_planner_node]: [ReferenceVelocityProjection] raw=[-0.162 0.324 0.099] tangent=[0.389 0.776 -0.497] used=[0.054 0.108 -0.069] along=0.139->0.139 removed_lateral=0.349
+[scan_planner_node-3] [WARN] [1786691374.631386932] [scan_planner_node]: [ReferenceVelocityProjection] raw=[0.376 0.609 -0.239] tangent=[0.178 0.871 -0.458] used=[0.126 0.615 -0.324] along=0.707->0.707 removed_lateral=0.265
+[scan_planner_node-3] [WARN] [1786691374.646822407] [scan_planner_node]: Obstacle discovered; emergency stop in 0.470s
+[scan_planner_node-3] [ERROR] [1786691374.896549947] [bspline_opt]: [AStarSummary] plan=failed calls=5 success=0 failures{init=0 search=5 initialization=4 rebound=1} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.031s iter=37216 generated=37216 rejects_collision=17539 outside_map=0 boundary=20491 start=[-26.433   2.389 -10.187] end=[-26.333   2.739 -10.387]}
+[scan_planner_node-3] [WARN] [1786691374.896605276] [scan_planner_node]: Local replan failed: start=[-26.573 2.197 -10.090], target=[-26.160 3.212 -10.671], raw_start_z=-10.126 start_z_correction=+0.035
+[scan_planner_node-3] [WARN] [1786691374.896987998] [scan_planner_node]: Trajectory rejected: reason=REFINE_COLLISION initial_control_points_feasible=0 retime_ratio=1.300 solver_result=0 optimizer_iterations=16 start_vel=[0.000 0.000 -0.000] start_acc=[0.000 0.000 0.000] collision_t=1.368/3.360 collision_pos=[-26.492 2.562 -10.271] collision_yaw=1.277 sample_step=0.1368 samples_checked=11
+[scan_mppi_controller_node-4] [INFO] [1786691375.266560315] [scan_mppi_controller]: MPPI state: no_safe_trajectory
+[scan_planner_node-3] [WARN] [1786691375.297958413] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691375.298086985] [bspline_opt]: First three control points are in obstacles; t=0.072813
+[scan_planner_node-3] [WARN] [1786691375.298091155] [scan_planner_node]: Obstacle discovered; emergency stop in 0.420s
+[scan_mppi_controller_node-4] [INFO] [1786691375.333789664] [scan_mppi_controller]: MPPI state: tracking
+[scan_planner_node-3] [WARN] [1786691375.406921663] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691375.507063363] [scan_planner_node]: Trajectory rejected: reason=DYNAMIC_ACCELERATION duration=2.232 sample_dt=0.045 refined=1 retime_ratio=2.923 start_vel=[0.000 0.000 -0.000] start_acc=[0.000 0.000 0.000] max_vel=0.602 limit=1.750 ratio=0.344 at_t=1.786 vel=[0.186 0.452 -0.351] pos=[-26.198 3.031 -10.577] max_acc=3.163 limit=3.000 ratio=1.054 at_t=2.232 acc=[-0.093 -3.162 0.025] pos=[-26.164 3.192 -10.652]
+[scan_planner_node-3] [WARN] [1786691375.637456905] [bspline_opt]: [AStarSummary] plan=success calls=1 success=0 failures{init=0 search=1 initialization=1 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.030s iter=37600 generated=37600 rejects_collision=16469 outside_map=0 boundary=20846 start=[-26.424   2.681 -10.379] end=[-26.224   2.731 -10.429]}
+[scan_mppi_controller_node-4] [INFO] [1786691377.666559183] [scan_mppi_controller]: MPPI state: no_safe_trajectory
+[scan_mppi_controller_node-4] [INFO] [1786691377.733561300] [scan_mppi_controller]: MPPI state: tracking
+[scan_mppi_controller_node-4] [INFO] [1786691377.866667026] [scan_mppi_controller]: MPPI state: no_safe_trajectory
+[scan_planner_node-3] [WARN] [1786691378.236847180] [scan_planner_node]: [ReferenceVelocityProjection] raw=[0.332 -0.059 -0.058] tangent=[0.798 -0.433 0.418] used=[0.213 -0.116 0.111] along=0.267->0.267 removed_lateral=0.214
+[scan_planner_node-3] [WARN] [1786691378.273118923] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [ERROR] [1786691378.273149355] [bspline_opt]: [AStarSummary] plan=failed calls=1 success=0 failures{init=0 search=1 initialization=1 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.036s iter=42882 generated=42882 rejects_collision=14719 outside_map=0 boundary=21907 start=[-26.544   4.747 -10.515] end=[-25.794   3.597 -10.665]}
+[scan_planner_node-3] [WARN] [1786691378.273169012] [scan_planner_node]: Local replan failed: start=[-25.984 3.792 -10.671], target=[-25.467 2.461 -10.740], raw_start_z=-10.719 start_z_correction=+0.048
+[scan_planner_node-3] [WARN] [1786691378.295817695] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691378.375084055] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691378.399292423] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691378.488928776] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691378.489052159] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691378.522683820] [scan_planner_node]: Obstacle discovered; emergency stop in 0.000s
+[scan_planner_node-3] [WARN] [1786691378.548194180] [scan_planner_node]: Obstacle discovered; emergency stop in 0.000s
+[scan_mppi_controller_node-4] [INFO] [1786691378.567590449] [scan_mppi_controller]: MPPI state: tracking
+[scan_planner_node-3] [WARN] [1786691378.616081759] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691378.721922777] [scan_planner_node]: Trajectory rejected: reason=REFINE_COLLISION initial_control_points_feasible=0 retime_ratio=2.310 solver_result=0 optimizer_iterations=27 start_vel=[0.000 -0.000 0.000] start_acc=[0.000 0.000 0.000] collision_t=2.230/4.976 collision_pos=[-25.935 3.335 -10.696] collision_yaw=-1.113 sample_step=0.2027 samples_checked=12
+[scan_planner_node-3] [WARN] [1786691378.797787127] [bspline_opt]: Failed to generate rebound direction
+[scan_planner_node-3] [WARN] [1786691378.834268953] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [ERROR] [1786691378.834304123] [bspline_opt]: [AStarSummary] plan=failed calls=3 success=2 failures{init=0 search=1 initialization=0 rebound=1} last{context=rebound reason=OPEN_SET_EMPTY elapsed=0.036s iter=40113 generated=40113 rejects_collision=17433 outside_map=0 boundary=21350 start=[-26.905   4.727 -10.573] end=[-25.705   3.577 -10.673]}
+[scan_planner_node-3] [WARN] [1786691380.706902636] [scan_planner_node]: [ReferenceVelocityProjection] raw=[-0.145 -0.464 0.068] tangent=[0.399 -0.916 -0.038] used=[0.145 -0.334 -0.014] along=0.365->0.365 removed_lateral=0.328
+[scan_planner_node-3] [WARN] [1786691380.706941838] [scan_planner_node]: Local target is in collision and no nearby free target was found
+[scan_planner_node-3] [WARN] [1786691381.646952564] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691381.646970147] [scan_planner_node]: Local replan failed: start=[-25.236 2.828 -10.643], target=[-25.967 -0.150 -12.580], raw_start_z=-10.818 start_z_correction=+0.175
+[scan_planner_node-3] [WARN] [1786691381.647348912] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691381.647352445] [scan_planner_node]: Obstacle discovered; emergency stop in 0.000s
+[scan_planner_node-3] [WARN] [1786691381.756996242] [bspline_opt]: A-star path has fewer than 2 points
+[scan_planner_node-3] [ERROR] [1786691381.757025209] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786691381.757041626] [bspline_opt]: A-star path has fewer than 2 points; drop collision segment
+[scan_planner_node-3] [ERROR] [1786691381.757052242] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786691381.757055566] [bspline_opt]: A-star path has fewer than 2 points; drop collision segment
+[scan_planner_node-3] [WARN] [1786691381.757065303] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691382.154496886] [scan_planner_node]: [ReferenceVelocityProjection] raw=[-0.103 -0.669 -0.510] tangent=[0.000 -0.855 -0.519] used=[0.000 -0.641 -0.389] along=0.837->0.750 removed_lateral=0.136
+[scan_planner_node-3] [WARN] [1786691382.797566379] [scan_planner_node]: Obstacle discovered; emergency stop in 0.000s
+[scan_planner_node-3] [WARN] [1786691382.847247640] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691382.847265385] [scan_planner_node]: Local replan failed: start=[-25.189 2.249 -10.951], target=[-25.967 -0.150 -12.580], raw_start_z=-11.240 start_z_correction=+0.289
+[scan_planner_node-3] [WARN] [1786691382.990396459] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [ERROR] [1786691382.990431208] [bspline_opt]: [AStarSummary] plan=failed calls=2 success=1 failures{init=0 search=1 initialization=1 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.043s iter=47887 generated=47887 rejects_collision=23406 outside_map=0 boundary=15557 start=[-25.233   1.708 -11.279] end=[-25.333   1.108 -11.679]}
+[scan_planner_node-3] [WARN] [1786691383.156886061] [scan_planner_node]: [ReferenceVelocityProjection] raw=[-0.342 -0.546 -0.655] tangent=[-0.076 -0.865 -0.496] used=[-0.057 -0.649 -0.372] along=0.823->0.750 removed_lateral=0.408
+[scan_planner_node-3] [WARN] [1786691383.300140326] [scan_planner_node]: Obstacle discovered; emergency stop in 0.030s
+[scan_mppi_controller_node-4] [INFO] [1786691383.434791601] [scan_mppi_controller]: MPPI state: no_safe_trajectory
+[scan_mppi_controller_node-4] [INFO] [1786691383.467255126] [scan_mppi_controller]: MPPI state: tracking
+[scan_planner_node-3] [WARN] [1786691383.946912579] [bspline_opt]: First three control points are in obstacles; t=0.182176
+[scan_planner_node-3] [WARN] [1786691383.946931233] [scan_planner_node]: Local replan failed: start=[-25.281 1.792 -11.228], target=[-25.967 -0.150 -12.580], raw_start_z=-11.583 start_z_correction=+0.356
+[scan_planner_node-3] [WARN] [1786691383.947440524] [bspline_opt]: First three control points are in obstacles; t=0.182850
+[scan_planner_node-3] [ERROR] [1786691383.947458193] [bspline_opt]: [AStarSummary] plan=failed calls=3 success=2 failures{init=1 search=0 initialization=1 rebound=0} last{context=initialization reason=occupied start could not be moved to a free point before pool boundary elapsed=0.000s iter=0 generated=0 rejects_collision=0 outside_map=0 boundary=0 start=[-24.454   3.274 -10.202] end=[-25.404   0.637 -11.972]}
+[scan_mppi_controller_node-4] [INFO] [1786691384.000186991] [scan_mppi_controller]: MPPI state: no_safe_trajectory
+[scan_mppi_controller_node-4] [INFO] [1786691384.034592486] [scan_mppi_controller]: MPPI state: tracking
+[scan_planner_node-3] [WARN] [1786691384.346852340] [scan_planner_node]: [ReferenceVelocityProjection] raw=[-0.079 -0.482 -0.685] tangent=[-0.173 -0.820 -0.545] used=[-0.130 -0.615 -0.409] along=0.782->0.750 removed_lateral=0.309
+[scan_planner_node-3] [ERROR] [1786691384.762111306] [bspline_opt]: [AStarSummary] plan=failed calls=4 success=0 failures{init=0 search=4 initialization=4 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.040s iter=46816 generated=46816 rejects_collision=24306 outside_map=0 boundary=14905 start=[-25.325   1.318 -11.546] end=[-25.325   1.118 -11.646]}
+[scan_planner_node-3] [WARN] [1786691384.762793999] [scan_planner_node]: Obstacle discovered; emergency stop in 0.300s
+[scan_planner_node-3] [WARN] [1786691384.947473858] [scan_planner_node]: Local replan failed: start=[-25.426 1.327 -11.496], target=[-25.967 -0.150 -12.580], raw_start_z=-11.956 start_z_correction=+0.459
+[scan_planner_node-3] [WARN] [1786691385.057092656] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [ERROR] [1786691385.171293975] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786691385.171562455] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [ERROR] [1786691385.290474832] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786691385.290652394] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [ERROR] [1786691385.396933473] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786691385.396968852] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691385.497788009] [bspline_opt]: A-star path has fewer than 2 points
+[scan_planner_node-3] [WARN] [1786691385.497813492] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691386.606955114] [scan_planner_node]: [ReferenceVelocityProjection] raw=[-0.463 -0.487 -0.080] tangent=[-0.151 -0.798 -0.584] used=[-0.076 -0.403 -0.295] along=0.505->0.505 removed_lateral=0.450
+[scan_planner_node-3] [WARN] [1786691387.889898378] [scan_planner_node]: [ReferenceVelocityProjection] raw=[0.080 -0.451 -0.242] tangent=[-0.368 -0.910 0.193] used=[-0.123 -0.304 0.065] along=0.334->0.334 removed_lateral=0.396
+[scan_planner_node-3] [WARN] [1786691388.589010689] [bspline_opt]: [AStarSummary] plan=success calls=1 success=0 failures{init=0 search=1 initialization=1 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.032s iter=38645 generated=38645 rejects_collision=22958 outside_map=0 boundary=18113 start=[-26.110  -0.876 -12.502] end=[-26.210  -1.076 -12.502]}
+[scan_planner_node-3] [WARN] [1786691388.897034232] [scan_planner_node]: Local target was adjusted to a nearby collision-free point
+[scan_planner_node-3] [WARN] [1786691389.197599466] [scan_planner_node]: [ReferenceVelocityProjection] raw=[-0.416 0.033 -0.013] tangent=[-0.387 -0.905 0.175] used=[-0.050 -0.117 0.023] along=0.129->0.129 removed_lateral=0.397
+[scan_planner_node-3] [ERROR] [1786691389.227243114] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786691389.256539485] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [ERROR] [1786691389.256571935] [bspline_opt]: [AStarSummary] plan=failed calls=2 success=0 failures{init=0 search=2 initialization=1 rebound=1} last{context=rebound reason=OPEN_SET_EMPTY elapsed=0.029s iter=33792 generated=33792 rejects_collision=19041 outside_map=0 boundary=16789 start=[-24.474   0.451 -12.611] end=[-26.424  -0.899 -12.461]}
+[scan_planner_node-3] [WARN] [1786691389.256588770] [scan_planner_node]: Local replan failed: start=[-25.777 -0.477 -12.524], target=[-26.410 -1.022 -12.463], raw_start_z=-12.731 start_z_correction=+0.207
+[scan_planner_node-3] [ERROR] [1786691389.286379650] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786691389.296457758] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [ERROR] [1786691389.296485379] [bspline_opt]: [AStarSummary] plan=failed calls=2 success=1 failures{init=0 search=1 initialization=1 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.030s iter=35054 generated=35054 rejects_collision=19206 outside_map=0 boundary=16464 start=[-25.549  -0.125 -12.506] end=[-26.199  -1.125 -12.456]}
+[scan_planner_node-3] [WARN] [1786691389.296506643] [scan_planner_node]: Obstacle discovered; emergency stop in 0.000s
+[scan_planner_node-3] [ERROR] [1786691389.349130715] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786691389.361612278] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691389.467685783] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [ERROR] [1786691389.591256251] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786691389.603534111] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [ERROR] [1786691389.727877249] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786691389.740630008] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [ERROR] [1786691389.740662563] [bspline_opt]: [AStarSummary] plan=failed calls=2 success=1 failures{init=0 search=1 initialization=1 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.031s iter=33704 generated=33704 rejects_collision=20404 outside_map=0 boundary=16769 start=[-24.430  -0.133 -12.557] end=[-27.130  -0.883 -12.407]}
+[scan_planner_node-3] [ERROR] [1786691389.829980134] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786691389.843082647] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [ERROR] [1786691389.843113946] [bspline_opt]: [AStarSummary] plan=failed calls=2 success=1 failures{init=0 search=1 initialization=1 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.032s iter=34233 generated=34233 rejects_collision=20161 outside_map=0 boundary=16757 start=[-24.450  -0.118 -12.557] end=[-27.100  -0.968 -12.407]}
+[scan_planner_node-3] [WARN] [1786691389.900820917] [scan_planner_node]: Local target was adjusted to a nearby collision-free point
+[scan_planner_node-3] [ERROR] [1786691389.932868698] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786691389.945119492] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [ERROR] [1786691389.945150248] [bspline_opt]: [AStarSummary] plan=failed calls=3 success=2 failures{init=0 search=1 initialization=0 rebound=1} last{context=rebound reason=OPEN_SET_EMPTY elapsed=0.032s iter=36766 generated=36766 rejects_collision=21152 outside_map=0 boundary=19222 start=[-26.045  -0.953 -12.476] end=[-27.045  -0.953 -12.426]}
+[scan_planner_node-3] [WARN] [1786691390.037772110] [scan_planner_node]: Trajectory rejected: reason=DYNAMIC_ACCELERATION duration=1.971 sample_dt=0.039 refined=1 retime_ratio=2.465 start_vel=[-0.000 -0.000 0.000] start_acc=[0.000 0.000 0.000] max_vel=0.750 limit=1.750 ratio=0.428 at_t=1.971 vel=[-0.390 -0.640 -0.002] pos=[-26.364 -0.967 -12.467] max_acc=3.250 limit=3.000 ratio=1.083 at_t=1.971 acc=[1.096 -3.038 0.363] pos=[-26.364 -0.967 -12.467]
+[scan_planner_node-3] [ERROR] [1786691390.037821477] [bspline_opt]: [AStarSummary] plan=failed calls=1 success=0 failures{init=0 search=1 initialization=0 rebound=1} last{context=rebound reason=OPEN_SET_EMPTY elapsed=0.032s iter=36787 generated=36787 rejects_collision=21668 outside_map=0 boundary=19006 start=[-26.066  -0.948 -12.471] end=[-27.116  -0.948 -12.421]}
+[scan_planner_node-3] [WARN] [1786691390.137210289] [bspline_opt]: [AStarSummary] plan=success calls=1 success=0 failures{init=0 search=1 initialization=1 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.030s iter=35357 generated=35357 rejects_collision=23310 outside_map=0 boundary=20882 start=[-26.229  -0.569 -12.477] end=[-26.279  -0.719 -12.477]}
+[scan_mppi_controller_node-4] [INFO] [1786691391.033619674] [scan_mppi_controller]: MPPI state: no_safe_trajectory
+[scan_planner_node-3] [WARN] [1786691391.056949013] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [ERROR] [1786691391.056980470] [bspline_opt]: [AStarSummary] plan=failed calls=2 success=1 failures{init=0 search=1 initialization=0 rebound=1} last{context=rebound reason=OPEN_SET_EMPTY elapsed=0.000s iter=1 generated=1 rejects_collision=24 outside_map=0 boundary=0 start=[-26.208  -1.211 -12.450] end=[-26.558  -1.611 -12.450]}
+[scan_planner_node-3] [WARN] [1786691391.056993693] [scan_planner_node]: Local replan failed: start=[-26.038 -0.967 -12.467], target=[-26.629 -1.650 -12.435], raw_start_z=-12.730 start_z_correction=+0.263
+[scan_planner_node-3] [WARN] [1786691391.057109006] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [ERROR] [1786691391.156982944] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [ERROR] [1786691391.184100193] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786691391.211096658] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [ERROR] [1786691391.211126012] [bspline_opt]: [AStarSummary] plan=failed calls=2 success=0 failures{init=0 search=2 initialization=0 rebound=2} last{context=rebound reason=OPEN_SET_EMPTY elapsed=0.027s iter=34110 generated=34110 rejects_collision=24377 outside_map=0 boundary=16346 start=[-25.962  -0.872 -12.456] end=[-26.562  -1.572 -12.456]}
+[scan_planner_node-3] [ERROR] [1786691391.211235936] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786691391.211295163] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691391.289725706] [scan_planner_node]: [ReferenceVelocityProjection] raw=[0.106 -0.321 0.165] tangent=[-0.473 -0.880 0.045] used=[-0.114 -0.211 0.011] along=0.240->0.240 removed_lateral=0.290
+[scan_planner_node-3] [ERROR] [1786691391.289816223] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786691391.318838185] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [ERROR] [1786691391.318874319] [bspline_opt]: [AStarSummary] plan=failed calls=2 success=1 failures{init=0 search=1 initialization=0 rebound=1} last{context=rebound reason=OPEN_SET_EMPTY elapsed=0.029s iter=35063 generated=35063 rejects_collision=25252 outside_map=0 boundary=16739 start=[-25.883  -0.908 -12.440] end=[-26.583  -1.608 -12.440]}
+[scan_planner_node-3] [WARN] [1786691391.318983371] [bspline_opt]: Trajectory terminal point is in an obstacle; skip this plan
+[scan_planner_node-3] [ERROR] [1786691391.389789001] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786691391.389881990] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [ERROR] [1786691391.389952643] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786691391.389998889] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [ERROR] [1786691391.497686542] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786691391.497855688] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [ERROR] [1786691391.497920840] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786691391.497965289] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [ERROR] [1786691391.606987642] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786691391.607069712] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [ERROR] [1786691391.607129047] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786691391.607179334] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [ERROR] [1786691391.729769618] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786691391.729803880] [bspline_opt]: Trajectory terminal point is in an obstacle; skip this plan
+[scan_planner_node-3] [ERROR] [1786691391.729866652] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [ERROR] [1786691391.756575468] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [ERROR] [1786691391.783740691] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [ERROR] [1786691391.810955815] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [ERROR] [1786691391.838816896] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [ERROR] [1786691391.866698344] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [ERROR] [1786691391.895058155] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [ERROR] [1786691391.924084005] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [ERROR] [1786691391.953194301] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [ERROR] [1786691391.982302955] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [ERROR] [1786691392.011361635] [bspline_opt]: The robot is inside an obstacle
+[scan_mppi_controller_node-4] [INFO] [1786691392.032007754] [scan_mppi_controller]: MPPI state: map_timeout
+[scan_planner_node-3] [ERROR] [1786691392.040458370] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [ERROR] [1786691392.069600900] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [ERROR] [1786691392.098773926] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [ERROR] [1786691392.127900718] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [ERROR] [1786691392.157136799] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786691392.157305353] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [ERROR] [1786691392.157325230] [bspline_opt]: [AStarSummary] plan=failed calls=16 success=1 failures{init=0 search=15 initialization=0 rebound=15} last{context=rebound reason=OPEN_SET_EMPTY elapsed=0.029s iter=35072 generated=35072 rejects_collision=25958 outside_map=0 boundary=16052 start=[-25.651  -0.946 -12.449] end=[-26.651  -1.646 -12.449]}
+[scan_planner_node-3] [WARN] [1786691392.157332135] [scan_planner_node]: Local replan failed: start=[-26.128 -1.356 -12.463], target=[-26.629 -1.650 -12.435], raw_start_z=-12.463 start_z_correction=+0.000
+[scan_planner_node-3] [WARN] [1786691392.160280177] [scan_planner_node]: Local target is in collision and no nearby free target was found
+[scan_planner_node-3] [ERROR] [1786691392.160336406] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786691392.160343909] [bspline_opt]: Trajectory terminal point is in an obstacle; skip this plan
+[scan_planner_node-3] [ERROR] [1786691392.160411861] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [ERROR] [1786691392.190809542] [bspline_opt]: The robot is inside an obstacle
+[scan_planner_node-3] [WARN] [1786691392.194248519] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [ERROR] [1786691392.194275275] [bspline_opt]: [AStarSummary] plan=failed calls=3 success=2 failures{init=0 search=1 initialization=0 rebound=1} last{context=rebound reason=OPEN_SET_EMPTY elapsed=0.030s iter=35430 generated=35430 rejects_collision=25423 outside_map=0 boundary=16841 start=[-24.515  -0.997 -12.492] end=[-26.665  -1.647 -12.442]}
+[scan_planner_node-3] [WARN] [1786691392.230018649] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_mppi_controller_node-4] [INFO] [1786691392.237132028] [scan_mppi_controller]: MPPI state: no_safe_trajectory
+[scan_planner_node-3] [WARN] [1786691392.270932140] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [ERROR] [1786691392.270966176] [bspline_opt]: [AStarSummary] plan=failed calls=1 success=0 failures{init=0 search=1 initialization=1 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.041s iter=45867 generated=45867 rejects_collision=24742 outside_map=0 boundary=15624 start=[-27.733  -1.756 -12.502] end=[-28.183  -1.656 -12.502]}
+[scan_mppi_controller_node-4] [INFO] [1786691392.333661771] [scan_mppi_controller]: MPPI state: tracking
+[scan_planner_node-3] [WARN] [1786691392.350268050] [scan_planner_node]: [ReferenceVelocityProjection] raw=[-0.100 -0.407 0.101] tangent=[-0.635 -0.772 0.032] used=[-0.242 -0.294 0.012] along=0.381->0.381 removed_lateral=0.202
+[scan_planner_node-3] [WARN] [1786691392.350651986] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691392.355650115] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_mppi_controller_node-4] [INFO] [1786691392.400307294] [scan_mppi_controller]: MPPI state: no_safe_trajectory
+[scan_mppi_controller_node-4] [INFO] [1786691392.434384508] [scan_mppi_controller]: MPPI state: tracking
+[scan_planner_node-3] [WARN] [1786691392.456938699] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691392.457791093] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_mppi_controller_node-4] [INFO] [1786691392.465286587] [scan_mppi_controller]: MPPI state: trajectory_timeout
+[scan_planner_node-3] [WARN] [1786691392.585092841] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [WARN] [1786691392.585208963] [bspline_opt]: First three control points are in obstacles; t=0.000000
+[scan_planner_node-3] [ERROR] [1786691392.585226004] [bspline_opt]: [AStarSummary] plan=failed calls=1 success=0 failures{init=1 search=0 initialization=1 rebound=0} last{context=initialization reason=occupied start could not be moved to a free point before pool boundary elapsed=0.000s iter=0 generated=0 rejects_collision=0 outside_map=0 boundary=0 start=[-24.545  -1.947 -12.388] end=[-27.744  -1.659 -12.489]}
+[scan_mppi_controller_node-4] [INFO] [1786691392.701331184] [scan_mppi_controller]: MPPI state: tracking
+[scan_planner_node-3] [WARN] [1786691393.656912298] [scan_planner_node]: [ReferenceVelocityProjection] raw=[-0.256 -0.493 -0.015] tangent=[-0.771 -0.634 -0.061] used=[-0.394 -0.324 -0.031] along=0.511->0.511 removed_lateral=0.219
+[scan_planner_node-3] [WARN] [1786691399.588670621] [scan_planner_node]: [ReferenceVelocityProjection] raw=[-0.427 -0.202 0.168] tangent=[-0.999 0.030 -0.016] used=[-0.417 0.013 -0.007] along=0.418->0.418 removed_lateral=0.277
+[scan_planner_node-3] [WARN] [1786691400.882963959] [scan_planner_node]: [ReferenceVelocityProjection] raw=[-0.686 -0.135 -0.070] tangent=[-0.988 0.157 -0.009] used=[-0.649 0.103 -0.006] along=0.657->0.657 removed_lateral=0.249
+[scan_planner_node-3] [WARN] [1786691402.134140162] [scan_planner_node]: [ReferenceVelocityProjection] raw=[-0.624 -0.137 0.013] tangent=[-0.902 0.432 -0.024] used=[-0.453 0.217 -0.012] along=0.503->0.503 removed_lateral=0.393
+[scan_planner_node-3] [WARN] [1786691403.237684664] [scan_planner_node]: [ReferenceVelocityProjection] raw=[-0.785 -0.231 -0.243] tangent=[-0.999 0.030 -0.015] used=[-0.750 0.023 -0.011] along=0.781->0.750 removed_lateral=0.345
+[scan_planner_node-3] [WARN] [1786691404.631644149] [scan_planner_node]: [ReferenceVelocityProjection] raw=[-0.647 0.264 0.121] tangent=[-1.000 0.004 -0.015] used=[-0.646 0.003 -0.010] along=0.646->0.646 removed_lateral=0.292
+[scan_planner_node-3] [WARN] [1786691405.746812912] [scan_planner_node]: [ReferenceVelocityProjection] raw=[-0.578 0.235 0.082] tangent=[-0.998 0.063 -0.009] used=[-0.589 0.037 -0.006] along=0.591->0.591 removed_lateral=0.216
+[scan_planner_node-3] [WARN] [1786691405.935095021] [scan_planner_node]: Local replan failed: start=[-31.564 -2.039 -12.588], target=[-32.316 0.929 -12.490], raw_start_z=-12.849 start_z_correction=+0.261
+[scan_mppi_controller_node-4] [INFO] [1786691406.232008823] [scan_mppi_controller]: MPPI state: odometry_timeout
+[scan_planner_node-3] [ERROR] [1786691406.422431756] [bspline_opt]: [AStarSummary] plan=failed calls=5 success=3 failures{init=0 search=2 initialization=2 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.036s iter=43791 generated=43791 rejects_collision=27699 outside_map=0 boundary=14897 start=[-32.022  -1.242 -12.553] end=[-33.322   0.408 -12.503]}
+[scan_planner_node-3] [WARN] [1786691406.610241908] [bspline_opt]: [AStarSummary] plan=success calls=11 success=7 failures{init=0 search=4 initialization=0 rebound=4} last{context=rebound reason=OPEN_SET_EMPTY elapsed=0.043s iter=50940 generated=50940 rejects_collision=18529 outside_map=0 boundary=18004 start=[-32.421  -0.219 -12.519] end=[-32.371   0.031 -12.519]}
+[cmd_vel_safety_gate-5] [INFO] [1786691406.774732935] [cmd_vel_safety_gate]: Safety gate state: odometry_timeout
+[scan_planner_node-3] [WARN] [1786691407.537050690] [scan_planner_node]: Local replan failed: start=[-31.617 -2.058 -12.588], target=[-32.316 0.929 -12.490], raw_start_z=-12.858 start_z_correction=+0.270
+[scan_planner_node-3] [ERROR] [1786691407.642654025] [bspline_opt]: [AStarSummary] plan=failed calls=6 success=3 failures{init=0 search=3 initialization=2 rebound=1} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.036s iter=43309 generated=43309 rejects_collision=27158 outside_map=0 boundary=15367 start=[-32.183  -1.385 -12.553] end=[-33.283   0.465 -12.503]}
+[scan_planner_node-3] [ERROR] [1786691407.816781466] [bspline_opt]: [AStarSummary] plan=failed calls=5 success=3 failures{init=0 search=2 initialization=2 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.034s iter=43680 generated=43680 rejects_collision=25062 outside_map=0 boundary=15808 start=[-31.983  -1.232 -12.553] end=[-32.533  -0.732 -12.503]}
+[scan_planner_node-3] [ERROR] [1786691407.892516439] [bspline_opt]: [AStarSummary] plan=failed calls=6 success=5 failures{init=0 search=1 initialization=0 rebound=1} last{context=rebound reason=OPEN_SET_EMPTY elapsed=0.035s iter=43391 generated=43391 rejects_collision=26912 outside_map=0 boundary=15054 start=[-32.129  -1.342 -12.553] end=[-33.279   0.458 -12.503]}
+[scan_planner_node-3] [ERROR] [1786691408.586170898] [bspline_opt]: [AStarSummary] plan=failed calls=7 success=5 failures{init=0 search=2 initialization=2 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.035s iter=44150 generated=44150 rejects_collision=26401 outside_map=0 boundary=14779 start=[-32.185  -1.352 -12.561] end=[-33.235   0.498 -12.511]}
+[scan_planner_node-3] [WARN] [1786691408.586208755] [scan_planner_node]: Local replan failed: start=[-31.617 -2.058 -12.588], target=[-32.316 0.929 -12.490], raw_start_z=-12.588 start_z_correction=+0.000
+[scan_planner_node-3] [ERROR] [1786691408.812715750] [bspline_opt]: [AStarSummary] plan=failed calls=7 success=2 failures{init=0 search=5 initialization=3 rebound=2} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.037s iter=43656 generated=43656 rejects_collision=27849 outside_map=0 boundary=14634 start=[-32.363  -1.272 -12.553] end=[-33.213   0.928 -12.503]}
+[scan_planner_node-3] [ERROR] [1786691408.968323512] [bspline_opt]: [AStarSummary] plan=failed calls=5 success=4 failures{init=0 search=1 initialization=1 rebound=0} last{context=initialization reason=OPEN_SET_EMPTY elapsed=0.036s iter=44134 generated=44134 rejects_collision=26457 outside_map=0 boundary=15165 start=[-31.941  -1.241 -12.554] end=[-32.641  -0.691 -12.504]}
+[static_transform_publisher-7] [INFO] [1786691409.107399051] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[cmd_vel_safety_gate-5] [INFO] [1786691409.107401966] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[scan_planner_node-3] [INFO] [1786691409.107449045] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[real_go2_input_adapter-1] [INFO] [1786691409.107451712] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[scan_mppi_controller_node-4] [INFO] [1786691409.107585722] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[INFO] [cmd_vel_safety_gate-5]: process has finished cleanly [pid 1106962]
+[INFO] [static_transform_publisher-7]: process has finished cleanly [pid 1106964]
+[INFO] [real_go2_input_adapter-1]: process has finished cleanly [pid 1106958]
+[INFO] [scan_mppi_controller_node-4]: process has finished cleanly [pid 1106961]
+[INFO] [telemetry_recorder-6]: process has finished cleanly [pid 1106963]
+[INFO] [terrain_path_visualizer-2]: process has finished cleanly [pid 1106959]
+[INFO] [scan_planner_node-3]: process has finished cleanly [pid 1106960]

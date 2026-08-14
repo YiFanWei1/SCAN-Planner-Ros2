@@ -1,0 +1,6 @@
+scan_mppi_controller:
+  ros__parameters:
+    use_sim_time: true
+    trajectory_frame: world
+    odom_twist_in_body_frame: true
+
