@@ -1,123 +1,89 @@
 scan_planner_node:
   ros__parameters:
-    use_sim_time: false
-    fsm.navi_mode: 3
-    # Distance-triggered replanning: about 3 Hz at the bag's ~0.6 m/s speed.
-    fsm.thresh_replan: 0.20
-    # Avoid a 100 Hz failure loop; enter the safety stop after about 2 seconds.
-    fsm.replan_retry_interval: 0.10
-    fsm.max_replan_fail_count: 20
-    # After a bounded failure burst, stop first and retry the retained target
-    # at low duty cycle instead of depending on a materially changed /plan.
-    fsm.auto_retry_after_failures: true
-    fsm.failure_retry_cooldown: 1.0
-    fsm.reference_path_min_distance: 0.15
-    fsm.clear_map_on_new_path: false
-    # /lio_odom_hf follows nav_msgs/Odometry semantics: twist is expressed in
-    # child_frame_id=base_link. Rotate it into camera_init before planning.
-    fsm.odom_twist_in_body_frame: true
-    # Keep XY and dynamics tied to live odometry, but start each reference-path
-    # replan at the raised terrain-path Z instead of drawing an artificial ramp
-    # from raw odometry Z. Reject large corrections to avoid wrong-floor snaps.
-    fsm.project_reference_start_z: true
-    fsm.reference_start_z_max_correction: 0.60
-    # Constrain the local B-spline's initial derivative to the nearby raised
-    # 3-D reference path. This removes stair-impact/LIO lateral velocity while
-    # preserving the climb/descent rate implied by the terrain slope.
-    fsm.project_reference_start_velocity: true
-    fsm.reference_velocity_tangent_half_window: 0.40
-    fsm.reference_start_velocity_max: 0.75
-    # Final dynamic-feasibility threshold is manager.max_acc (0.5) plus this
-    # tolerance, giving 3.0 m/s^2 for the fast stair bag test.
-    optimization.acc_tolerance: 2.5
-    grid_map.frame_id: camera_init
-    grid_map.sliding_map_frame_id: sliding_map
-    grid_map.sensor_type: lidar
-    grid_map.cloud_is_world: false
-    grid_map.need_extrinsic: false
-    # Prevent the first trajectory from racing the lidar fusion timer. SCAN
-    # starts planning only after two valid clouds have updated occupancy.
-    grid_map.map_ready_min_cloud_updates: 2
-    # Experimental 0.40 m path lift for comparison with the normal 0.30 m
-    # physical base_link height; the segmenter still preserves source Z.
-    grid_map.body_height: 0.40
-    # Restore the normal Go2 double-cylinder collision envelope.
-    grid_map.double_cylinder_radius: 0.25
-    grid_map.double_cylinder_offset: 0.18
-    grid_map.obstacles_inflation_z_up: 0.00
-    grid_map.obstacles_inflation_z_down: 0.00
-    # Optional self/near-body point exclusion. Disable this on the real robot
-    # when close-proximity obstacle perception is required.
-    grid_map.body_exclusion_enabled: true
-    grid_map.body_exclusion_half_length: 0.55
-    grid_map.body_exclusion_half_width: 0.40
-    grid_map.body_exclusion_z_down: 0.35
-    grid_map.body_exclusion_z_up: 0.35
-    # Forget stale occupied voxels produced by moving objects. A maximally
-    # occupied voxel crosses the occupancy threshold in about 1.0 s when it
-    # is no longer hit, while a stopped point-cloud stream never erases map.
-    grid_map.occupancy_decay_enabled: true
-    # Preserve stale occupied voxels behind the robot. Only the body-frame
-    # front half of the existing 0.8-5.0 m decay shell may decay with time.
-    grid_map.occupancy_decay_front_only: true
-    grid_map.occupancy_decay_start: 2.0
-    grid_map.occupancy_decay_interval: 0.1
-    grid_map.occupancy_decay_min_range: 0.8
-    grid_map.occupancy_decay_max_range: 5.0
-    grid_map.occupancy_decay_sensor_timeout: 0.5
-    grid_map.occupancy_decay_log_odds: -0.8472978604
+    use_sim_time: false  # 是否使用仿真时钟话题；真机运行应为“否”，回放数据包时当前系统也按本机时间运行。
+    fsm.navi_mode: 3  # 导航模式：1为交互目标，2为预设航点，3为跟随外部输入的全局参考路径。
+    fsm.thresh_replan: 0.20  # 执行轨迹时触发重新规划的运动距离阈值，单位为米；数值越小，正常重规划越频繁。
+    fsm.replan_retry_interval: 0.10  # 单次规划失败后再次尝试的最短间隔，单位为秒；用于避免失败状态下高频忙循环。
+    fsm.max_replan_fail_count: 20  # 连续重规划失败达到该次数后进入紧急停止状态。
+    fsm.auto_retry_after_failures: true  # 进入失败急停后是否保留当前目标，并在冷却结束后自动重新尝试规划。
+    fsm.failure_retry_cooldown: 1.0  # 连续失败进入急停后，自动恢复规划前的等待时间，单位为秒。
+    fsm.reference_path_min_distance: 0.15  # 参考路径相邻点最小距离的兼容参数；当前路径回调尚未读取此项，实际仍使用代码内固定阈值。
+    fsm.clear_map_on_new_path: false  # 收到新参考路径时清空局部地图的兼容参数；当前实现尚未读取此项，不会改变地图内容。
+    fsm.odom_twist_in_body_frame: true  # 是否把里程计速度解释为机体系速度；为“是”时会按当前姿态旋转到全局坐标系后参与规划。
+    fsm.project_reference_start_z: true  # 是否将局部规划起点高度吸附到机器人附近的抬升参考路径，避免实时里程计高度与路径高度之间形成假斜坡。
+    fsm.reference_start_z_max_correction: 0.60  # 起点高度吸附允许的最大修正量，单位为米；超出时保留里程计高度，防止吸附到错误楼层。
+    fsm.project_reference_start_velocity: true  # 是否把局部轨迹初速度投影到附近三维参考路径的切线方向，以抑制横向速度跳变造成的无障碍弯曲。
+    fsm.reference_velocity_tangent_half_window: 0.40  # 估计参考路径切线时向前、向后各取的路径弧长，单位为米；越大越平滑，越小越贴合局部转弯。
+    fsm.reference_start_velocity_max: 0.75  # 投影后的局部规划初速度上限，单位为米每秒；只限制规划初始状态，不是最终下发速度上限。
+    optimization.acc_tolerance: 2.5  # 轨迹动态可行性检查的附加加速度容差，单位为米每二次方秒；实际阈值为规划器最大加速度与该值之和。
+    grid_map.frame_id: camera_init  # 三维栅格地图和规划结果使用的全局坐标系名称。
+    grid_map.sliding_map_frame_id: sliding_map  # 滑动局部地图中心坐标系名称，用于地图边界和可视化跟随机器人移动。
+    grid_map.sensor_type: lidar  # 地图传感器类型；设置为激光雷达时使用点云和雷达位姿进行射线更新。
+    grid_map.cloud_is_world: false  # 点云坐标是否已经位于全局坐标系；为“否”时依据同步的雷达位姿把点云变换到全局坐标系。
+    grid_map.need_extrinsic: false  # 地图内部是否再次应用雷达外参；适配器已经提供雷达位姿时必须为“否”，避免重复变换。
+    grid_map.map_ready_min_cloud_updates: 2  # 允许首次规划前必须完成的有效点云栅格更新次数，避免空地图抢先生成穿过障碍物的轨迹。
+    grid_map.body_height: 0.40  # 输入全局路径从地形表面抬升到机身规划中心的高度，单位为米；应与路径高度语义和机身旋转中心一致。
+    grid_map.double_cylinder_radius: 0.25  # 双圆柱碰撞模型的单圆半径，同时作为障碍栅格的水平膨胀半径，单位为米。
+    grid_map.double_cylinder_offset: 0.18  # 前后两个碰撞圆柱中心相对机身中心沿航向的偏移量，单位为米；增大后机身纵向包络变长。
+    grid_map.obstacles_inflation_z_up: 0.00  # 占据栅格向上额外膨胀的距离，单位为米；实际按栅格分辨率向上取整到整数层。
+    grid_map.obstacles_inflation_z_down: 0.00  # 占据栅格向下额外膨胀的距离，单位为米；过大会使坡面和楼梯更容易与轨迹相交。
+    grid_map.body_exclusion_enabled: true  # 是否启用机身周边点云排除和占据清除；启用后该盒内不会建立障碍，并会清除已有占据。
+    grid_map.body_exclusion_half_length: 0.55  # 机身排除盒沿机体前后方向的半长度，单位为米；完整长度为该值的两倍。
+    grid_map.body_exclusion_half_width: 0.40  # 机身排除盒沿机体左右方向的半宽度，单位为米；过大会误删贴近机器人的真实障碍。
+    grid_map.body_exclusion_z_down: 0.35  # 机身排除盒相对机身中心向下覆盖的距离，单位为米。
+    grid_map.body_exclusion_z_up: 0.35  # 机身排除盒相对机身中心向上覆盖的距离，单位为米。
+    grid_map.occupancy_decay_enabled: true  # 是否启用占据栅格时间衰减，用于清除动态障碍物离开后留下的历史占据。
+    grid_map.occupancy_decay_front_only: true  # 是否只衰减机体前方半空间的旧占据；启用后机体后方占据会被保留，转身重新观测后再更新。
+    grid_map.occupancy_decay_start: 2.0  # 栅格最后一次被点云命中后开始衰减前的等待时间，单位为秒。
+    grid_map.occupancy_decay_interval: 0.1  # 同一占据栅格两次衰减更新之间的最短间隔，单位为秒。
+    grid_map.occupancy_decay_min_range: 0.8  # 时间衰减生效的最小雷达距离，单位为米；近于该距离的占据不按时间衰减。
+    grid_map.occupancy_decay_max_range: 5.0  # 时间衰减生效的最大雷达距离，单位为米；远于该距离的占据不按时间衰减。
+    grid_map.occupancy_decay_sensor_timeout: 0.5  # 点云中断超过该时间后暂停衰减，单位为秒，避免传感器掉线时整张地图被误删。
+    grid_map.occupancy_decay_log_odds: -0.8472978604  # 每次衰减施加的负对数几率增量；绝对值越大，占据降到空闲阈值所需时间越短。
 
 closed_loop_controller:
   ros__parameters:
-    use_sim_time: false
-    trajectory_frame: camera_init
-    trajectory_visualization_rate: 20.0
-    trajectory_visualization_dt: 0.10
-    max_vx: 0.50
-    max_vy: 0.50
-    max_vyaw: 0.80
-    odom_timeout: 0.80
-    trajectory_timeout: 0.50
+    use_sim_time: false  # 是否使用仿真时钟话题；必须与规划器和里程计的时间来源保持一致。
+    trajectory_frame: camera_init  # 输入样条轨迹所在的全局坐标系，用于轨迹采样、误差计算和可视化。
+    trajectory_visualization_rate: 20.0  # 高频局部轨迹路径与前视点标记的发布频率，单位为赫兹。
+    trajectory_visualization_dt: 0.10  # 可视化样条轨迹的时间采样间隔，单位为秒；越小显示越稠密，但发布点数越多。
+    max_vx: 0.50  # 控制器输出机体系前后线速度的绝对值上限，单位为米每秒。
+    max_vy: 0.50  # 控制器输出机体系左右线速度的绝对值上限，单位为米每秒。
+    max_vyaw: 0.80  # 控制器输出偏航角速度的绝对值上限，单位为弧度每秒；代码还设有一弧度每秒的硬上限。
+    odom_timeout: 0.80  # 控制器允许里程计接收中断的最长时间，单位为秒；超时后输出零速度。
+    trajectory_timeout: 0.50  # 样条轨迹执行完毕后允许继续等待新轨迹的附加时间，单位为秒；超过后输出零速度。
 
 real_go2_input_adapter:
   ros__parameters:
-    use_sim_time: false
-    world_frame: camera_init
-    lidar_to_base_x: -0.15
-    lidar_to_base_y: 0.0
-    lidar_to_base_z: -0.21
-    sync_tolerance: 0.05
-    max_input_horizontal_speed: 8.0
-    max_input_vertical_speed: 4.0
-    odom_validation_window: 0.10
-    # The recorded route descends from floor 5 to floor 1, so a large genuine
-    # displacement from the startup height is expected. Frame-to-frame jumps
-    # remain guarded by max_input_vertical_speed below.
-    max_vertical_displacement_from_start: 20.0
-    path_update_rate: 1.0
-    path_endpoint_threshold: 0.30
-    path_geometry_threshold: 0.20
-    path_compare_horizon: 5.0
-    # /plan stores terrain height while body_pose is the planning body center.
-    # Keep this equal to grid_map.body_height so 3-D path projection selects
-    # the correct stair floor before trimming away points behind the robot.
-    path_body_height_offset: 0.40
-    path_projection_vertical_weight: 1.0
-    path_projection_max_xy_distance: 2.0
-    path_projection_max_z_error: 1.0
+    use_sim_time: false  # 是否使用仿真时钟话题；真机应使用系统时间，数据包回放时需与其余节点保持一致。
+    world_frame: camera_init  # 适配后雷达位姿、机身位姿和路径统一使用的全局坐标系名称。
+    lidar_to_base_x: -0.15  # 雷达原点到机身旋转中心沿雷达坐标横轴的平移外参，单位为米。
+    lidar_to_base_y: 0.0  # 雷达原点到机身旋转中心沿雷达坐标纵轴的平移外参，单位为米。
+    lidar_to_base_z: -0.21  # 雷达原点到机身旋转中心沿雷达坐标竖轴的平移外参，单位为米；负值表示机身中心位于雷达下方。
+    sync_tolerance: 0.05  # 点云与雷达里程计近似同步允许的最大时间跨度，单位为秒；无法配对的数据不会转发给规划器。
+    max_input_horizontal_speed: 8.0  # 根据相邻验证位置计算的最大允许水平速度，单位为米每秒；超过时判定里程计发生跳变。
+    max_input_vertical_speed: 4.0  # 根据相邻验证位置计算的最大允许竖直速度，单位为米每秒；超过时判定高度发生跳变。
+    odom_validation_window: 0.10  # 里程计跳变检测的基准更新周期，单位为秒；周期内数据沿用上一验证状态，达到周期后重新计算位移速度。
+    max_vertical_displacement_from_start: 20.0  # 当前位置相对启动位置允许的最大绝对高度变化，单位为米；多层楼场景必须覆盖真实总落差。
+    path_update_rate: 1.0  # 对持续输入的全局路径进行裁剪、去重和转发的最高频率，单位为赫兹。
+    path_endpoint_threshold: 0.30  # 判断新旧全局路径终点发生实质变化的三维距离阈值，单位为米。
+    path_geometry_threshold: 0.20  # 判断新旧前向路径几何发生实质变化的加权三维均方根误差阈值，单位为米。
+    path_compare_horizon: 5.0  # 比较新旧路径几何时从机器人前方取用的路径长度，单位为米。
+    path_body_height_offset: 0.40  # 将机身位置还原到地形路径高度后再做三维投影的高度偏移，单位为米；应与地图机身抬升高度一致。
+    path_projection_vertical_weight: 1.0  # 三维路径投影距离中竖直误差的权重；增大可加强不同楼层之间的区分。
+    path_projection_max_xy_distance: 2.0  # 允许机器人到候选全局路径投影点的最大水平距离，单位为米；超出时拒绝转发该路径。
+    path_projection_max_z_error: 1.0  # 允许还原后的地形高度到候选路径投影点的最大竖直误差，单位为米；用于拒绝错误楼层。
 
 cmd_vel_safety_gate:
   ros__parameters:
-    use_sim_time: false
-    enable_motion_on_start: false
-    max_vx: 0.50
-    max_vy: 0.50
-    max_vyaw: 0.80
-    odom_timeout: 0.80
-    trajectory_timeout: 0.50
-    # DataDisp is event-driven visualization data, not a periodic heartbeat.
-    # Trajectory validity, odometry and raw-command timeouts remain enforced.
-    require_planner_heartbeat: false
-    planner_heartbeat_timeout: 4.00
-    command_timeout: 0.15
-    publish_rate: 100.0
+    use_sim_time: false  # 是否使用仿真时钟话题；安全超时判断所用时间源必须与整个系统一致。
+    enable_motion_on_start: false  # 启动时是否立即允许非零速度通过；为“否”时需显式调用运动使能接口后才会放行。
+    max_vx: 0.50  # 安全门最终输出的机体系前后线速度绝对值上限，单位为米每秒。
+    max_vy: 0.50  # 安全门最终输出的机体系左右线速度绝对值上限，单位为米每秒。
+    max_vyaw: 0.80  # 安全门最终输出的偏航角速度绝对值上限，单位为弧度每秒。
+    odom_timeout: 0.80  # 安全门允许机身里程计停止更新的最长时间，单位为秒；超时立即持续发布零速度。
+    trajectory_timeout: 0.50  # 样条轨迹有效时长结束后的附加宽限时间，单位为秒；宽限结束仍无新轨迹则发布零速度。
+    require_planner_heartbeat: false  # 是否要求规划可视化消息持续充当心跳；当前为“否”，避免事件触发型消息被误判为规划器掉线。
+    planner_heartbeat_timeout: 4.00  # 启用规划心跳检查时允许两次心跳之间的最长间隔，单位为秒；当前开关关闭时此值不参与门控。
+    command_timeout: 0.15  # 原始速度指令停止更新后允许保持的最长时间，单位为秒；超时后安全门输出零速度。
+    publish_rate: 100.0  # 最终安全速度话题的固定发布频率，单位为赫兹；即使停车也会按该频率持续发布零速度。
