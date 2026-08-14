@@ -201,6 +201,19 @@ Visualization Manager:
         Value: /self_inflation
       Value: false
     - Class: rviz_default_plugins/Marker
+      Enabled: true
+      Name: Body Exclusion Box
+      Namespaces:
+        body_exclusion: true
+      Topic:
+        Depth: 1
+        Durability Policy: Transient Local
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /grid_map/body_exclusion_bbox
+      Value: true
+    - Class: rviz_default_plugins/Marker
       Enabled: false
       Name: Marker
       Namespaces:

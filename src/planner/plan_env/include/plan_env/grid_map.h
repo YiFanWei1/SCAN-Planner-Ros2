@@ -203,6 +203,7 @@ public:
   void publishUnknown();
   void publishDepth();
   void publishDepthCloud();
+  void publishBodyExclusionBBox();
   void publishSlidingMapBBox();
   void publishSlidingMapFrame();
 
@@ -284,6 +285,7 @@ private:
   rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr cloud_sub_;
   rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr map_pub_;
   rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr map_inf_pub_;
+  rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr body_exclusion_bbox_pub_;
   rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr sliding_map_bbox_pub_;
   rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr unknown_pub_;
   rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr depth_cloud_pub_;

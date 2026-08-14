@@ -201,6 +201,8 @@ void GridMap::initMap(rclcpp::Node *node)
 
   map_pub_ = node_->create_publisher<sensor_msgs::msg::PointCloud2>("grid_map/occupancy", rclcpp::SensorDataQoS());
   map_inf_pub_ = node_->create_publisher<sensor_msgs::msg::PointCloud2>("grid_map/occupancy_inflate", rclcpp::SensorDataQoS());
+  body_exclusion_bbox_pub_ = node_->create_publisher<visualization_msgs::msg::Marker>(
+      "grid_map/body_exclusion_bbox", rclcpp::QoS(1).reliable().transient_local());
   sliding_map_bbox_pub_ = node_->create_publisher<visualization_msgs::msg::Marker>("grid_map/sliding_map_bbox", 10);
 
   unknown_pub_ = node_->create_publisher<sensor_msgs::msg::PointCloud2>("grid_map/unknown", rclcpp::SensorDataQoS());
@@ -806,6 +808,7 @@ void GridMap::visCallback()
   publishMap();
   publishMapInflate(true);
   publishSlidingMapFrame();
+  publishBodyExclusionBBox();
   publishSlidingMapBBox();
   publishDepthCloud();
 }
@@ -1252,6 +1255,69 @@ void GridMap::publishSlidingMapFrame()
   transform.transform.translation.z = md_.sliding_map_frame_pos_.z();
   transform.transform.rotation.w = 1.0;
   tf_broadcaster_->sendTransform(transform);
+}
+
+void GridMap::publishBodyExclusionBBox()
+{
+  if (body_exclusion_bbox_pub_->get_subscription_count() == 0)
+    return;
+
+  visualization_msgs::msg::Marker marker;
+  marker.header.frame_id = mp_.frame_id_;
+  marker.header.stamp = node_->now();
+  marker.ns = "body_exclusion";
+  marker.id = 0;
+
+  if (!mp_.body_exclusion_enabled_ || !md_.has_body_pose_)
+  {
+    marker.action = visualization_msgs::msg::Marker::DELETE;
+    body_exclusion_bbox_pub_->publish(marker);
+    return;
+  }
+
+  marker.type = visualization_msgs::msg::Marker::LINE_LIST;
+  marker.action = visualization_msgs::msg::Marker::ADD;
+  marker.pose.position.x = md_.body_pos_.x();
+  marker.pose.position.y = md_.body_pos_.y();
+  marker.pose.position.z = md_.body_pos_.z();
+  marker.pose.orientation.x = md_.body_q_.x();
+  marker.pose.orientation.y = md_.body_q_.y();
+  marker.pose.orientation.z = md_.body_q_.z();
+  marker.pose.orientation.w = md_.body_q_.w();
+  marker.scale.x = 0.025;
+  marker.color.r = 1.0;
+  marker.color.g = 0.55;
+  marker.color.b = 0.0;
+  marker.color.a = 0.80;
+
+  const double x = mp_.body_exclusion_half_length_;
+  const double y = mp_.body_exclusion_half_width_;
+  const double z_min = -mp_.body_exclusion_z_down_;
+  const double z_max = mp_.body_exclusion_z_up_;
+  const Eigen::Vector3d corners[8] = {
+      {-x, -y, z_min}, {x, -y, z_min}, {x, y, z_min}, {-x, y, z_min},
+      {-x, -y, z_max}, {x, -y, z_max}, {x, y, z_max}, {-x, y, z_max},
+  };
+  const int edges[12][2] = {
+      {0, 1}, {1, 2}, {2, 3}, {3, 0},
+      {4, 5}, {5, 6}, {6, 7}, {7, 4},
+      {0, 4}, {1, 5}, {2, 6}, {3, 7},
+  };
+
+  auto push_point = [&marker](const Eigen::Vector3d &corner) {
+    geometry_msgs::msg::Point point;
+    point.x = corner.x();
+    point.y = corner.y();
+    point.z = corner.z();
+    marker.points.push_back(point);
+  };
+  for (const auto &edge : edges)
+  {
+    push_point(corners[edge[0]]);
+    push_point(corners[edge[1]]);
+  }
+
+  body_exclusion_bbox_pub_->publish(marker);
 }
 
 void GridMap::publishSlidingMapBBox()
