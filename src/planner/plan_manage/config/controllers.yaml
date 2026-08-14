@@ -3,10 +3,10 @@ closed_loop_controller:
     use_sim_time: false
     kp_pos: 0.8
     kp_yaw: 1.5
-    lookahead_base: 0.30
-    lookahead_speed_gain: 0.8
-    lookahead_min: 0.30
-    lookahead_max: 0.70
+    lookahead_base: 0.15
+    lookahead_speed_gain: 0.4
+    lookahead_min: 0.15
+    lookahead_max: 0.35
     projection_dt: 0.03
     projection_forward_window: 1.0
     max_linear_accel: 0.50 #!

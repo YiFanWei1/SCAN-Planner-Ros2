@@ -60,7 +60,7 @@ scan_planner_node:
     # Preserve stale occupied voxels behind the robot. Only the body-frame
     # front half of the existing 0.8-5.0 m decay shell may decay with time.
     grid_map.occupancy_decay_front_only: true
-    grid_map.occupancy_decay_start: 0.8
+    grid_map.occupancy_decay_start: 2.0
     grid_map.occupancy_decay_interval: 0.1
     grid_map.occupancy_decay_min_range: 0.8
     grid_map.occupancy_decay_max_range: 5.0
@@ -76,7 +76,7 @@ closed_loop_controller:
     max_vx: 0.50
     max_vy: 0.50
     max_vyaw: 0.80
-    odom_timeout: 0.30
+    odom_timeout: 0.80
     trajectory_timeout: 0.50
 
 real_go2_input_adapter:
@@ -113,7 +113,7 @@ cmd_vel_safety_gate:
     max_vx: 0.50
     max_vy: 0.50
     max_vyaw: 0.80
-    odom_timeout: 0.30
+    odom_timeout: 0.80
     trajectory_timeout: 0.50
     # DataDisp is event-driven visualization data, not a periodic heartbeat.
     # Trajectory validity, odometry and raw-command timeouts remain enforced.

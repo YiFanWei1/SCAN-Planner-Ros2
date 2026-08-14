@@ -22,3 +22,22 @@ ros2 run scan_planner_analysis plot_velocity \
 Disable recording with `analysis:=false`, or select a fixed path with
 `analysis_output:=/tmp/run.jsonl` on `real_go2_livox.launch.py`. Override the
 default directory with `analysis_output_directory:=/path/to/output`.
+# Independent high-frequency odometry timing probe
+
+Run this node without SCAN to compare the real callback interval with the
+source `header.stamp` interval:
+
+```bash
+ros2 run scan_planner_analysis hf_odom_probe --ros-args \
+  -p topic:=/lio_odom_hf \
+  -p reliability:=best_effort \
+  -p qos_depth:=1 \
+  -p gap_threshold:=0.15 \
+  -p header_gap_threshold:=0.03 \
+  -p output_file:=/tmp/hf_odom_probe.jsonl
+```
+
+`CALLBACK_STALL_BEGIN` is printed as soon as no callback has arrived for the
+configured duration. After reception resumes, `CALLBACK_STALL_CONFIRMED` means
+the callback interval was abnormal while the source header interval remained
+normal. `SOURCE_TIME_GAP` means the source timestamp itself also jumped.

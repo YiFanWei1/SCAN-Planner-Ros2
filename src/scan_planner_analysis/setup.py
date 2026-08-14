@@ -22,6 +22,7 @@ setup(
         "console_scripts": [
             "telemetry_recorder = scan_planner_analysis.telemetry_recorder:main",
             "plot_velocity = scan_planner_analysis.plot_velocity:main",
+            "hf_odom_probe = scan_planner_analysis.hf_odom_probe:main",
         ],
     },
 )
